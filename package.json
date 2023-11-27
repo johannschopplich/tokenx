@@ -1,0 +1,61 @@
+{
+  "name": "tokenwise",
+  "type": "module",
+  "version": "0.0.0",
+  "packageManager": "pnpm@8.11.0",
+  "description": "Token estimation and context size utilities without a full tokenizer",
+  "author": "Johann Schopplich <pkg@johannschopplich.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/johannschopplich/tokenwise#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johannschopplich/tokenwise.git"
+  },
+  "bugs": {
+    "url": "https://github.com/johannschopplich/tokenwise/issues"
+  },
+  "keywords": [
+    "ai",
+    "gpt",
+    "token",
+    "tiktoken"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      },
+      "default": "./dist/index.mjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "unbuild --stub",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "release": "bumpp --commit --push --tag",
+    "test": "vitest",
+    "test:types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^2.1.0",
+    "bumpp": "^9.2.0",
+    "eslint": "^8.54.0",
+    "typescript": "^5.3.2",
+    "unbuild": "^2.0.0",
+    "vitest": "^0.34.6"
+  }
+}
