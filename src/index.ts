@@ -106,11 +106,10 @@ export function approximateMaxTokenSize({
 }) {
   // Ensure that the sum of the prompt tokens and the response tokens
   // doesn't exceed the model's limit
-  const remainingTokens
-  = getModelContextSize(modelName)
-  // Not using GPT tokenizer here because it will explode the bundle size
-  - approximateTokenSize(prompt)
-  - maxTokensInResponse
+  const remainingTokens = getModelContextSize(modelName)
+    // Not using GPT tokenizer here because it will explode the bundle size
+    - approximateTokenSize(prompt)
+    - maxTokensInResponse
 
   return Math.max(0, remainingTokens)
 }
