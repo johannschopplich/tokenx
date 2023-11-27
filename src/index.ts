@@ -104,14 +104,13 @@ export function approximateMaxTokenSize({
   /** The maximum number of tokens to generate in the reply. 1000 tokens are roughly 750 English words. */
   maxTokensInResponse?: number
 }) {
-  // Not using GPT tokenizer here because it will explode the bundle size
-  // const tokens = encode(prompt)
-  const tokenSize = approximateTokenSize(prompt)
-  const maxTokens = getModelContextSize(modelName)
-
   // Ensure that the sum of the prompt tokens and the response tokens
   // doesn't exceed the model's limit
-  const remainingTokens = maxTokens - tokenSize - maxTokensInResponse
+  const remainingTokens
+  = getModelContextSize(modelName)
+  // Not using GPT tokenizer here because it will explode the bundle size
+  - approximateTokenSize(prompt)
+  - maxTokensInResponse
 
   return Math.max(0, remainingTokens)
 }
