@@ -1,6 +1,6 @@
 # tokenwise
 
-Token count and context size utilities when approximations are good enough.
+GPT token count and context size utilities when approximations are good enough.
 
 For advanced use cases, please use a full tokenizer like [`gpt-tokenizer`](https://github.com/niieani/gpt-tokenizer). This library is intended to be used for quick estimations and to avoid the overhead of a full tokenizer, e.g. when you want to limit your bundle size.
 
