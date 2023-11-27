@@ -10,12 +10,12 @@ describe('token-related functions', () => {
   describe('approximateTokenSize', () => {
     it('should approximate the token size for English text', () => {
       const input = 'Hello, world! This is a test.'
-      expect(approximateTokenSize(input)).toMatchInlineSnapshot('9')
+      expect(approximateTokenSize(input)).toMatchInlineSnapshot('11')
     })
 
     it('should approximate the token size for German text with special characters', () => {
       const input = 'Guten Tag! Wie geht’s dir?'
-      expect(approximateTokenSize(input)).toMatchInlineSnapshot('9')
+      expect(approximateTokenSize(input)).toMatchInlineSnapshot('10')
     })
   })
 

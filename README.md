@@ -8,6 +8,7 @@ For advanced use cases, please use a full tokenizer like [`gpt-tokenizer`](https
 
 - 🌁 Estimate token count without a full tokenizer
 - 📐 Supports multiple model context sizes
+- 🗣️ Supports accented characters, like German umlauts or French accents
 - 🪽 Zero dependencies
 
 ## Installation

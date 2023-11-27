@@ -45,7 +45,8 @@ export function getEmbeddingContextSize(modelName?: string): number {
 }
 
 const WHITESPACE_RE = /^\s+$/
-const ALPHANUMERIC_RE = /^[a-zA-Z0-9]+$/
+// Include alphanumeric characters and accented characters
+const ALPHANUMERIC_RE = /^[a-zA-Z0-9\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]+$/
 const PUNCTUATION_RE = /[.,!?;'"„“”‘’\-(){}[\]<>:/\\|@#$%^&*+=`~]/
 
 export function approximateTokenSize(input: string) {
@@ -54,7 +55,6 @@ export function approximateTokenSize(input: string) {
     .split(/(\s+|[.,!?;'"„“”‘’\-(){}[\]<>:/\\|@#$%^&*+=`~]+)/)
     .filter(Boolean)
 
-  // Approximate the size of tokens by considering common English patterns
   let tokenCount = 0
   for (const token of roughTokens) {
     if (WHITESPACE_RE.test(token)) {
@@ -67,7 +67,7 @@ export function approximateTokenSize(input: string) {
     }
     else if (ALPHANUMERIC_RE.test(token)) {
       // Increase the average token length for alphanumeric strings
-      tokenCount += Math.ceil(token.length / 5)
+      tokenCount += Math.ceil(token.length / 4)
     }
     else if (PUNCTUATION_RE.test(token)) {
       // Punctuation is often a single token, but multiple punctuations are often split
