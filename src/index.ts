@@ -76,7 +76,7 @@ export function approximateTokenSize(input: string) {
     }
     else if (ALPHANUMERIC_RE.test(token)) {
       // Increase the average token length for alphanumeric strings
-      tokenCount += Math.ceil(token.length / 4)
+      tokenCount += Math.ceil(token.length / 5)
     }
     else if (PUNCTUATION_RE.test(token)) {
       // Punctuation is often a single token, but multiple punctuations are often split
