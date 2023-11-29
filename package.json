@@ -43,7 +43,7 @@
   ],
   "scripts": {
     "build": "unbuild",
-    "docs:generate": "tsx scripts/generateTable.ts",
+    "docs:table": "tsx scripts/generateTable.ts",
     "dev": "unbuild --stub",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
