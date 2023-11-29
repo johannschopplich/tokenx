@@ -51,9 +51,11 @@ export function getEmbeddingContextSize(modelName?: string): number {
 }
 
 const WHITESPACE_RE = /^\s+$/
+const CJK_RE = /[\u4E00-\u9FFF\u3400-\u4DBF\u3000-\u303F\uFF00-\uFFEF\u30A0-\u30FF\u2E80-\u2EFF\u31C0-\u31EF\u3200-\u32FF\u3300-\u33FF\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uD7B0-\uD7FF]/
 // Include alphanumeric and accented characters
 const ALPHANUMERIC_RE = /^[a-zA-Z0-9\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]+$/
 const PUNCTUATION_RE = /[.,!?;'"„“”‘’\-(){}[\]<>:/\\|@#$%^&*+=`~]/
+const GERMAN_RE = /[äöüßÄÖÜẞ]/
 
 /**
  * Estimate the number of tokens in a string.
@@ -70,17 +72,25 @@ export function approximateTokenSize(input: string) {
       // Don't count whitespace as a token
       continue
     }
+    else if (CJK_RE.test(token)) {
+      // For CJK languages, each character is usually a separate token
+      tokenCount += Array.from(token).length
+    }
     else if (token.length <= 3) {
       // Short tokens are often a single token
       tokenCount += 1
     }
+    else if (GERMAN_RE.test(token)) {
+      // German words tend to be longer
+      tokenCount += Math.ceil(token.length / 3)
+    }
     else if (ALPHANUMERIC_RE.test(token)) {
       // Increase the average token length for alphanumeric strings
-      tokenCount += Math.ceil(token.length / 5)
+      tokenCount += Math.ceil(token.length / 6)
     }
     else if (PUNCTUATION_RE.test(token)) {
       // Punctuation is often a single token, but multiple punctuations are often split
-      tokenCount += Math.ceil(token.length / 2)
+      tokenCount += token.length > 1 ? Math.ceil(token.length / 2) : 1
     }
     else {
       // For other characters (like emojis or special characters), count each as a token

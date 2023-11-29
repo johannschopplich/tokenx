@@ -1,6 +1,15 @@
 # tokenwise
 
-GPT token count and context size utilities when approximations are good enough.
+GPT token count and context size utilities when approximations are good enough. The following table shows the accuracy of the token count approximation for different input texts:
+
+| Description | Actual GPT Token Count | Estimated Token Count | Error Range (%) |
+| ----------- | ---------------------- | --------------------- | --------------- |
+| Short English text | 10 | 11 | 10.00% |
+| German text with umlauts | 56 | 49 | 12.50% |
+| Metamorphosis by Franz Kafka (English) | 31891 | 36557 | 14.63% |
+| Die Verwandlung by Franz Kafka (German) | 40620 | 37873 | 6.76% |
+| 道德經 by Laozi (Chinese) | 14386 | 12239 | 14.92% |
+| TypeScript ES5 Type Declarations (~ 4000 loc) | 47890 | 54829 | 14.49% |
 
 For advanced use cases, please use a full tokenizer like [`gpt-tokenizer`](https://github.com/niieani/gpt-tokenizer). This library is intended to be used for quick estimations and to avoid the overhead of a full tokenizer, e.g. when you want to limit your bundle size.
 
