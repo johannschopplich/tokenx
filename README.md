@@ -6,14 +6,14 @@ GPT token count and context size utilities when approximations are good enough. 
 
 The following table shows the accuracy of the token count approximation for different input texts:
 
-| Description | Actual GPT Token Count | Estimated Token Count | Error Range (%) |
-| ----------- | ---------------------- | --------------------- | --------------- |
+| Description | Actual GPT Token Count | Estimated Token Count | Token Count Deviation (%) |
+| ----------- | ---------------------- | --------------------- | ------------------------- |
 | Short English text | 10 | 11 | 10.00% |
 | German text with umlauts | 56 | 49 | 12.50% |
-| Metamorphosis by Franz Kafka (English) | 31891 | 36557 | 14.63% |
-| Die Verwandlung by Franz Kafka (German) | 40620 | 37873 | 6.76% |
-| 道德經 by Laozi (Chinese) | 14386 | 12239 | 14.92% |
-| TypeScript ES5 Type Declarations (~ 4000 loc) | 47890 | 54829 | 14.49% |
+| Metamorphosis by Franz Kafka (English) | 31891 | 33930 | 6.39% |
+| Die Verwandlung by Franz Kafka (German) | 40620 | 34909 | 14.06% |
+| 道德經 by Laozi (Chinese) | 14386 | 11920 | 17.14% |
+| TypeScript ES5 Type Declarations (~ 4000 loc) | 47890 | 50898 | 6.28% |
 
 ## Features
 

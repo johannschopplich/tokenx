@@ -33,8 +33,8 @@ const tokenExamples = [
 ]
 
 let markdownTable = `
-| Description | Actual GPT Token Count | Estimated Token Count | Error Range (%) |
-| ----------- | ---------------------- | --------------------- | --------------- |
+| Description | Actual GPT Token Count | Estimated Token Count | Token Count Deviation (%) |
+| ----------- | ---------------------- | --------------------- | ------------------------- |
 `
 
 for (const example of tokenExamples) {
