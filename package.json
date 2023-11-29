@@ -53,6 +53,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.1.1",
+    "@types/node": "^20.10.0",
     "bumpp": "^9.2.0",
     "eslint": "^8.54.0",
     "gpt-tokenizer": "^2.1.2",
