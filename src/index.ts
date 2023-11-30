@@ -58,9 +58,9 @@ const PUNCTUATION_RE = /[.,!?;'"„“”‘’\-(){}[\]<>:/\\|@#$%^&*+=`~]/
 const ALPHANUMERIC_RE = /^[a-zA-Z0-9\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]+$/
 
 // For languages similar to English, define a rough average number of characters per token
-const AVERAE_TOKENS_BY_LANGUAGE = new Map<RegExp, number>([
-  [/[äöüßÄÖÜẞ]/, 3], // German
-])
+const LANGUAGE_CHAR_METRICS = [
+  { regex: /[äöüßÄÖÜẞ]/, divisor: 3 }, // German
+]
 
 /**
  * Estimate the number of tokens in a string.
@@ -73,7 +73,13 @@ export function approximateTokenSize(input: string) {
 
   let tokenCount = 0
   for (const token of roughTokens) {
-    const charsPerToken = [...AVERAE_TOKENS_BY_LANGUAGE.entries()].find(([re]) => re.test(token))?.[1]
+    let averageCharsPerToken: number | undefined
+    for (const language of LANGUAGE_CHAR_METRICS) {
+      if (language.regex.test(token)) {
+        averageCharsPerToken = language.divisor
+        break
+      }
+    }
 
     if (WHITESPACE_RE.test(token)) {
       // Don't count whitespace as a token
@@ -95,9 +101,9 @@ export function approximateTokenSize(input: string) {
       // Punctuation is often a single token, but multiple punctuations are often split
       tokenCount += token.length > 1 ? Math.ceil(token.length / 2) : 1
     }
-    else if (ALPHANUMERIC_RE.test(token) || charsPerToken) {
+    else if (ALPHANUMERIC_RE.test(token) || averageCharsPerToken) {
       // Use language-specific average characters per token or default to 6
-      tokenCount += Math.ceil(token.length / (charsPerToken ?? 6))
+      tokenCount += Math.ceil(token.length / (averageCharsPerToken ?? 6))
     }
     else {
       // For other characters (like emojis or special characters), or languages
