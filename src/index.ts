@@ -52,11 +52,15 @@ export function getEmbeddingContextSize(modelName?: string): number {
 
 const WHITESPACE_RE = /^\s+$/
 const CJK_RE = /[\u4E00-\u9FFF\u3400-\u4DBF\u3000-\u303F\uFF00-\uFFEF\u30A0-\u30FF\u2E80-\u2EFF\u31C0-\u31EF\u3200-\u32FF\u3300-\u33FF\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uD7B0-\uD7FF]/
-// Include alphanumeric and accented characters
-const ALPHANUMERIC_RE = /^[a-zA-Z0-9\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]+$/
-const PUNCTUATION_RE = /[.,!?;'"„“”‘’\-(){}[\]<>:/\\|@#$%^&*+=`~]/
-const GERMAN_RE = /[äöüßÄÖÜẞ]/
 const NUMERIC_SEQUENCE_RE = /[\d.,]+/
+const PUNCTUATION_RE = /[.,!?;'"„“”‘’\-(){}[\]<>:/\\|@#$%^&*+=`~]/
+// Pattern for spoken words, including accented characters
+const ALPHANUMERIC_RE = /^[a-zA-Z0-9\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]+$/
+
+// For languages similar to English, define a rough average number of characters per token
+const AVERAGE_TOKENS_BY_LANGUAGE = new Map<RegExp, number>([
+  [/[äöüßÄÖÜẞ]/, 3], // German
+])
 
 /**
  * Estimate the number of tokens in a string.
@@ -69,6 +73,8 @@ export function approximateTokenSize(input: string) {
 
   let tokenCount = 0
   for (const token of roughTokens) {
+    const languageTokenDivisor = [...AVERAGE_TOKENS_BY_LANGUAGE.entries()].find(([re]) => re.test(token))?.[1]
+
     if (WHITESPACE_RE.test(token)) {
       // Don't count whitespace as a token
       continue
@@ -85,20 +91,17 @@ export function approximateTokenSize(input: string) {
       // Short tokens are often a single token
       tokenCount += 1
     }
-    else if (GERMAN_RE.test(token)) {
-      // German words tend to be longer
-      tokenCount += Math.ceil(token.length / 3)
-    }
-    else if (ALPHANUMERIC_RE.test(token)) {
-      // Use an average of 6 characters per token for alphanumeric tokens
-      tokenCount += Math.ceil(token.length / 6)
-    }
     else if (PUNCTUATION_RE.test(token)) {
       // Punctuation is often a single token, but multiple punctuations are often split
       tokenCount += token.length > 1 ? Math.ceil(token.length / 2) : 1
     }
+    else if (ALPHANUMERIC_RE.test(token) || languageTokenDivisor) {
+      // Use language-specific average characters per token or default to 6
+      tokenCount += Math.ceil(token.length / (languageTokenDivisor ?? 6))
+    }
     else {
-      // For other characters (like emojis or special characters), count each as a token
+      // For other characters (like emojis or special characters), or languages
+      // like Arabic, Hebrew and Greek, count each as a token
       tokenCount += Array.from(token).length
     }
   }
