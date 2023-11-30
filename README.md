@@ -6,6 +6,7 @@ GPT token count and context size utilities when approximations are good enough. 
 
 The following table shows the accuracy of the token count approximation for different input texts:
 
+<!-- START GENERATED TOKEN COUNT TABLE -->
 | Description | Actual GPT Token Count | Estimated Token Count | Token Count Deviation (%) |
 | ----------- | ---------------------- | --------------------- | ------------------------- |
 | Short English text | 10 | 11 | 10.00% |
@@ -14,6 +15,7 @@ The following table shows the accuracy of the token count approximation for diff
 | Die Verwandlung by Franz Kafka (German) | 40620 | 34908 | 14.06% |
 | 道德經 by Laozi (Chinese) | 14386 | 11919 | 17.15% |
 | TypeScript ES5 Type Declarations (~ 4000 loc) | 47890 | 50464 | 5.37% |
+<!-- END GENERATED TOKEN COUNT TABLE -->
 
 ## Features
 

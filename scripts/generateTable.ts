@@ -1,10 +1,11 @@
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { readFile } from 'node:fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 import { encode } from 'gpt-tokenizer'
 import { approximateTokenSize } from '../src/index'
 
 const rootDir = join(fileURLToPath(new URL('../', import.meta.url)))
+const readmePath = join(rootDir, 'README.md')
 const tokenExamples = [
   {
     description: 'Short English text',
@@ -49,3 +50,12 @@ for (const example of tokenExamples) {
 }
 
 console.log(markdownTable)
+
+// Replace the table in the README
+const readmeContent = await readFile(readmePath, 'utf-8')
+const newReadmeContent = readmeContent.replace(
+  /(?<=<!-- START GENERATED TOKEN COUNT TABLE -->\n)[\s\S]+(?=\n<!-- END GENERATED TOKEN COUNT TABLE -->)/,
+  markdownTable.trim(),
+)
+
+await writeFile(readmePath, newReadmeContent)
