@@ -25,17 +25,17 @@ describe('token-related functions', () => {
 
     it('should approximate the token size for English ebook', async () => {
       const input = await readFile(join(fixturesDir, 'ebooks/pg5200.txt'), 'utf-8')
-      expect(approximateTokenSize(input)).toMatchInlineSnapshot('33930')
+      expect(approximateTokenSize(input)).toMatchInlineSnapshot(`33928`)
     })
 
     it('should approximate the token size for German ebook', async () => {
       const input = await readFile(join(fixturesDir, 'ebooks/pg22367.txt'), 'utf-8')
-      expect(approximateTokenSize(input)).toMatchInlineSnapshot('34909')
+      expect(approximateTokenSize(input)).toMatchInlineSnapshot(`34908`)
     })
 
     it('should approximate the token size for Chinese ebook', async () => {
       const input = await readFile(join(fixturesDir, 'ebooks/pg7337.txt'), 'utf-8')
-      expect(approximateTokenSize(input)).toMatchInlineSnapshot('11920')
+      expect(approximateTokenSize(input)).toMatchInlineSnapshot(`11919`)
     })
   })
 
