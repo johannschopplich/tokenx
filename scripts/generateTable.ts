@@ -33,9 +33,15 @@ const tokenExamples = [
   },
 ]
 
+const tableHeadings = [
+  'Description',
+  'Actual GPT Token Count',
+  'Estimated Token Count',
+  'Token Count Deviation',
+]
 let markdownTable = `
-| Description | Actual GPT Token Count | Estimated Token Count | Token Count Deviation (%) |
-| ----------- | ---------------------- | --------------------- | ------------------------- |
+| ${tableHeadings.join(' | ')} |
+| ${tableHeadings.map(() => '---').join(' | ')} |
 `
 
 for (const example of tokenExamples) {
@@ -46,7 +52,12 @@ for (const example of tokenExamples) {
   const estimatedTokenCount = approximateTokenSize(text)
   const errorPercentage = ((Math.abs(tokenCount - estimatedTokenCount) / tokenCount) * 100).toFixed(2)
 
-  markdownTable += `| ${example.description} | ${tokenCount} | ${estimatedTokenCount} | ${errorPercentage}% |\n`
+  markdownTable += `| ${[
+    example.description,
+    `${tokenCount}`,
+    estimatedTokenCount,
+    `${errorPercentage}%`,
+  ].join(' | ')} |\n`
 }
 
 console.log(markdownTable)

@@ -7,8 +7,8 @@ GPT token count and context size utilities when approximations are good enough. 
 The following table shows the accuracy of the token count approximation for different input texts:
 
 <!-- START GENERATED TOKEN COUNT TABLE -->
-| Description | Actual GPT Token Count | Estimated Token Count | Token Count Deviation (%) |
-| ----------- | ---------------------- | --------------------- | ------------------------- |
+| Description | Actual GPT Token Count | Estimated Token Count | Token Count Deviation |
+| --- | --- | --- | --- |
 | Short English text | 10 | 11 | 10.00% |
 | German text with umlauts | 56 | 49 | 12.50% |
 | Metamorphosis by Franz Kafka (English) | 31891 | 33928 | 6.39% |
