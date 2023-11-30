@@ -56,6 +56,7 @@ const CJK_RE = /[\u4E00-\u9FFF\u3400-\u4DBF\u3000-\u303F\uFF00-\uFFEF\u30A0-\u30
 const ALPHANUMERIC_RE = /^[a-zA-Z0-9\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]+$/
 const PUNCTUATION_RE = /[.,!?;'"„“”‘’\-(){}[\]<>:/\\|@#$%^&*+=`~]/
 const GERMAN_RE = /[äöüßÄÖÜẞ]/
+const NUMERIC_SEQUENCE_RE = /[\d.,]+/
 
 /**
  * Estimate the number of tokens in a string.
@@ -76,6 +77,10 @@ export function approximateTokenSize(input: string) {
       // For CJK languages, each character is usually a separate token
       tokenCount += Array.from(token).length
     }
+    else if (NUMERIC_SEQUENCE_RE.test(token)) {
+      // Numeric sequences are often a single token, regardless of length
+      tokenCount += 1
+    }
     else if (token.length <= 3) {
       // Short tokens are often a single token
       tokenCount += 1
@@ -85,7 +90,7 @@ export function approximateTokenSize(input: string) {
       tokenCount += Math.ceil(token.length / 3)
     }
     else if (ALPHANUMERIC_RE.test(token)) {
-      // Increase the average token length for alphanumeric strings
+      // Use an average of 6 characters per token for alphanumeric tokens
       tokenCount += Math.ceil(token.length / 6)
     }
     else if (PUNCTUATION_RE.test(token)) {
