@@ -57,9 +57,11 @@ const PUNCTUATION_RE = /[.,!?;'"„“”‘’\-(){}[\]<>:/\\|@#$%^&*+=`~]/
 // Pattern for spoken words, including accented characters
 const ALPHANUMERIC_RE = /^[a-zA-Z0-9\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]+$/
 
-// For languages similar to English, define a rough average number of characters per token
-const LANGUAGE_CHAR_METRICS = [
-  { regex: /[äöüßÄÖÜẞ]/, divisor: 3 }, // German
+const DEFAULT_AVERAGE_CHARS_PER_TOKEN = 6
+// For languages similar to English, define a rough average
+// number of characters per token
+const LANGUAGE_METRICS = [
+  { regex: /[äöüßÄÖÜẞ]/, averageCharsPerToken: 3 },
 ]
 
 /**
@@ -74,9 +76,9 @@ export function approximateTokenSize(input: string) {
   let tokenCount = 0
   for (const token of roughTokens) {
     let averageCharsPerToken: number | undefined
-    for (const language of LANGUAGE_CHAR_METRICS) {
+    for (const language of LANGUAGE_METRICS) {
       if (language.regex.test(token)) {
-        averageCharsPerToken = language.divisor
+        averageCharsPerToken = language.averageCharsPerToken
         break
       }
     }
@@ -102,8 +104,8 @@ export function approximateTokenSize(input: string) {
       tokenCount += token.length > 1 ? Math.ceil(token.length / 2) : 1
     }
     else if (ALPHANUMERIC_RE.test(token) || averageCharsPerToken) {
-      // Use language-specific average characters per token or default to 6
-      tokenCount += Math.ceil(token.length / (averageCharsPerToken ?? 6))
+      // Use language-specific average characters per token or default to average
+      tokenCount += Math.ceil(token.length / (averageCharsPerToken ?? DEFAULT_AVERAGE_CHARS_PER_TOKEN))
     }
     else {
       // For other characters (like emojis or special characters), or languages
