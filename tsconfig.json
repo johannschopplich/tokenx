@@ -2,8 +2,11 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "Preserve",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
     "strict": true,
     "noEmit": true,
+    "esModuleInterop": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "skipLibCheck": true
