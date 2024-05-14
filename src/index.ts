@@ -61,7 +61,7 @@ const DEFAULT_AVERAGE_CHARS_PER_TOKEN = 6
 // For languages similar to English, define a rough average
 // number of characters per token
 const LANGUAGE_METRICS = [
-  { regex: /[äöüßÄÖÜẞ]/, averageCharsPerToken: 3 },
+  { regex: /[äöüßẞ]/i, averageCharsPerToken: 3 },
 ]
 
 /**
