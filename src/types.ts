@@ -1,4 +1,4 @@
-export type EncodingType = 'gpt2' | 'r50k_base' | 'p50k_base' | 'p50k_edit' | 'cl100k_base'
+export type EncodingType = 'gpt2' | 'r50k_base' | 'p50k_base' | 'p50k_edit' | 'cl100k_base' | 'o200k_base'
 export type ModelName =
   | 'davinci-002'
   | 'babbage-002'
@@ -54,3 +54,5 @@ export type ModelName =
   | 'gpt-4-1106-preview'
   | 'gpt-4-0125-preview'
   | 'gpt-4-vision-preview'
+  | "gpt-4o"
+  | "gpt-4o-2024-05-13"
