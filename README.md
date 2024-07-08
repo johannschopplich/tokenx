@@ -1,4 +1,4 @@
-# tokenwise
+# tokenx
 
 GPT token count and context size utilities when approximations are good enough. For advanced use cases, please use a full tokenizer like [`gpt-tokenizer`](https://github.com/niieani/gpt-tokenizer). This library is intended to be used for quick estimations and to avoid the overhead of a full tokenizer, e.g. when you want to limit your bundle size.
 
@@ -26,17 +26,17 @@ The following table shows the accuracy of the token count approximation for diff
 
 ## Installation
 
-Run the following command to add `tokenwise` to your project.
+Run the following command to add `tokenx` to your project.
 
 ```bash
 # npm
-npm install tokenwise
+npm install tokenx
 
 # pnpm
-pnpm add tokenwise
+pnpm add tokenx
 
 # yarn
-yarn add tokenwise
+yarn add tokenx
 ```
 
 ## Usage
@@ -46,7 +46,7 @@ import {
   approximateMaxTokenSize,
   approximateTokenSize,
   isWithinTokenLimit
-} from 'tokenwise'
+} from 'tokenx'
 
 const prompt = 'Your prompt goes here.'
 const inputText = 'Your text goes here.'
