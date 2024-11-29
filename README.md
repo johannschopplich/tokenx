@@ -11,10 +11,10 @@ The following table shows the accuracy of the token count approximation for diff
 | --- | --- | --- | --- |
 | Short English text | 10 | 11 | 10.00% |
 | German text with umlauts | 56 | 49 | 12.50% |
-| Metamorphosis by Franz Kafka (English) | 31891 | 33928 | 6.39% |
-| Die Verwandlung by Franz Kafka (German) | 40620 | 34908 | 14.06% |
-| 道德經 by Laozi (Chinese) | 14386 | 11919 | 17.15% |
-| TypeScript ES5 Type Declarations (~ 4000 loc) | 47890 | 50464 | 5.37% |
+| Metamorphosis by Franz Kafka (English) | 31892 | 33930 | 6.39% |
+| Die Verwandlung by Franz Kafka (German) | 40621 | 34908 | 14.06% |
+| 道德經 by Laozi (Chinese) | 14387 | 11919 | 17.15% |
+| TypeScript ES5 Type Declarations (~ 4000 loc) | 48408 | 51688 | 6.78% |
 <!-- END GENERATED TOKEN COUNT TABLE -->
 
 ## Features

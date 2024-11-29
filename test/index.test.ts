@@ -25,7 +25,7 @@ describe('token-related functions', () => {
 
     it('should approximate the token size for English ebook', async () => {
       const input = await readFile(join(fixturesDir, 'ebooks/pg5200.txt'), 'utf-8')
-      expect(approximateTokenSize(input)).toMatchInlineSnapshot(`33928`)
+      expect(approximateTokenSize(input)).toMatchInlineSnapshot(`33930`)
     })
 
     it('should approximate the token size for German ebook', async () => {

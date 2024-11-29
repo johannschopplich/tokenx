@@ -52,29 +52,34 @@ export function getEmbeddingContextSize(modelName?: string): number {
 
 const WHITESPACE_RE = /^\s+$/
 const CJK_RE = /[\u4E00-\u9FFF\u3400-\u4DBF\u3000-\u303F\uFF00-\uFFEF\u30A0-\u30FF\u2E80-\u2EFF\u31C0-\u31EF\u3200-\u32FF\u3300-\u33FF\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uD7B0-\uD7FF]/
-const NUMERIC_SEQUENCE_RE = /[\d.,]+/
+const NUMERIC_SEQUENCE_RE = /^\d+(?:[.,]\d+)?$/
 const PUNCTUATION_RE = /[.,!?;'"„“”‘’\-(){}[\]<>:/\\|@#$%^&*+=`~]/
+const CACHED_SPLIT_REGEX = new RegExp(`(\\s+|${PUNCTUATION_RE.source}+)`)
 // Pattern for spoken words, including accented characters
 const ALPHANUMERIC_RE = /^[a-zA-Z0-9\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF]+$/
 
 const DEFAULT_AVERAGE_CHARS_PER_TOKEN = 6
-// For languages similar to English, define a rough average
-// number of characters per token
 const LANGUAGE_METRICS = [
-  { regex: /[äöüßẞ]/i, averageCharsPerToken: 3 },
+  { regex: /[äöüßẞ]/i, averageCharsPerToken: 3 }, // German
+  { regex: /[éèêëàâîïôûùüÿçœæ]/i, averageCharsPerToken: 3 }, // French
+  { regex: /[áéíóúüñ]/i, averageCharsPerToken: 3 }, // Spanish
 ]
 
 /**
  * Estimate the number of tokens in a string.
  */
-export function approximateTokenSize(input: string) {
+export function approximateTokenSize(input?: string) {
+  // Early return for empty strings
+  if (!input)
+    return 0
+
   // Split by whitespace, punctuation, and other special characters
-  const roughTokens = input
-    .split(/(\s+|[.,!?;'"„“”‘’\-(){}[\]<>:/\\|@#$%^&*+=`~]+)/)
+  const tokenizedInput = input
+    .split(CACHED_SPLIT_REGEX)
     .filter(Boolean)
 
   let tokenCount = 0
-  for (const token of roughTokens) {
+  for (const token of tokenizedInput) {
     let averageCharsPerToken: number | undefined
     for (const language of LANGUAGE_METRICS) {
       if (language.regex.test(token)) {
@@ -108,8 +113,8 @@ export function approximateTokenSize(input: string) {
       tokenCount += Math.ceil(token.length / (averageCharsPerToken ?? DEFAULT_AVERAGE_CHARS_PER_TOKEN))
     }
     else {
-      // For other characters (like emojis or special characters), or languages
-      // like Arabic, Hebrew and Greek, count each as a token
+      // For other characters (like emojis or special characters), or
+      // languages like Arabic, Hebrew and Greek, count each as a token
       tokenCount += Array.from(token).length
     }
   }
