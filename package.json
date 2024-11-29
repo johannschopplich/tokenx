@@ -2,7 +2,7 @@
   "name": "tokenx",
   "type": "module",
   "version": "0.4.0",
-  "packageManager": "pnpm@9.5.0",
+  "packageManager": "pnpm@9.14.2",
   "description": "GPT token estimation and context size utilities without a full tokenizer",
   "author": "Johann Schopplich <hello@johannschopplich.com>",
   "license": "MIT",
@@ -52,14 +52,14 @@
     "release": "bumpp"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.21.3",
-    "@types/node": "^20.14.10",
-    "bumpp": "^9.4.1",
-    "eslint": "^9.6.0",
-    "gpt-tokenizer": "^2.1.2",
-    "tsx": "^4.16.2",
-    "typescript": "^5.5.3",
-    "unbuild": "^3.0.0-rc.6",
-    "vitest": "^1.6.0"
+    "@antfu/eslint-config": "^3.9.2",
+    "@types/node": "^22.9.3",
+    "bumpp": "^9.8.1",
+    "eslint": "^9.15.0",
+    "gpt-tokenizer": "^2.6.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "unbuild": "^3.0.0-rc.11",
+    "vitest": "^2.1.5"
   }
 }

@@ -1,6 +1,6 @@
+import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { readFile, writeFile } from 'node:fs/promises'
 import { encode } from 'gpt-tokenizer'
 import { approximateTokenSize } from '../src/index'
 
