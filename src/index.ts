@@ -20,16 +20,13 @@ const modelContextSizeMap = new Map<ModelName, number>([
  * Resolve a model name to a canonical model name.
  */
 export function resolveModelName(modelName: string): ModelName {
-  if (modelName.startsWith('gpt-3.5-turbo-16k'))
-    return 'gpt-3.5-turbo-16k'
-
-  if (modelName.startsWith('gpt-3.5-turbo-'))
+  if (modelName.startsWith('gpt-3.5-'))
     return 'gpt-3.5-turbo'
 
-  if (modelName.startsWith('gpt-4-32k'))
-    return 'gpt-4-32k'
-
   if (modelName.startsWith('gpt-4-'))
+    return 'gpt-4'
+
+  if (modelName.startsWith('gpt-4o'))
     return 'gpt-4'
 
   return modelName as ModelName
@@ -41,13 +38,6 @@ export function resolveModelName(modelName: string): ModelName {
 export function getModelContextSize(modelName: string): number {
   const modelKey = resolveModelName(modelName)
   return modelContextSizeMap.get(modelKey) ?? 4097
-}
-
-export function getEmbeddingContextSize(modelName?: string): number {
-  if (modelName === 'text-embedding-ada-002')
-    return 8191
-
-  return 2046
 }
 
 const WHITESPACE_RE = /^\s+$/
