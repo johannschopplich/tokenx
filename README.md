@@ -1,6 +1,8 @@
 # tokenx
 
-GPT token count and context size utilities when approximations are good enough. For advanced use cases, please use a full tokenizer like [`gpt-tokenizer`](https://github.com/niieani/gpt-tokenizer). This library is intended to be used for quick estimations and to avoid the overhead of a full tokenizer, e.g. when you want to limit your bundle size.
+Fast and lightweight token count estimation for any LLM without requiring a full tokenizer. This library provides quick approximations that are good enough for most use cases while keeping your bundle size minimal.
+
+For advanced use cases requiring precise token counts, please use a full tokenizer like [`gpt-tokenizer`](https://github.com/niieani/gpt-tokenizer).
 
 ## Benchmarks
 
@@ -11,18 +13,20 @@ The following table shows the accuracy of the token count approximation for diff
 | --- | --- | --- | --- |
 | Short English text | 10 | 11 | 10.00% |
 | German text with umlauts | 56 | 49 | 12.50% |
-| Metamorphosis by Franz Kafka (English) | 31892 | 33930 | 6.39% |
-| Die Verwandlung by Franz Kafka (German) | 40621 | 34908 | 14.06% |
-| 道德經 by Laozi (Chinese) | 14387 | 11919 | 17.15% |
-| TypeScript ES5 Type Declarations (~ 4000 loc) | 48408 | 51688 | 6.78% |
+| Metamorphosis by Franz Kafka (English) | 31892 | 35705 | 11.96% |
+| Die Verwandlung by Franz Kafka (German) | 40621 | 35069 | 13.67% |
+| 道德經 by Laozi (Chinese) | 14387 | 12059 | 16.18% |
+| TypeScript ES5 Type Declarations (~ 4000 loc) | 48553 | 52434 | 7.99% |
 <!-- END GENERATED TOKEN COUNT TABLE -->
 
 ## Features
 
-- 🌁 Estimate token count without a full tokenizer
-- 📐 Supports multiple model context sizes
-- 🗣️ Supports accented characters, like German umlauts or French accents
+- ⚡ Fast token estimation without a full tokenizer
+- 🌍 Multi-language support with configurable language rules
+- 🗣️ Built-in support for accented characters (German, French, Spanish, etc.)
+- 🔧 Configurable and extensible
 - 🪽 Zero dependencies
+- 📦 Tiny bundle size
 
 ## Installation
 
@@ -42,76 +46,72 @@ yarn add tokenx
 ## Usage
 
 ```ts
-import {
-  approximateMaxTokenSize,
-  approximateTokenSize,
-  isWithinTokenLimit
-} from 'tokenx'
+import { estimateTokenCount, isWithinTokenLimit } from 'tokenx'
 
-const prompt = 'Your prompt goes here.'
-const inputText = 'Your text goes here.'
+const text = 'Your text goes here.'
 
-// Estimate the number of tokens in the input text
-const estimatedTokens = approximateTokenSize(inputText)
+// Estimate the number of tokens in the text
+const estimatedTokens = estimateTokenCount(text)
 console.log(`Estimated token count: ${estimatedTokens}`)
 
-// Calculate the maximum number of tokens allowed for a given model
-const modelName = 'gpt-3.5-turbo'
-const maxResponseTokens = 1000
-const availableTokens = approximateMaxTokenSize({
-  prompt,
-  modelName,
-  maxTokensInResponse: maxResponseTokens
-})
-console.log(`Available tokens for model ${modelName}: ${availableTokens}`)
-
-// Check if the input text is within a specific token limit
+// Check if text is within a specific token limit
 const tokenLimit = 1024
-const withinLimit = isWithinTokenLimit(inputText, tokenLimit)
+const withinLimit = isWithinTokenLimit(text, tokenLimit)
 console.log(`Is within token limit: ${withinLimit}`)
+
+// Use custom options for different languages or models
+const customOptions = {
+  defaultCharsPerToken: 4, // More conservative estimation
+  languageConfigs: [
+    { pattern: /[你我他]/g, averageCharsPerToken: 1.5 }, // Custom Chinese rule
+  ]
+}
+
+const customEstimate = estimateTokenCount(text, customOptions)
+console.log(`Custom estimate: ${customEstimate}`)
 ```
 
 ## API
 
-### `approximateTokenSize`
+### `estimateTokenCount`
 
-Estimates the number of tokens in a given input string based on common English patterns and tokenization heuristics. Work well for other languages too, like German.
-
-**Usage:**
-
-```ts
-const estimatedTokens = approximateTokenSize('Hello, world!')
-```
-
-**Type Declaration:**
-
-```ts
-function approximateTokenSize(input: string): number
-```
-
-### `approximateMaxTokenSize`
-
-Calculates the maximum number of tokens that can be included in a response given the prompt length and model's maximum context size.
+Estimates the number of tokens in a given input string using heuristic rules that work across multiple languages and text types.
 
 **Usage:**
 
 ```ts
-const maxTokens = approximateMaxTokenSize({
-  prompt: 'Sample prompt',
-  modelName: 'text-davinci-003',
-  maxTokensInResponse: 500
+const estimatedTokens = estimateTokenCount('Hello, world!')
+
+// With custom options
+const customEstimate = estimateTokenCount('Bonjour le monde!', {
+  defaultCharsPerToken: 4,
+  languageConfigs: [
+    { pattern: /[éèêëàâîï]/i, averageCharsPerToken: 3 }
+  ]
 })
 ```
 
 **Type Declaration:**
 
 ```ts
-function approximateMaxTokenSize({ prompt, modelName, maxTokensInResponse }: {
-  prompt: string
-  modelName: ModelName
-  /** The maximum number of tokens to generate in the reply. 1000 tokens are roughly 750 English words. */
-  maxTokensInResponse?: number
-}): number
+function estimateTokenCount(
+  text?: string,
+  options?: TokenEstimationOptions
+): number
+
+interface TokenEstimationOptions {
+  /** Default average characters per token when no language-specific rule applies */
+  defaultCharsPerToken?: number
+  /** Custom language configurations to override defaults */
+  languageConfigs?: LanguageConfig[]
+}
+
+interface LanguageConfig {
+  /** Regular expression to detect the language */
+  pattern: RegExp
+  /** Average number of characters per token for this language */
+  averageCharsPerToken: number
+}
 ```
 
 ### `isWithinTokenLimit`
@@ -122,12 +122,18 @@ Checks if the estimated token count of the input is within a specified token lim
 
 ```ts
 const withinLimit = isWithinTokenLimit('Check this text against a limit', 100)
+// With custom options
+const customCheck = isWithinTokenLimit('Text', 50, { defaultCharsPerToken: 3 })
 ```
 
 **Type Declaration:**
 
 ```ts
-function isWithinTokenLimit(input: string, tokenLimit: number): boolean
+function isWithinTokenLimit(
+  text: string,
+  tokenLimit: number,
+  options?: TokenEstimationOptions
+): boolean
 ```
 
 ## License

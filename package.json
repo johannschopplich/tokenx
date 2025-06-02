@@ -2,8 +2,8 @@
   "name": "tokenx",
   "type": "module",
   "version": "0.4.1",
-  "packageManager": "pnpm@9.14.4",
-  "description": "GPT token estimation and context size utilities without a full tokenizer",
+  "packageManager": "pnpm@10.11.0",
+  "description": "Fast and lightweight token estimation for any LLM without requiring a full tokenizer",
   "author": "Johann Schopplich <hello@johannschopplich.com>",
   "license": "MIT",
   "homepage": "https://github.com/johannschopplich/tokenx#readme",
@@ -16,35 +16,28 @@
   },
   "keywords": [
     "ai",
-    "gpt",
+    "llm",
     "token",
-    "tiktoken"
+    "tokenizer",
+    "estimation",
+    "tiktoken",
+    "anthropic",
+    "openai"
   ],
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./dist/index.d.mts",
-      "import": {
-        "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      },
-      "default": "./dist/index.mjs"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "unbuild",
+    "build": "tsdown",
     "docs:generate": "tsx scripts/generateTable.ts",
-    "dev": "unbuild --stub",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest",
@@ -52,14 +45,14 @@
     "release": "bumpp"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^3.11.2",
-    "@types/node": "^22.10.1",
-    "bumpp": "^9.8.1",
-    "eslint": "^9.15.0",
-    "gpt-tokenizer": "^2.7.0",
-    "tsx": "^4.19.2",
-    "typescript": "^5.7.2",
-    "unbuild": "^3.0.0-rc.11",
-    "vitest": "^2.1.6"
+    "@antfu/eslint-config": "^4.13.2",
+    "@types/node": "^22.15.29",
+    "bumpp": "^10.1.1",
+    "eslint": "^9.28.0",
+    "gpt-tokenizer": "^2.9.0",
+    "tsdown": "^0.12.6",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.0"
   }
 }
