@@ -136,6 +136,51 @@ function isWithinTokenLimit(
 ): boolean
 ```
 
+### `sliceByTokens`
+
+Extracts a portion of text based on token positions, similar to `Array.prototype.slice()`. Supports both positive and negative indices.
+
+**Usage:**
+
+```ts
+const text = 'Hello, world! This is a test sentence.'
+
+const firstThree = sliceByTokens(text, 0, 3)
+const fromSecond = sliceByTokens(text, 2)
+const lastTwo = sliceByTokens(text, -2)
+const middle = sliceByTokens(text, 1, -1)
+
+// With custom options
+const customSlice = sliceByTokens(text, 0, 5, {
+  defaultCharsPerToken: 4,
+  languageConfigs: [
+    { pattern: /[éèêëàâîï]/i, averageCharsPerToken: 3 }
+  ]
+})
+```
+
+**Type Declaration:**
+
+```ts
+function sliceByTokens(
+  text: string,
+  start?: number,
+  end?: number,
+  options?: TokenEstimationOptions
+): string
+```
+
+**Parameters:**
+
+- `text` - The input text to slice
+- `start` - The start token index (inclusive). If negative, treated as offset from end. Default: `0`
+- `end` - The end token index (exclusive). If negative, treated as offset from end. If omitted, slices to the end
+- `options` - Token estimation options (same as `estimateTokenCount`)
+
+**Returns:**
+
+The sliced text portion corresponding to the specified token range.
+
 ## License
 
 [MIT](./LICENSE) License © 2023-PRESENT [Johann Schopplich](https://github.com/johannschopplich)

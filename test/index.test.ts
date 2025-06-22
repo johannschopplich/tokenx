@@ -6,20 +6,22 @@ import {
   approximateTokenSize,
   estimateTokenCount,
   isWithinTokenLimit,
+  sliceByTokens,
 } from '../src/index'
 
 const fixturesDir = fileURLToPath(new URL('fixtures', import.meta.url))
 
 describe('token-related functions', () => {
+  const ENGLISH_TEXT = 'Hello, world! This is a short sentence.'
+  const GERMAN_TEXT = 'Die pünktlich gewünschte Trüffelfüllung im übergestülpten Würzkümmel-Würfel ist kümmerlich und dürfte fürderhin zu Rüffeln in Hülle und Fülle führen'
+
   describe('approximateTokenSize (legacy)', () => {
     it('should approximate the token size for short English text', () => {
-      const input = 'Hello, world! This is a short sentence.'
-      expect(approximateTokenSize(input)).toMatchInlineSnapshot('11')
+      expect(approximateTokenSize(ENGLISH_TEXT)).toMatchInlineSnapshot('11')
     })
 
     it('should approximate the token size for short German text with umlauts', () => {
-      const input = 'Die pünktlich gewünschte Trüffelfüllung im übergestülpten Würzkümmel-Würfel ist kümmerlich und dürfte fürderhin zu Rüffeln in Hülle und Fülle führen'
-      expect(approximateTokenSize(input)).toMatchInlineSnapshot('49')
+      expect(approximateTokenSize(GERMAN_TEXT)).toMatchInlineSnapshot('49')
     })
 
     it('should approximate the token size for English ebook', async () => {
@@ -40,13 +42,11 @@ describe('token-related functions', () => {
 
   describe('estimateTokenCount', () => {
     it('should estimate tokens for short English text', () => {
-      const input = 'Hello, world! This is a short sentence.'
-      expect(estimateTokenCount(input)).toMatchInlineSnapshot('11')
+      expect(estimateTokenCount(ENGLISH_TEXT)).toMatchInlineSnapshot('11')
     })
 
     it('should estimate tokens for German text with umlauts', () => {
-      const input = 'Die pünktlich gewünschte Trüffelfüllung im übergestülpten Würzkümmel-Würfel ist kümmerlich und dürfte fürderhin zu Rüffeln in Hülle und Fülle führen'
-      expect(estimateTokenCount(input)).toMatchInlineSnapshot('49')
+      expect(estimateTokenCount(GERMAN_TEXT)).toMatchInlineSnapshot('49')
     })
 
     it('should handle empty input', () => {
@@ -86,6 +86,68 @@ describe('token-related functions', () => {
 
       expect(isWithinTokenLimit(input, tokenLimit)).toBe(true)
       expect(isWithinTokenLimit(input, tokenLimit, customOptions)).toBe(false)
+    })
+  })
+
+  describe('sliceByTokens', () => {
+    it('should handle empty input and return entire text without bounds', () => {
+      // Empty input
+      expect(sliceByTokens('')).toBe('')
+      expect(sliceByTokens('', 0, 5)).toBe('')
+
+      // No bounds - return entire text
+      expect(sliceByTokens(ENGLISH_TEXT)).toBe(ENGLISH_TEXT)
+    })
+
+    it('should slice English text with positive indices', () => {
+      // Test specific slice behavior with known English text
+      const firstTwoTokens = sliceByTokens(ENGLISH_TEXT, 0, 2)
+      const fromThirdToken = sliceByTokens(ENGLISH_TEXT, 2)
+
+      expect(firstTwoTokens).toMatchInlineSnapshot('"Hello,"')
+      expect(fromThirdToken).toMatchInlineSnapshot('" world! This is a short sentence."')
+
+      // Verify they combine to cover most of the original
+      expect(firstTwoTokens.length + fromThirdToken.length).toBeGreaterThan(ENGLISH_TEXT.length * 0.8)
+    })
+
+    it('should slice German text with positive indices', () => {
+      // First 3 tokens
+      const firstThree = sliceByTokens(GERMAN_TEXT, 0, 3)
+      expect(firstThree).toMatchInlineSnapshot('"Die pünktl"')
+
+      // Middle section
+      const middle = sliceByTokens(GERMAN_TEXT, 5, 10)
+      expect(middle.length).toBeGreaterThan(0)
+      expect(middle.length).toBeLessThan(GERMAN_TEXT.length)
+    })
+
+    it('should slice German text with negative indices', () => {
+      // Last 3 tokens
+      const lastThree = sliceByTokens(GERMAN_TEXT, -3)
+      expect(lastThree).toMatchInlineSnapshot('"lle führen"')
+
+      // Exclude last 2 tokens
+      const withoutLastTwo = sliceByTokens(GERMAN_TEXT, 0, -2)
+      expect(withoutLastTwo.endsWith('Fülle')).toBe(true)
+
+      // Both negative indices
+      const middleNegative = sliceByTokens(GERMAN_TEXT, -8, -3)
+      expect(middleNegative.length).toBeGreaterThan(0)
+      expect(middleNegative.includes('Hülle')).toBe(true)
+    })
+
+    it('should handle edge cases', () => {
+      const totalTokens = estimateTokenCount(GERMAN_TEXT)
+
+      // Invalid ranges
+      expect(sliceByTokens(GERMAN_TEXT, 10, 5)).toBe('')
+      expect(sliceByTokens(GERMAN_TEXT, 5, 5)).toBe('')
+
+      // Out of bounds
+      expect(sliceByTokens(GERMAN_TEXT, totalTokens + 10)).toBe('')
+      expect(sliceByTokens(GERMAN_TEXT, 0, totalTokens + 10)).toBe(GERMAN_TEXT)
+      expect(sliceByTokens(GERMAN_TEXT, -1000)).toBe(GERMAN_TEXT)
     })
   })
 })
