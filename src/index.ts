@@ -103,3 +103,82 @@ function getLanguageSpecificCharsPerToken(segment: string, languageConfigs: Lang
 function getCharacterCount(text: string): number {
   return Array.from(text).length
 }
+
+/**
+ * Extracts a portion of text based on token positions, similar to Array.prototype.slice().
+ */
+export function sliceByTokens(
+  text: string,
+  start: number = 0,
+  end?: number,
+  options: TokenEstimationOptions = {},
+): string {
+  if (!text)
+    return ''
+
+  const { defaultCharsPerToken = DEFAULT_CHARS_PER_TOKEN, languageConfigs = DEFAULT_LANGUAGE_CONFIGS } = options
+
+  // Handle negative indices
+  let totalTokens = 0
+  if (start < 0 || (end !== undefined && end < 0)) {
+    totalTokens = estimateTokenCount(text, options)
+  }
+
+  // Normalize indices
+  const normalizedStart = start < 0 ? Math.max(0, totalTokens + start) : Math.max(0, start)
+  const normalizedEnd = end === undefined
+    ? Infinity
+    : end < 0
+      ? Math.max(0, totalTokens + end)
+      : end
+
+  if (normalizedStart >= normalizedEnd)
+    return ''
+
+  // Use same splitting logic as estimateTokenCount for consistency
+  const segments = text.split(TOKEN_SPLIT_PATTERN).filter(Boolean)
+  const parts: string[] = []
+  let currentTokenPos = 0
+
+  for (const segment of segments) {
+    if (currentTokenPos >= normalizedEnd)
+      break
+
+    const tokenCount = estimateSegmentTokens(segment, languageConfigs, defaultCharsPerToken)
+    const extracted = extractSegmentPart(segment, currentTokenPos, tokenCount, normalizedStart, normalizedEnd)
+    if (extracted)
+      parts.push(extracted)
+    currentTokenPos += tokenCount
+  }
+
+  return parts.join('')
+}
+
+/**
+ * Process segment overlap with target token range
+ */
+function extractSegmentPart(
+  segment: string,
+  segmentTokenStart: number,
+  segmentTokenCount: number,
+  targetStart: number,
+  targetEnd: number,
+): string {
+  if (segmentTokenCount === 0) {
+    return segmentTokenStart >= targetStart && segmentTokenStart < targetEnd ? segment : ''
+  }
+
+  const segmentTokenEnd = segmentTokenStart + segmentTokenCount
+  if (segmentTokenStart >= targetEnd || segmentTokenEnd <= targetStart)
+    return ''
+
+  const overlapStart = Math.max(0, targetStart - segmentTokenStart)
+  const overlapEnd = Math.min(segmentTokenCount, targetEnd - segmentTokenStart)
+
+  if (overlapStart === 0 && overlapEnd === segmentTokenCount)
+    return segment
+
+  const charStart = Math.floor((overlapStart / segmentTokenCount) * segment.length)
+  const charEnd = Math.ceil((overlapEnd / segmentTokenCount) * segment.length)
+  return segment.slice(charStart, charEnd)
+}
