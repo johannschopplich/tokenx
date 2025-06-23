@@ -59,51 +59,6 @@ export function estimateTokenCount(text?: string, options: TokenEstimationOption
   return tokenCount
 }
 
-function estimateSegmentTokens(
-  segment: string,
-  languageConfigs: LanguageConfig[],
-  defaultCharsPerToken: number,
-): number {
-  if (PATTERNS.whitespace.test(segment)) {
-    return 0
-  }
-
-  if (PATTERNS.cjk.test(segment)) {
-    return getCharacterCount(segment)
-  }
-
-  if (PATTERNS.numeric.test(segment)) {
-    return 1
-  }
-
-  if (segment.length <= SHORT_TOKEN_THRESHOLD) {
-    return 1
-  }
-
-  if (PATTERNS.punctuation.test(segment)) {
-    return segment.length > 1 ? Math.ceil(segment.length / 2) : 1
-  }
-
-  if (PATTERNS.alphanumeric.test(segment)) {
-    const charsPerToken = getLanguageSpecificCharsPerToken(segment, languageConfigs) ?? defaultCharsPerToken
-    return Math.ceil(segment.length / charsPerToken)
-  }
-
-  return getCharacterCount(segment)
-}
-
-function getLanguageSpecificCharsPerToken(segment: string, languageConfigs: LanguageConfig[]): number | undefined {
-  for (const config of languageConfigs) {
-    if (config.pattern.test(segment)) {
-      return config.averageCharsPerToken
-    }
-  }
-}
-
-function getCharacterCount(text: string): number {
-  return Array.from(text).length
-}
-
 /**
  * Extracts a portion of text based on token positions, similar to Array.prototype.slice().
  */
@@ -154,9 +109,51 @@ export function sliceByTokens(
   return parts.join('')
 }
 
-/**
- * Process segment overlap with target token range
- */
+function estimateSegmentTokens(
+  segment: string,
+  languageConfigs: LanguageConfig[],
+  defaultCharsPerToken: number,
+): number {
+  if (PATTERNS.whitespace.test(segment)) {
+    return 0
+  }
+
+  if (PATTERNS.cjk.test(segment)) {
+    return getCharacterCount(segment)
+  }
+
+  if (PATTERNS.numeric.test(segment)) {
+    return 1
+  }
+
+  if (segment.length <= SHORT_TOKEN_THRESHOLD) {
+    return 1
+  }
+
+  if (PATTERNS.punctuation.test(segment)) {
+    return segment.length > 1 ? Math.ceil(segment.length / 2) : 1
+  }
+
+  if (PATTERNS.alphanumeric.test(segment)) {
+    const charsPerToken = getLanguageSpecificCharsPerToken(segment, languageConfigs) ?? defaultCharsPerToken
+    return Math.ceil(segment.length / charsPerToken)
+  }
+
+  return getCharacterCount(segment)
+}
+
+function getLanguageSpecificCharsPerToken(segment: string, languageConfigs: LanguageConfig[]): number | undefined {
+  for (const config of languageConfigs) {
+    if (config.pattern.test(segment)) {
+      return config.averageCharsPerToken
+    }
+  }
+}
+
+function getCharacterCount(text: string): number {
+  return Array.from(text).length
+}
+
 function extractSegmentPart(
   segment: string,
   segmentTokenStart: number,
