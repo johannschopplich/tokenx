@@ -1,5 +1,7 @@
 # tokenx
 
+[![npm version](https://img.shields.io/npm/v/tokenx)](https://www.npmjs.com/package/tokenx)
+
 Fast and lightweight token count estimation for any LLM without requiring a full tokenizer. This library provides quick approximations that are good enough for most use cases while keeping your bundle size minimal.
 
 For advanced use cases requiring precise token counts, please use a full tokenizer like [`gpt-tokenizer`](https://github.com/niieani/gpt-tokenizer).
