@@ -34,7 +34,7 @@ export function isWithinTokenLimit(
   return estimateTokenCount(text, options) <= tokenLimit
 }
 
-// Legacy alias for backward compatibility
+/** @deprecated Use `estimateTokenCount` instead */
 export const approximateTokenSize: typeof estimateTokenCount = estimateTokenCount
 
 /**

@@ -2,7 +2,7 @@ import { readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { encode } from 'gpt-tokenizer'
-import { approximateTokenSize } from '../src/index'
+import { estimateTokenCount } from '../src/index'
 
 const rootDir = join(fileURLToPath(new URL('../', import.meta.url)))
 const readmePath = join(rootDir, 'README.md')
@@ -49,7 +49,7 @@ for (const example of tokenExamples) {
     ? (await readFile(example.input, 'utf-8'))
     : example.input
   const tokenCount = encode(text).length
-  const estimatedTokenCount = approximateTokenSize(text)
+  const estimatedTokenCount = estimateTokenCount(text)
   const errorPercentage = ((Math.abs(tokenCount - estimatedTokenCount) / tokenCount) * 100).toFixed(2)
 
   markdownTable += `| ${[

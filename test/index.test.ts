@@ -3,7 +3,6 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import {
-  approximateTokenSize,
   estimateTokenCount,
   isWithinTokenLimit,
   sliceByTokens,
@@ -15,31 +14,6 @@ describe('token-related functions', () => {
   const ENGLISH_TEXT = 'Hello, world! This is a short sentence.'
   const GERMAN_TEXT = 'Die pünktlich gewünschte Trüffelfüllung im übergestülpten Würzkümmel-Würfel ist kümmerlich und dürfte fürderhin zu Rüffeln in Hülle und Fülle führen'
 
-  describe('approximateTokenSize (legacy)', () => {
-    it('should approximate the token size for short English text', () => {
-      expect(approximateTokenSize(ENGLISH_TEXT)).toMatchInlineSnapshot('11')
-    })
-
-    it('should approximate the token size for short German text with umlauts', () => {
-      expect(approximateTokenSize(GERMAN_TEXT)).toMatchInlineSnapshot('49')
-    })
-
-    it('should approximate the token size for English ebook', async () => {
-      const input = await readFile(join(fixturesDir, 'ebooks/pg5200.txt'), 'utf-8')
-      expect(approximateTokenSize(input)).toMatchInlineSnapshot(`35705`)
-    })
-
-    it('should approximate the token size for German ebook', async () => {
-      const input = await readFile(join(fixturesDir, 'ebooks/pg22367.txt'), 'utf-8')
-      expect(approximateTokenSize(input)).toMatchInlineSnapshot(`35069`)
-    })
-
-    it('should approximate the token size for Chinese ebook', async () => {
-      const input = await readFile(join(fixturesDir, 'ebooks/pg7337.txt'), 'utf-8')
-      expect(approximateTokenSize(input)).toMatchInlineSnapshot(`12059`)
-    })
-  })
-
   describe('estimateTokenCount', () => {
     it('should estimate tokens for short English text', () => {
       expect(estimateTokenCount(ENGLISH_TEXT)).toMatchInlineSnapshot('11')
@@ -47,6 +21,21 @@ describe('token-related functions', () => {
 
     it('should estimate tokens for German text with umlauts', () => {
       expect(estimateTokenCount(GERMAN_TEXT)).toMatchInlineSnapshot('49')
+    })
+
+    it('should approximate the token size for English ebook', async () => {
+      const input = await readFile(join(fixturesDir, 'ebooks/pg5200.txt'), 'utf-8')
+      expect(estimateTokenCount(input)).toMatchInlineSnapshot(`35705`)
+    })
+
+    it('should approximate the token size for German ebook', async () => {
+      const input = await readFile(join(fixturesDir, 'ebooks/pg22367.txt'), 'utf-8')
+      expect(estimateTokenCount(input)).toMatchInlineSnapshot(`35069`)
+    })
+
+    it('should approximate the token size for Chinese ebook', async () => {
+      const input = await readFile(join(fixturesDir, 'ebooks/pg7337.txt'), 'utf-8')
+      expect(estimateTokenCount(input)).toMatchInlineSnapshot(`12059`)
     })
 
     it('should handle empty input', () => {
