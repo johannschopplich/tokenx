@@ -1,12 +1,13 @@
-import { readFile, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import * as fsp from 'node:fs/promises'
+import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { encode } from 'gpt-tokenizer'
 import { estimateTokenCount } from '../src/index'
 
-const rootDir = join(fileURLToPath(new URL('../', import.meta.url)))
-const readmePath = join(rootDir, 'README.md')
-const tokenExamples = [
+const rootDir = fileURLToPath(new URL('../', import.meta.url))
+const benchPath = path.join(rootDir, 'docs/bench.md')
+
+const BENCHMARK_EXAMPLES = [
   {
     description: 'Short English text',
     input: 'Hello, world! This is a short sentence.',
@@ -17,36 +18,37 @@ const tokenExamples = [
   },
   {
     description: 'Metamorphosis by Franz Kafka (English)',
-    input: join(rootDir, 'test/fixtures/ebooks/pg5200.txt'),
+    input: path.join(rootDir, 'test/fixtures/ebooks/pg5200.txt'),
   },
   {
     description: 'Die Verwandlung by Franz Kafka (German)',
-    input: join(rootDir, 'test/fixtures/ebooks/pg22367.txt'),
+    input: path.join(rootDir, 'test/fixtures/ebooks/pg22367.txt'),
   },
   {
     description: '道德經 by Laozi (Chinese)',
-    input: join(rootDir, 'test/fixtures/ebooks/pg7337.txt'),
+    input: path.join(rootDir, 'test/fixtures/ebooks/pg7337.txt'),
   },
   {
     description: 'TypeScript ES5 Type Declarations (~ 4000 loc)',
-    input: join(rootDir, 'node_modules/typescript/lib/lib.es5.d.ts'),
+    input: path.join(rootDir, 'node_modules/typescript/lib/lib.es5.d.ts'),
   },
-]
+] as const
 
-const tableHeadings = [
+const TABLE_HEADINGS = [
   'Description',
   'Actual GPT Token Count',
   'Estimated Token Count',
   'Token Count Deviation',
-]
+] as const
+
 let markdownTable = `
-| ${tableHeadings.join(' | ')} |
-| ${tableHeadings.map(() => '---').join(' | ')} |
+| ${TABLE_HEADINGS.join(' | ')} |
+| ${TABLE_HEADINGS.map(() => '---').join(' | ')} |
 `
 
-for (const example of tokenExamples) {
+for (const example of BENCHMARK_EXAMPLES) {
   const text = example.input.startsWith(rootDir)
-    ? (await readFile(example.input, 'utf-8'))
+    ? (await fsp.readFile(example.input, 'utf-8'))
     : example.input
   const tokenCount = encode(text).length
   const estimatedTokenCount = estimateTokenCount(text)
@@ -62,11 +64,5 @@ for (const example of tokenExamples) {
 
 console.log(markdownTable)
 
-// Replace the table in the README
-const readmeContent = await readFile(readmePath, 'utf-8')
-const newReadmeContent = readmeContent.replace(
-  /(?<=<!-- START GENERATED TOKEN COUNT TABLE -->\n)[\s\S]+(?=\n<!-- END GENERATED TOKEN COUNT TABLE -->)/,
-  markdownTable.trim(),
-)
-
-await writeFile(readmePath, newReadmeContent)
+// Write the table to bench.md
+await fsp.writeFile(benchPath, markdownTable.trim())

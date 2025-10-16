@@ -37,7 +37,7 @@
   ],
   "scripts": {
     "build": "tsdown",
-    "docs:generate": "tsx scripts/generateTable.ts",
+    "automd": "tsx scripts/generateTable.ts && automd",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest",
@@ -47,6 +47,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^6.0.0",
     "@types/node": "^24.7.2",
+    "automd": "^0.4.2",
     "bumpp": "^10.3.1",
     "eslint": "^9.37.0",
     "gpt-tokenizer": "^3.2.0",

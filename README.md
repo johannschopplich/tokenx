@@ -10,7 +10,8 @@ For advanced use cases requiring precise token counts, please use a full tokeniz
 
 The following table shows the accuracy of the token count approximation for different input texts:
 
-<!-- START GENERATED TOKEN COUNT TABLE -->
+<!-- automd:file src="./docs/bench.md" -->
+
 | Description | Actual GPT Token Count | Estimated Token Count | Token Count Deviation |
 | --- | --- | --- | --- |
 | Short English text | 10 | 11 | 10.00% |
@@ -19,7 +20,8 @@ The following table shows the accuracy of the token count approximation for diff
 | Die Verwandlung by Franz Kafka (German) | 35309 | 35069 | 0.68% |
 | 道德經 by Laozi (Chinese) | 11712 | 12059 | 2.96% |
 | TypeScript ES5 Type Declarations (~ 4000 loc) | 49304 | 52615 | 6.72% |
-<!-- END GENERATED TOKEN COUNT TABLE -->
+
+<!-- /automd -->
 
 ## Features
 
