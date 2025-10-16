@@ -25,12 +25,11 @@ The following table shows the accuracy of the token count approximation for diff
 
 ## Features
 
-- ⚡ Fast token estimation without a full tokenizer
+- ⚡ **94% accuracy** compared to full tokenizers (see benchmarks below)
+- 📦 **Just 2kB** bundle size with zero dependencies
 - 🌍 Multi-language support with configurable language rules
 - 🗣️ Built-in support for accented characters (German, French, Spanish, etc.)
 - 🔧 Configurable and extensible
-- 🪽 Zero dependencies
-- 📦 Tiny bundle size
 
 ## Installation
 
