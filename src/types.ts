@@ -17,3 +17,11 @@ export interface LanguageConfig {
   /** Average number of characters per token for this language */
   averageCharsPerToken: number
 }
+
+/**
+ * Configuration options for splitting text by tokens
+ */
+export interface SplitByTokensOptions extends TokenEstimationOptions {
+  /** Number of tokens to overlap between consecutive chunks (default: 0) */
+  overlap?: number
+}

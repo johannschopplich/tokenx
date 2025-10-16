@@ -1,4 +1,4 @@
-import type { LanguageConfig, TokenEstimationOptions } from './types'
+import type { LanguageConfig, SplitByTokensOptions, TokenEstimationOptions } from './types'
 
 export * from './types'
 
@@ -107,6 +107,66 @@ export function sliceByTokens(
   }
 
   return parts.join('')
+}
+
+/**
+ * Splits text into chunks based on token count.
+ */
+export function splitByTokens(
+  text: string,
+  tokensPerChunk: number,
+  options: SplitByTokensOptions = {},
+): string[] {
+  if (!text || tokensPerChunk <= 0)
+    return []
+
+  const {
+    defaultCharsPerToken = DEFAULT_CHARS_PER_TOKEN,
+    languageConfigs = DEFAULT_LANGUAGE_CONFIGS,
+    overlap = 0,
+  } = options
+
+  const segments = text.split(TOKEN_SPLIT_PATTERN).filter(Boolean)
+  const chunks: string[] = []
+  let currentChunk: string[] = []
+  let currentTokenCount = 0
+
+  for (const segment of segments) {
+    const tokenCount = estimateSegmentTokens(segment, languageConfigs, defaultCharsPerToken)
+
+    currentChunk.push(segment)
+    currentTokenCount += tokenCount
+
+    if (currentTokenCount >= tokensPerChunk) {
+      chunks.push(currentChunk.join(''))
+
+      // Calculate overlap for next chunk
+      if (overlap > 0) {
+        const overlapSegments: string[] = []
+        let overlapTokenCount = 0
+
+        for (let i = currentChunk.length - 1; i >= 0 && overlapTokenCount < overlap; i--) {
+          const segmentValue = currentChunk[i]!
+          const tokCount = estimateSegmentTokens(segmentValue, languageConfigs, defaultCharsPerToken)
+          overlapSegments.unshift(segmentValue)
+          overlapTokenCount += tokCount
+        }
+
+        currentChunk = overlapSegments
+        currentTokenCount = overlapTokenCount
+      }
+      else {
+        currentChunk = []
+        currentTokenCount = 0
+      }
+    }
+  }
+
+  // Add remaining content as last chunk
+  if (currentChunk.length > 0)
+    chunks.push(currentChunk.join(''))
+
+  return chunks
 }
 
 function estimateSegmentTokens(

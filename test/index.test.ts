@@ -6,6 +6,7 @@ import {
   estimateTokenCount,
   isWithinTokenLimit,
   sliceByTokens,
+  splitByTokens,
 } from '../src/index'
 
 const fixturesDir = fileURLToPath(new URL('fixtures', import.meta.url))
@@ -137,6 +138,38 @@ describe('token-related functions', () => {
       expect(sliceByTokens(GERMAN_TEXT, totalTokens + 10)).toBe('')
       expect(sliceByTokens(GERMAN_TEXT, 0, totalTokens + 10)).toBe(GERMAN_TEXT)
       expect(sliceByTokens(GERMAN_TEXT, -1000)).toBe(GERMAN_TEXT)
+    })
+  })
+
+  describe('splitByTokens', () => {
+    it('should split text into chunks', () => {
+      const chunks = splitByTokens(ENGLISH_TEXT, 5)
+      expect(chunks.length).toBeGreaterThan(1)
+      expect(chunks.join('')).toBe(ENGLISH_TEXT)
+    })
+
+    it('should handle overlap between chunks', () => {
+      const chunksNoOverlap = splitByTokens(ENGLISH_TEXT, 5)
+      const chunksWithOverlap = splitByTokens(ENGLISH_TEXT, 5, { overlap: 2 })
+
+      expect(chunksWithOverlap.length).toBeGreaterThanOrEqual(chunksNoOverlap.length)
+
+      // With overlap, total character count across chunks should be greater
+      const totalWithOverlap = chunksWithOverlap.join('').length
+      const totalNoOverlap = chunksNoOverlap.join('').length
+      expect(totalWithOverlap).toBeGreaterThanOrEqual(totalNoOverlap)
+    })
+
+    it('should return empty array for empty input', () => {
+      expect(splitByTokens('', 5)).toEqual([])
+      expect(splitByTokens('text', 0)).toEqual([])
+      expect(splitByTokens('text', -5)).toEqual([])
+    })
+
+    it('should return single chunk when text is smaller than chunk size', () => {
+      const shortText = 'Hi there'
+      const chunks = splitByTokens(shortText, 100)
+      expect(chunks).toEqual([shortText])
     })
   })
 })

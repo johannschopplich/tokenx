@@ -48,7 +48,7 @@ yarn add tokenx
 ## Usage
 
 ```ts
-import { estimateTokenCount, isWithinTokenLimit } from 'tokenx'
+import { estimateTokenCount, isWithinTokenLimit, splitByTokens } from 'tokenx'
 
 const text = 'Your text goes here.'
 
@@ -60,6 +60,10 @@ console.log(`Estimated token count: ${estimatedTokens}`)
 const tokenLimit = 1024
 const withinLimit = isWithinTokenLimit(text, tokenLimit)
 console.log(`Is within token limit: ${withinLimit}`)
+
+// Split text into token-based chunks
+const chunks = splitByTokens(text, 100)
+console.log(`Split into ${chunks.length} chunks`)
 
 // Use custom options for different languages or models
 const customOptions = {
@@ -182,6 +186,54 @@ function sliceByTokens(
 **Returns:**
 
 The sliced text portion corresponding to the specified token range.
+
+### `splitByTokens`
+
+Splits text into chunks based on token count. Useful for chunking documents for RAG, batch processing, or staying within context windows.
+
+**Usage:**
+
+```ts
+const text = 'Long text that needs to be split into smaller chunks...'
+
+// Basic splitting
+const chunks = splitByTokens(text, 100)
+console.log(`Split into ${chunks.length} chunks`)
+
+// With overlap for semantic continuity
+const overlappedChunks = splitByTokens(text, 100, { overlap: 10 })
+
+// With custom options
+const customChunks = splitByTokens(text, 50, {
+  defaultCharsPerToken: 4,
+  overlap: 5
+})
+```
+
+**Type Declaration:**
+
+```ts
+interface SplitByTokensOptions extends TokenEstimationOptions {
+  /** Number of tokens to overlap between consecutive chunks (default: 0) */
+  overlap?: number
+}
+
+function splitByTokens(
+  text: string,
+  tokensPerChunk: number,
+  options?: SplitByTokensOptions
+): string[]
+```
+
+**Parameters:**
+
+- `text` - The input text to split
+- `tokensPerChunk` - Maximum number of tokens per chunk
+- `options` - Token estimation options with optional overlap
+
+**Returns:**
+
+An array of text chunks, each containing approximately `tokensPerChunk` tokens.
 
 ## License
 
