@@ -37,7 +37,7 @@
   ],
   "scripts": {
     "build": "tsdown",
-    "automd": "tsx scripts/generateTable.ts && automd",
+    "automd": "tsx scripts/generate-bench.ts && automd",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest",

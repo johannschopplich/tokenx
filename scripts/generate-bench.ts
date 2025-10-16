@@ -64,5 +64,4 @@ for (const example of BENCHMARK_EXAMPLES) {
 
 console.log(markdownTable)
 
-// Write the table to bench.md
-await fsp.writeFile(benchPath, markdownTable.trim())
+await fsp.writeFile(benchPath, markdownTable.trimStart(), 'utf-8')
