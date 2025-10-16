@@ -14,11 +14,11 @@ The following table shows the accuracy of the token count approximation for diff
 | Description | Actual GPT Token Count | Estimated Token Count | Token Count Deviation |
 | --- | --- | --- | --- |
 | Short English text | 10 | 11 | 10.00% |
-| German text with umlauts | 56 | 49 | 12.50% |
-| Metamorphosis by Franz Kafka (English) | 31892 | 35705 | 11.96% |
-| Die Verwandlung by Franz Kafka (German) | 40621 | 35069 | 13.67% |
-| 道德經 by Laozi (Chinese) | 14387 | 12059 | 16.18% |
-| TypeScript ES5 Type Declarations (~ 4000 loc) | 48553 | 52434 | 7.99% |
+| German text with umlauts | 48 | 49 | 2.08% |
+| Metamorphosis by Franz Kafka (English) | 31796 | 35705 | 12.29% |
+| Die Verwandlung by Franz Kafka (German) | 35309 | 35069 | 0.68% |
+| 道德經 by Laozi (Chinese) | 11712 | 12059 | 2.96% |
+| TypeScript ES5 Type Declarations (~ 4000 loc) | 49304 | 52615 | 6.72% |
 <!-- END GENERATED TOKEN COUNT TABLE -->
 
 ## Features
