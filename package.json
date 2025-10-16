@@ -1,7 +1,7 @@
 {
   "name": "tokenx",
   "type": "module",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "packageManager": "pnpm@10.18.3",
   "description": "Fast and lightweight token estimation for any LLM without requiring a full tokenizer",
   "author": "Johann Schopplich <hello@johannschopplich.com>",
