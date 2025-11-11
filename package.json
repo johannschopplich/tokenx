@@ -27,11 +27,11 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
     }
   },
-  "types": "./dist/index.d.ts",
+  "types": "./dist/index.d.mts",
   "files": [
     "dist"
   ],
@@ -51,7 +51,7 @@
     "bumpp": "^10.3.1",
     "eslint": "^9.39.1",
     "gpt-tokenizer": "^3.4.0",
-    "tsdown": "^0.15.12",
+    "tsdown": "^0.16.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "vitest": "^4.0.8"
