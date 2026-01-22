@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.2.1",
   "packageManager": "pnpm@10.21.0",
-  "description": "Fast token estimation at 94% accuracy of a full tokenizer in a 2kB bundle",
+  "description": "Fast token estimation at 97% accuracy of a full tokenizer in a 2kB bundle",
   "author": "Johann Schopplich <hello@johannschopplich.com>",
   "license": "MIT",
   "homepage": "https://github.com/johannschopplich/tokenx#readme",

@@ -199,7 +199,9 @@ function estimateSegmentTokens(
     return Math.ceil(segment.length / charsPerToken)
   }
 
-  return getCharacterCount(segment)
+  // Fallback for mixed content (URLs, code, JSON, etc.)
+  const charsPerToken = getLanguageSpecificCharsPerToken(segment, languageConfigs) ?? defaultCharsPerToken
+  return Math.ceil(segment.length / charsPerToken)
 }
 
 function getLanguageSpecificCharsPerToken(segment: string, languageConfigs: LanguageConfig[]): number | undefined {

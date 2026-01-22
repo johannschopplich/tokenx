@@ -26,22 +26,29 @@ describe('token-related functions', () => {
 
     it('should approximate the token size for English ebook', async () => {
       const input = await readFile(join(fixturesDir, 'ebooks/pg5200.txt'), 'utf-8')
-      expect(estimateTokenCount(input)).toMatchInlineSnapshot(`35705`)
+      expect(estimateTokenCount(input)).toMatchInlineSnapshot(`32325`)
     })
 
     it('should approximate the token size for German ebook', async () => {
       const input = await readFile(join(fixturesDir, 'ebooks/pg22367.txt'), 'utf-8')
-      expect(estimateTokenCount(input)).toMatchInlineSnapshot(`35069`)
+      expect(estimateTokenCount(input)).toMatchInlineSnapshot(`33970`)
     })
 
     it('should approximate the token size for Chinese ebook', async () => {
       const input = await readFile(join(fixturesDir, 'ebooks/pg7337.txt'), 'utf-8')
-      expect(estimateTokenCount(input)).toMatchInlineSnapshot(`12059`)
+      expect(estimateTokenCount(input)).toMatchInlineSnapshot(`11427`)
     })
 
     it('should handle empty input', () => {
       expect(estimateTokenCount('')).toBe(0)
       expect(estimateTokenCount()).toBe(0)
+    })
+
+    it('should not use 1:1 character ratio for mixed content', () => {
+      // Regression test for #4: mixed content (URLs, code) should use
+      // chars-per-token heuristic, not count each character as a token
+      const url = 'https://example.com/path/to/resource'
+      expect(estimateTokenCount(url)).toBeLessThan(url.length / 2)
     })
 
     it('should work with custom options', () => {
