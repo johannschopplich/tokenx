@@ -2,8 +2,8 @@
   "name": "tokenx",
   "type": "module",
   "version": "1.2.1",
-  "packageManager": "pnpm@10.21.0",
-  "description": "Fast token estimation at 97% accuracy of a full tokenizer in a 2kB bundle",
+  "packageManager": "pnpm@10.28.1",
+  "description": "Fast token estimation at 96% accuracy of a full tokenizer in a 2kB bundle",
   "author": "Johann Schopplich <hello@johannschopplich.com>",
   "license": "MIT",
   "homepage": "https://github.com/johannschopplich/tokenx#readme",
@@ -45,15 +45,15 @@
     "release": "bumpp"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^6.2.0",
-    "@types/node": "^24.10.0",
+    "@antfu/eslint-config": "^7.2.0",
+    "@types/node": "^24.10.9",
     "automd": "^0.4.2",
-    "bumpp": "^10.3.1",
-    "eslint": "^9.39.1",
+    "bumpp": "^10.4.0",
+    "eslint": "^9.39.2",
     "gpt-tokenizer": "^3.4.0",
-    "tsdown": "^0.16.2",
-    "tsx": "^4.20.6",
+    "tsdown": "^0.19.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.8"
+    "vitest": "^4.0.17"
   }
 }
