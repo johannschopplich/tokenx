@@ -25,10 +25,11 @@ The following table shows the accuracy of the token count approximation for diff
 
 ## Features
 
-- ⚡ **96% accuracy** compared to full tokenizers (see benchmarks below)
+- ⚡ **~95-98% accuracy** compared to full tokenizers (see benchmarks below)
 - 📦 **Just 2kB** bundle size with zero dependencies
 - 🌍 Multi-language support with configurable language rules
-- 🗣️ Built-in support for accented characters (German, French, Spanish, etc.)
+- 🗣️ Built-in support for accented characters (German, French, Spanish, Slavic languages)
+- 🀄 CJK (Chinese, Japanese, Korean) character handling
 - 🔧 Configurable and extensible
 
 ## Installation
@@ -49,7 +50,7 @@ yarn add tokenx
 ## Usage
 
 ```ts
-import { estimateTokenCount, isWithinTokenLimit, splitByTokens } from 'tokenx'
+import { estimateTokenCount, isWithinTokenLimit, sliceByTokens, splitByTokens } from 'tokenx'
 
 const text = 'Your text goes here.'
 
@@ -61,6 +62,10 @@ console.log(`Estimated token count: ${estimatedTokens}`)
 const tokenLimit = 1024
 const withinLimit = isWithinTokenLimit(text, tokenLimit)
 console.log(`Is within token limit: ${withinLimit}`)
+
+// Slice text by token positions (like Array.slice)
+const firstTokens = sliceByTokens(text, 0, 5)
+console.log(`First ~5 tokens: ${firstTokens}`)
 
 // Split text into token-based chunks
 const chunks = splitByTokens(text, 100)
@@ -107,7 +112,7 @@ function estimateTokenCount(
 ): number
 
 interface TokenEstimationOptions {
-  /** Default average characters per token when no language-specific rule applies */
+  /** Default average characters per token when no language-specific rule applies (default: 6) */
   defaultCharsPerToken?: number
   /** Custom language configurations to override defaults */
   languageConfigs?: LanguageConfig[]
