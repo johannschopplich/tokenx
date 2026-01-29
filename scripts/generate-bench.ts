@@ -10,7 +10,7 @@ const benchPath = path.join(rootDir, 'docs/bench.md')
 const BENCHMARK_EXAMPLES = [
   {
     description: 'Short English text',
-    input: 'Hello, world! This is a short sentence.',
+    input: 'In the heart of the forest, a stream flowed gently over the smooth rocks and fallen leaves.',
   },
   {
     description: 'German text with umlauts',
@@ -29,7 +29,11 @@ const BENCHMARK_EXAMPLES = [
     input: path.join(rootDir, 'test/fixtures/ebooks/pg7337.txt'),
   },
   {
-    description: 'TypeScript ES5 Type Declarations (~ 4000 loc)',
+    description: '羅生門 by Akutagawa Ryūnosuke (Japanese)',
+    input: path.join(rootDir, 'test/fixtures/ebooks/pg1982.txt'),
+  },
+  {
+    description: 'TypeScript ES5 Type Declarations (~4000 loc)',
     input: path.join(rootDir, 'node_modules/typescript/lib/lib.es5.d.ts'),
   },
 ] as const

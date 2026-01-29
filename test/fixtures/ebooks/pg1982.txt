@@ -1,0 +1,590 @@
+﻿The Project Gutenberg eBook of 羅生門
+    
+This ebook is for the use of anyone anywhere in the United States and
+most other parts of the world at no cost and with almost no restrictions
+whatsoever. You may copy it, give it away or re-use it under the terms
+of the Project Gutenberg License included with this ebook or online
+at www.gutenberg.org. If you are not located in the United States,
+you will have to check the laws of the country where you are located
+before using this eBook.
+
+Title: 羅生門
+
+Author: Ryunosuke Akutagawa
+
+Release date: November 1, 1999 [eBook #1982]
+                Most recently updated: April 15, 2013
+
+Language: Japanese
+
+Credits: Produced by Rick Davis
+
+
+*** START OF THE PROJECT GUTENBERG EBOOK 羅生門 ***
+
+
+
+
+Produced by Rick Davis
+
+
+
+
+
+
+
+
+
+RASHOMON
+
+By AKUTAGAWA Ryunosuke
+
+A note from the digitizer
+
+This file is encoded in Japanese. Your computer must be Japanese-capable
+to read it.
+
+The text was taken from a 1917 edition which is naturally written in the
+traditional orthography with prewar kanji forms. I have taken the liberty
+of using postwar orthography and kanji forms, and have also added
+readings in parentheses where I considered them necessary.
+
+
+
+
+羅生門
+
+芥川龍之介
+
+　或日の暮方の事である。一人の下人が、羅生門の下で雨やみを待っていた。　広い門
+の下には、この男の外に誰もいない。ただ、所々丹塗の剥げた、大きな円柱に、きりぎ
+りすが一匹とまっている。羅生門が、朱雀大路にある以上は、この男の外にも、雨やみ
+をする市女笠や揉烏帽子が、もう二三人はありそうなものである。それが、この男の外
+に誰もいない。
+　何故かと云うと、この二三年、京都には、地震とか辻風とか火事とか饑饉とか云う災
+いがつづいて起こった。そこで洛中のさびれ方は一通りでない。旧記によると、仏像や
+仏具を打砕いて、その丹がついたり、金銀の箔（はく）がついたりした木を、路ばたに
+つみ重ねて薪の料（しろ）に売っていたと云うことである。洛中がその始末であるから、
+羅生門の修理などは、元より誰も捨てて顧みる者がなかった。するとその荒れ果てたの
+をよい事にして、狐狸（こり）が棲む。盗人が棲む。とうとうしまいには、引取り手の
+ない死人を、この門へ持って来て、捨てて行くと云う習慣さえ出来た。そこで、日の目
+が見えなくなると、誰でも気味を悪がって、この門の近所へは足ぶみをしない事になっ
+てしまったのである。
+　その代り又鴉が何処からか、たくさん集まって来た。昼間見ると、その鴉が何羽とな
+く輪を描いて、高い鴟尾（しび）のまわりを啼きながら、飛びまわっている。殊に門の
+上の空が、夕焼けであかくなる時には、それが胡麻をまいたようにはっきり見えた。鴉
+は、勿論、門の上にある死人の肉を、啄みに来るのである。ーー尤も今日は、刻限が遅
+いせいか、一羽も見えない。唯、所々、崩れかかった、そうしてその崩れ目に長い草の
+はえた石段の上に、鴉の糞（くそ）が、点々と白くこびりついているのが見える。下人
+は七段ある石段の一番上の段に洗いざらした紺の襖（あお）の尻を据えて、右の頬に出
+来た、大きな面皰（にきび）を気にしながら、ぼんやり、雨のふるのを眺めているので
+ある。
+　作者はさっき、「下人が雨やみを待っていた」と書いた。しかし、下人は、雨がやん
+でも格別どうしようと云う当てはない。ふだんなら、勿論、主人の家へ帰る可き筈であ
+る。所がその主人からは、四五日前に暇を出された。前にも書いたように、当時京都の
+町は一通りならず衰微していた。今この下人が、永年、使われていた主人から暇を出さ
+れたのも、この衰微の小さな余波に外ならない。だから、「下人が雨やみを待っていた」
+と云うよりも、「雨にふりこめられた下人が、行き所がなくて、途方にくれていた」と
+云う方が、適当である。その上、今日の空模様も少なからずこの平安朝の下人の
+Sentimentalismeに影響した。申（さる）の刻下がりからふり出した雨は、未だに上
+がるけしきがない。そこで、下人は、何を措いても差当たり明日の暮しをどうにかしよ
+うとしてーー云わばどうにもならない事を、どうにかしようとして、とりとめもない考
+えをたどりながら、さっきから朱雀大路にふる雨の音を聞くともなく聞いていた。
+　雨は羅生門をつつんで、遠くから、ざあっと云う音をあつめてくる。夕闇は次第に空
+を低くして、見上げると、門の屋根が、斜めにつき出した甍（いらか）の先に、重たく
+うす暗い雲を支えている。
+　どうにもならない事を、どうにかする為には、手段を選んでいる遑（いとま）はない。
+選んでいれば、築地（ついじ）の下か、道ばたの土の上で、饑死（うえじに）をするば
+かりである。そうして、この門の上へ持って来て、犬のように捨てられてしまうばかり
+である。選ばないとすればーー下人の考えは、何度も同じ道を低徊した揚句に、やっと
+この局所へ逢着した。しかしこの「すれば」は、いつもでたっても、結局「すれば」で
+あった。下人は、手段を選ばないという事を肯定しながらも、この「すれば」のかたを
+つける為に、当然、この後に来る可き「盗人になるより外に仕方がない」と云う事を、
+積極的に肯定するだけの、勇気が出ずにいたのである。
+　下人は大きな嚏（くさめ）をして、それから、大儀そうに立上がった。夕冷えのする
+京都は、もう火桶が欲しい程の寒さである。風は門の柱と柱との間を、夕闇と共に遠慮
+なく、吹きぬける。丹塗の柱にとまっていたきりぎりすも、もうどこかへ行ってしまっ
+た。
+　下人は、頸をちぢめながら、山吹の汗衫（かざみ）に重ねた、紺の襖の肩を高くして
+門のまわりを見まわした。雨風の患のない、人目にかかる惧のない、一晩楽にねられそ
+うな所があれば、そこでともかくも、夜を明かそうと思ったからである。すると、幸門
+の上の楼へ上る、幅の広い、之も丹を塗った梯子が眼についた。上なら、人がいたにし
+ても、どうせ死人ばかりである。下人は、そこで腰にさげた聖柄（ひじりづか）の太刀
+が鞘走らないように気をつけながら、藁草履をはいた足を、その梯子の一番下の段へふ
+みかけた。
+　それから、何分かの後である。羅生門の楼の上へ出る、幅の広い梯子の中段に、一人
+の男が、猫のように身をちぢめて、息を殺しながら、上の容子を窺っていた。楼の上か
+らさす火の光が、かすかに、その男の右の頬をぬらしている。短い鬚（ひげ）の中に、
+赤く膿を持った面皰のある頬である。下人は、始めから、この上にいる者は、死人ばか
+りだと高を括っていた。それが、梯子を二三段上って見ると、上では誰か火をとぼして、
+しかもその火を其処此処と動かしているらしい。これは、その濁った、黄いろい光が、
+隅々に蜘蛛の巣をかけた天井裏に、ゆれながら映ったので、すぐにそれと知れたのであ
+る。この雨の夜に、この羅生門の上で、火をともしているからは、どうせ唯の者ではな
+い。
+　下人は、宮守（やもり）のように足音をぬすんで、やっと急な梯子を、一番上の段ま
+で這うようにして上りつめた。そうして体を出来るだけ、平にしながら、頸を出来るだ
+け、前へ出して、恐る恐る、楼の内を覗いて見た。
+　見ると、楼の内には、噂に聞いた通り、幾つかの屍骸（しがい）が、無造作に棄てて
+あるが、火の光の及ぶ範囲が、思ったより狭いので、数は幾つともわからない。唯、お
+ぼろげながら、知れるのは、その中に裸の屍骸と、着物を着た屍骸とがあると云う事で
+ある。勿論、中には女も男もまじっているらしい。そうして、その屍骸は皆、それが、
+嘗（かつて）、生きていた人間だと云う事実さえ疑われる程、土を捏ねて造った人形の
+ように、口を開いたり、手を延ばしたりして、ごろごろ床の上にころがっていた。しか
+も、肩とか胸とかの高くなっている部分に、ぼんやりした火の光をうけて、低くなって
+いる部分の影を一層暗くしながら、永久に唖（おし）の如く黙っていた。
+　下人は、それらの屍骸の腐爛した臭気に思わず、鼻を掩った（おおった）。しかし、
+その手は、次の瞬間には、もう鼻を掩う事を忘れていた。或る強い感情が殆悉（ほとん
+どことごとく）この男の嗅覚を奪ってしまったからである。
+　下人の眼は、その時、はじめて、其屍骸の中に蹲っている（うずくまっている）人間
+を見た。檜肌色（ひはだいろ）の着物を著た、背の低い、痩せた、白髪頭の、猿のよう
+な老婆である。その老婆は、右の手に火をともした松の木片を持って、その屍骸の一つ
+の顔を覗きこむように眺めていた。髪の毛の長い所を見ると、多分女の屍骸であろう。
+　下人は、六分の恐怖と四分の好奇心とに動かされて、暫時は呼吸（いき）をするのさ
+え忘れていた。旧記の記者の語を借りれば、「頭身（とうしん）の毛も太る」ように感
+じたのである。すると、老婆は、松の木片を、床板の間に挿して、それから、今まで眺
+めていた屍骸の首に両手をかけると、丁度、猿の親が猿の子の虱（しらみ）をとるよう
+に、その長い髪の毛を一本ずつ抜きはじめた。髪は手に従って抜けるらしい。
+　その髪の毛が、一本ずつ抜けるのに従って下人の心からは、恐怖が少しずつ消えて行っ
+た。そうして、それと同時に、その老婆に対するはげしい憎悪が、少しずつ動いて来た。
+いや、この老婆に対すると云っては、語弊があるかも知れない。寧（むしろ）、あらゆ
+る悪に対する反感が、一分毎に強さを増して来たのである。この時、誰かがこの下人に、
+さっき門の下でこの男が考えていた、饑死（うえじに）をするか盗人になるかと云う問
+題を、改めて持出したら、恐らく下人は、何の未練もなく、饑死を選んだ事であろう。
+それほど、この男の悪を憎む心は、老婆の床に挿した松の木片のように、勢よく燃え上
+がりだしていたのである。
+　下人には、勿論、何故老婆が死人の髪の毛を抜くかわからなかった。従って、合理的
+には、それを善悪の何れに片づけてよいか知らなかった。しかし下人にとっては、この
+雨の夜に、この羅生門の上で、死人の髪の毛を抜くと云う事が、それだけで既に許す可
+らざる悪であった。勿論　下人は　さっき迄自分が、盗人になる気でいた事なぞは　と
+うに忘れているのである。
+　そこで、下人は、両足に力を入れて、いかなり、梯子から上へ飛び上がった　そうし
+て聖柄（ひじりづか）の太刀に手をかけながら、大股に老婆の前へ歩みよった。老婆が
+驚いたのは　云う迄もない。
+　老婆は、一目下人を見ると、まるで弩（いしゆみ）にでも弾かれたように　飛び上がっ
+た。
+　「おのれ、どこへ行く。」
+　下人は、老婆が屍骸につまづきながら、慌てふためいて逃げようとする行手を塞いで、
+こう罵った。老婆は、それでも下人をつきのけて行こうとする。下人は又、それを行か
+すまいとして、押しもどす。二人は屍骸の中で、暫、無言のまま、つかみ合った。しか
+し勝負は、はじめから、わかっている。下人はとうとう、老婆の腕をつかんで、無理に
+そこへねじ倒した。丁度、鶏（とり）の脚のような、骨と皮ばかりの腕である。
+　「何をしていた。さあ何をしていた。云え。云わぬと　これだぞよ。」
+　下人は、老婆をつき放すと、いきなり、太刀の鞘を払って、白い鋼（はがね）の色を
+その眼の前へつきつけた。けれども、老婆は黙っている。両手をわなわなふるわせて、
+肩で息を切りながら、眼を、眼球がまぶたの外へ出そうになる程、見開いて、唖のよう
+に執拗（しゅうね）く黙っている。これを見ると、下人は始めて明白にこの老婆の生死
+が、全然、自分の意志に支配されていると云う事を意識した。そうして、この意識は、
+今まではげしく燃えていた憎悪の心を何時（いつ）の間にか冷ましてしまった。後に残っ
+たのは、唯、或仕事をして、それが円満に成就した時の、安らかな得意と満足とがある
+ばかりである。そこで、下人は、老婆を、見下げながら、少し声を柔げてこう云った。
+　「己は検非違使（けびいし）の庁の役人などではない。今し方この門の下を通りかかっ
+た旅の者だ。だからお前に縄をかけて、どうしようと云うような事はない。唯今時分、
+この門の上で、何をしていたのだか、それを己に話さえすればいいのだ。」
+　すると、老婆は、見開いた眼を、一層大きくして、じっとその下人の顔を見守った。
+まぶたの赤くなった、肉食鳥のような、鋭い眼で見たのである。それから、皺で、殆、
+鼻と一つになった唇を何か物でも噛んでいるように動かした。細い喉で、尖った喉仏の
+動いているのが見える。その時、その喉から、鴉（からす）の啼くような声が、喘ぎ喘
+ぎ、下人の耳へ伝わって来た。
+　「この髪を抜いてな、この女の髪を抜いてな、鬘（かつら）にしようと思うたの
+じゃ。」
+　下人は、老婆の答が存外、平凡なのに失望した。そうして失望すると同時に、又前の
+憎悪が、冷な侮蔑と一しょに、心の中へはいって来た。すると　その気色（けしき）が、
+先方へも通じたのであろう。老婆は、片手に、まだ屍骸の頭から奪（と）った長い抜け
+毛を持ったなり、蟇（ひき）のつぶやくような声で、口ごもりながら、こんな事を云っ
+た。
+　成程、死人の髪の毛を抜くと云う事は、悪い事かね知れぬ。しかし、こう云う死人の
+多くは、皆　その位な事を、されてもいい人間ばかりである。現に、自分が今、髪を抜
+いた女などは、蛇を四寸ばかりずつに切って干したのを、干魚（ほしうお）だと云って、
+太刀帯（たちはき）の陣へ売りに行った。疫病にかかって死ななかったなら、今でも売
+りに行っていたかもしれない。しかも、この女の売る干魚は、味がよいと云うので、太
+刀帯たちが、欠かさず菜料に買っていたのである。自分は、この女のした事が悪いとは
+思わない。しなければ、饑死（えうじに）をするので、仕方がなくした事だからである。
+だから、又今、自分のしていた事も悪い事とは思わない。これもやはりしなければ、饑
+死をするので、仕方がなくする事だからである。そうして、その仕方がない事を、よく
+知っていたこの女は、自分のする事を許してくれるのにちがいないと思うからであ
+る。ーー老婆は、大体こんな意味の事を云った。
+　下人は、太刀を鞘におさめて、その太刀の柄を左の手でおさえながら、冷然として、
+この話を聞いていた。勿論、　右の手では、赤く頬に膿を持た大きな面皰（にきび）を
+気にしながら、聞いているのである。しかし、之を聞いている中に、下人の心には、或
+勇気が生まれて来た。それは　さっき、門の下でこの男に欠けていた勇気である。そう
+して、又さっき、この門の上へ上（あが）って、その老婆を捕えた時の勇気とは、全然、
+反対な方向に動こうとする勇気である。下人は、饑死をするか盗人になるかに迷わなかっ
+たばかりではない。その時のこの男の心もちから云えば、饑死などと云う事は、殆、考
+える事さえ出来ない程、意識の外に追い出されていた。
+　「きっと、そうか。」
+　老婆の話が完ると、下人は嘲（あざけ）るような声で念を押した。そうして、一足前
+へ出ると、不意に、右の手を面皰から離して、老婆の襟上（えりがみ）をつかみながら、
+こう云った。
+　「では、己が引剥（ひはぎ）をしようと恨むまいな。己もそうしなければ、饑死をす
+る体なのだ。」
+　下人は、すばやく、老婆の着物を剥ぎとった。それから、足にしがみつこうとする老
+婆を、手荒く屍骸の上へ蹴倒した。梯子の口までは、僅に五歩を数えるばかりである。
+下人は、剥ぎとった桧肌色の着物をわきにかかえて、またたく間に急な梯子を夜の底へ
+かけ下りた。
+　暫、死んだように倒れていた老婆が、屍骸の中から、その裸の体を起こしたのは、そ
+れから間もなくの事である。老婆は、つぶやくような、うめくような声を立てながら、
+まだ燃えている火の光をたよりに、梯子の口まで、這って行った。そうして、そこから、
+短い白髪を倒（さかさま）にして、門の下を覗きこんだ。外には、唯、黒洞々（こくと
+うとう）たる夜があるばかりである。
+　下人は、既に、雨を冒して、京都の町へ強盗を働きに急いでいた。
+
+
+
+
+
+
+
+
+
+
+*** END OF THE PROJECT GUTENBERG EBOOK 羅生門 ***
+
+
+    
+
+Updated editions will replace the previous one—the old editions will
+be renamed.
+
+Creating the works from print editions not protected by U.S. copyright
+law means that no one owns a United States copyright in these works,
+so the Foundation (and you!) can copy and distribute it in the United
+States without permission and without paying copyright
+royalties. Special rules, set forth in the General Terms of Use part
+of this license, apply to copying and distributing Project
+Gutenberg™ electronic works to protect the PROJECT GUTENBERG™
+concept and trademark. Project Gutenberg is a registered trademark,
+and may not be used if you charge for an eBook, except by following
+the terms of the trademark license, including paying royalties for use
+of the Project Gutenberg trademark. If you do not charge anything for
+copies of this eBook, complying with the trademark license is very
+easy. You may use this eBook for nearly any purpose such as creation
+of derivative works, reports, performances and research. Project
+Gutenberg eBooks may be modified and printed and given away—you may
+do practically ANYTHING in the United States with eBooks not protected
+by U.S. copyright law. Redistribution is subject to the trademark
+license, especially commercial redistribution.
+
+
+START: FULL LICENSE
+
+THE FULL PROJECT GUTENBERG LICENSE
+
+PLEASE READ THIS BEFORE YOU DISTRIBUTE OR USE THIS WORK
+
+To protect the Project Gutenberg™ mission of promoting the free
+distribution of electronic works, by using or distributing this work
+(or any other work associated in any way with the phrase “Project
+Gutenberg”), you agree to comply with all the terms of the Full
+Project Gutenberg™ License available with this file or online at
+www.gutenberg.org/license.
+
+Section 1. General Terms of Use and Redistributing Project Gutenberg™
+electronic works
+
+1.A. By reading or using any part of this Project Gutenberg™
+electronic work, you indicate that you have read, understand, agree to
+and accept all the terms of this license and intellectual property
+(trademark/copyright) agreement. If you do not agree to abide by all
+the terms of this agreement, you must cease using and return or
+destroy all copies of Project Gutenberg™ electronic works in your
+possession. If you paid a fee for obtaining a copy of or access to a
+Project Gutenberg™ electronic work and you do not agree to be bound
+by the terms of this agreement, you may obtain a refund from the person
+or entity to whom you paid the fee as set forth in paragraph 1.E.8.
+
+1.B. “Project Gutenberg” is a registered trademark. It may only be
+used on or associated in any way with an electronic work by people who
+agree to be bound by the terms of this agreement. There are a few
+things that you can do with most Project Gutenberg™ electronic works
+even without complying with the full terms of this agreement. See
+paragraph 1.C below. There are a lot of things you can do with Project
+Gutenberg™ electronic works if you follow the terms of this
+agreement and help preserve free future access to Project Gutenberg™
+electronic works. See paragraph 1.E below.
+
+1.C. The Project Gutenberg Literary Archive Foundation (“the
+Foundation” or PGLAF), owns a compilation copyright in the collection
+of Project Gutenberg™ electronic works. Nearly all the individual
+works in the collection are in the public domain in the United
+States. If an individual work is unprotected by copyright law in the
+United States and you are located in the United States, we do not
+claim a right to prevent you from copying, distributing, performing,
+displaying or creating derivative works based on the work as long as
+all references to Project Gutenberg are removed. Of course, we hope
+that you will support the Project Gutenberg™ mission of promoting
+free access to electronic works by freely sharing Project Gutenberg™
+works in compliance with the terms of this agreement for keeping the
+Project Gutenberg™ name associated with the work. You can easily
+comply with the terms of this agreement by keeping this work in the
+same format with its attached full Project Gutenberg™ License when
+you share it without charge with others.
+
+1.D. The copyright laws of the place where you are located also govern
+what you can do with this work. Copyright laws in most countries are
+in a constant state of change. If you are outside the United States,
+check the laws of your country in addition to the terms of this
+agreement before downloading, copying, displaying, performing,
+distributing or creating derivative works based on this work or any
+other Project Gutenberg™ work. The Foundation makes no
+representations concerning the copyright status of any work in any
+country other than the United States.
+
+1.E. Unless you have removed all references to Project Gutenberg:
+
+1.E.1. The following sentence, with active links to, or other
+immediate access to, the full Project Gutenberg™ License must appear
+prominently whenever any copy of a Project Gutenberg™ work (any work
+on which the phrase “Project Gutenberg” appears, or with which the
+phrase “Project Gutenberg” is associated) is accessed, displayed,
+performed, viewed, copied or distributed:
+
+    This eBook is for the use of anyone anywhere in the United States and most
+    other parts of the world at no cost and with almost no restrictions
+    whatsoever. You may copy it, give it away or re-use it under the terms
+    of the Project Gutenberg License included with this eBook or online
+    at www.gutenberg.org. If you
+    are not located in the United States, you will have to check the laws
+    of the country where you are located before using this eBook.
+  
+1.E.2. If an individual Project Gutenberg™ electronic work is
+derived from texts not protected by U.S. copyright law (does not
+contain a notice indicating that it is posted with permission of the
+copyright holder), the work can be copied and distributed to anyone in
+the United States without paying any fees or charges. If you are
+redistributing or providing access to a work with the phrase “Project
+Gutenberg” associated with or appearing on the work, you must comply
+either with the requirements of paragraphs 1.E.1 through 1.E.7 or
+obtain permission for the use of the work and the Project Gutenberg™
+trademark as set forth in paragraphs 1.E.8 or 1.E.9.
+
+1.E.3. If an individual Project Gutenberg™ electronic work is posted
+with the permission of the copyright holder, your use and distribution
+must comply with both paragraphs 1.E.1 through 1.E.7 and any
+additional terms imposed by the copyright holder. Additional terms
+will be linked to the Project Gutenberg™ License for all works
+posted with the permission of the copyright holder found at the
+beginning of this work.
+
+1.E.4. Do not unlink or detach or remove the full Project Gutenberg™
+License terms from this work, or any files containing a part of this
+work or any other work associated with Project Gutenberg™.
+
+1.E.5. Do not copy, display, perform, distribute or redistribute this
+electronic work, or any part of this electronic work, without
+prominently displaying the sentence set forth in paragraph 1.E.1 with
+active links or immediate access to the full terms of the Project
+Gutenberg™ License.
+
+1.E.6. You may convert to and distribute this work in any binary,
+compressed, marked up, nonproprietary or proprietary form, including
+any word processing or hypertext form. However, if you provide access
+to or distribute copies of a Project Gutenberg™ work in a format
+other than “Plain Vanilla ASCII” or other format used in the official
+version posted on the official Project Gutenberg™ website
+(www.gutenberg.org), you must, at no additional cost, fee or expense
+to the user, provide a copy, a means of exporting a copy, or a means
+of obtaining a copy upon request, of the work in its original “Plain
+Vanilla ASCII” or other form. Any alternate format must include the
+full Project Gutenberg™ License as specified in paragraph 1.E.1.
+
+1.E.7. Do not charge a fee for access to, viewing, displaying,
+performing, copying or distributing any Project Gutenberg™ works
+unless you comply with paragraph 1.E.8 or 1.E.9.
+
+1.E.8. You may charge a reasonable fee for copies of or providing
+access to or distributing Project Gutenberg™ electronic works
+provided that:
+
+    • You pay a royalty fee of 20% of the gross profits you derive from
+        the use of Project Gutenberg™ works calculated using the method
+        you already use to calculate your applicable taxes. The fee is owed
+        to the owner of the Project Gutenberg™ trademark, but he has
+        agreed to donate royalties under this paragraph to the Project
+        Gutenberg Literary Archive Foundation. Royalty payments must be paid
+        within 60 days following each date on which you prepare (or are
+        legally required to prepare) your periodic tax returns. Royalty
+        payments should be clearly marked as such and sent to the Project
+        Gutenberg Literary Archive Foundation at the address specified in
+        Section 4, “Information about donations to the Project Gutenberg
+        Literary Archive Foundation.”
+    
+    • You provide a full refund of any money paid by a user who notifies
+        you in writing (or by e-mail) within 30 days of receipt that s/he
+        does not agree to the terms of the full Project Gutenberg™
+        License. You must require such a user to return or destroy all
+        copies of the works possessed in a physical medium and discontinue
+        all use of and all access to other copies of Project Gutenberg™
+        works.
+    
+    • You provide, in accordance with paragraph 1.F.3, a full refund of
+        any money paid for a work or a replacement copy, if a defect in the
+        electronic work is discovered and reported to you within 90 days of
+        receipt of the work.
+    
+    • You comply with all other terms of this agreement for free
+        distribution of Project Gutenberg™ works.
+    
+
+1.E.9. If you wish to charge a fee or distribute a Project
+Gutenberg™ electronic work or group of works on different terms than
+are set forth in this agreement, you must obtain permission in writing
+from the Project Gutenberg Literary Archive Foundation, the manager of
+the Project Gutenberg™ trademark. Contact the Foundation as set
+forth in Section 3 below.
+
+1.F.
+
+1.F.1. Project Gutenberg volunteers and employees expend considerable
+effort to identify, do copyright research on, transcribe and proofread
+works not protected by U.S. copyright law in creating the Project
+Gutenberg™ collection. Despite these efforts, Project Gutenberg™
+electronic works, and the medium on which they may be stored, may
+contain “Defects,” such as, but not limited to, incomplete, inaccurate
+or corrupt data, transcription errors, a copyright or other
+intellectual property infringement, a defective or damaged disk or
+other medium, a computer virus, or computer codes that damage or
+cannot be read by your equipment.
+
+1.F.2. LIMITED WARRANTY, DISCLAIMER OF DAMAGES - Except for the “Right
+of Replacement or Refund” described in paragraph 1.F.3, the Project
+Gutenberg Literary Archive Foundation, the owner of the Project
+Gutenberg™ trademark, and any other party distributing a Project
+Gutenberg™ electronic work under this agreement, disclaim all
+liability to you for damages, costs and expenses, including legal
+fees. YOU AGREE THAT YOU HAVE NO REMEDIES FOR NEGLIGENCE, STRICT
+LIABILITY, BREACH OF WARRANTY OR BREACH OF CONTRACT EXCEPT THOSE
+PROVIDED IN PARAGRAPH 1.F.3. YOU AGREE THAT THE FOUNDATION, THE
+TRADEMARK OWNER, AND ANY DISTRIBUTOR UNDER THIS AGREEMENT WILL NOT BE
+LIABLE TO YOU FOR ACTUAL, DIRECT, INDIRECT, CONSEQUENTIAL, PUNITIVE OR
+INCIDENTAL DAMAGES EVEN IF YOU GIVE NOTICE OF THE POSSIBILITY OF SUCH
+DAMAGE.
+
+1.F.3. LIMITED RIGHT OF REPLACEMENT OR REFUND - If you discover a
+defect in this electronic work within 90 days of receiving it, you can
+receive a refund of the money (if any) you paid for it by sending a
+written explanation to the person you received the work from. If you
+received the work on a physical medium, you must return the medium
+with your written explanation. The person or entity that provided you
+with the defective work may elect to provide a replacement copy in
+lieu of a refund. If you received the work electronically, the person
+or entity providing it to you may choose to give you a second
+opportunity to receive the work electronically in lieu of a refund. If
+the second copy is also defective, you may demand a refund in writing
+without further opportunities to fix the problem.
+
+1.F.4. Except for the limited right of replacement or refund set forth
+in paragraph 1.F.3, this work is provided to you ‘AS-IS’, WITH NO
+OTHER WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+LIMITED TO WARRANTIES OF MERCHANTABILITY OR FITNESS FOR ANY PURPOSE.
+
+1.F.5. Some states do not allow disclaimers of certain implied
+warranties or the exclusion or limitation of certain types of
+damages. If any disclaimer or limitation set forth in this agreement
+violates the law of the state applicable to this agreement, the
+agreement shall be interpreted to make the maximum disclaimer or
+limitation permitted by the applicable state law. The invalidity or
+unenforceability of any provision of this agreement shall not void the
+remaining provisions.
+
+1.F.6. INDEMNITY - You agree to indemnify and hold the Foundation, the
+trademark owner, any agent or employee of the Foundation, anyone
+providing copies of Project Gutenberg™ electronic works in
+accordance with this agreement, and any volunteers associated with the
+production, promotion and distribution of Project Gutenberg™
+electronic works, harmless from all liability, costs and expenses,
+including legal fees, that arise directly or indirectly from any of
+the following which you do or cause to occur: (a) distribution of this
+or any Project Gutenberg™ work, (b) alteration, modification, or
+additions or deletions to any Project Gutenberg™ work, and (c) any
+Defect you cause.
+
+Section 2. Information about the Mission of Project Gutenberg™
+
+Project Gutenberg™ is synonymous with the free distribution of
+electronic works in formats readable by the widest variety of
+computers including obsolete, old, middle-aged and new computers. It
+exists because of the efforts of hundreds of volunteers and donations
+from people in all walks of life.
+
+Volunteers and financial support to provide volunteers with the
+assistance they need are critical to reaching Project Gutenberg™’s
+goals and ensuring that the Project Gutenberg™ collection will
+remain freely available for generations to come. In 2001, the Project
+Gutenberg Literary Archive Foundation was created to provide a secure
+and permanent future for Project Gutenberg™ and future
+generations. To learn more about the Project Gutenberg Literary
+Archive Foundation and how your efforts and donations can help, see
+Sections 3 and 4 and the Foundation information page at www.gutenberg.org.
+
+Section 3. Information about the Project Gutenberg Literary Archive Foundation
+
+The Project Gutenberg Literary Archive Foundation is a non-profit
+501(c)(3) educational corporation organized under the laws of the
+state of Mississippi and granted tax exempt status by the Internal
+Revenue Service. The Foundation’s EIN or federal tax identification
+number is 64-6221541. Contributions to the Project Gutenberg Literary
+Archive Foundation are tax deductible to the full extent permitted by
+U.S. federal laws and your state’s laws.
+
+The Foundation’s business office is located at 809 North 1500 West,
+Salt Lake City, UT 84116, (801) 596-1887. Email contact links and up
+to date contact information can be found at the Foundation’s website
+and official page at www.gutenberg.org/contact
+
+Section 4. Information about Donations to the Project Gutenberg
+Literary Archive Foundation
+
+Project Gutenberg™ depends upon and cannot survive without widespread
+public support and donations to carry out its mission of
+increasing the number of public domain and licensed works that can be
+freely distributed in machine-readable form accessible by the widest
+array of equipment including outdated equipment. Many small donations
+($1 to $5,000) are particularly important to maintaining tax exempt
+status with the IRS.
+
+The Foundation is committed to complying with the laws regulating
+charities and charitable donations in all 50 states of the United
+States. Compliance requirements are not uniform and it takes a
+considerable effort, much paperwork and many fees to meet and keep up
+with these requirements. We do not solicit donations in locations
+where we have not received written confirmation of compliance. To SEND
+DONATIONS or determine the status of compliance for any particular state
+visit www.gutenberg.org/donate.
+
+While we cannot and do not solicit contributions from states where we
+have not met the solicitation requirements, we know of no prohibition
+against accepting unsolicited donations from donors in such states who
+approach us with offers to donate.
+
+International donations are gratefully accepted, but we cannot make
+any statements concerning tax treatment of donations received from
+outside the United States. U.S. laws alone swamp our small staff.
+
+Please check the Project Gutenberg web pages for current donation
+methods and addresses. Donations are accepted in a number of other
+ways including checks, online payments and credit card donations. To
+donate, please visit: www.gutenberg.org/donate.
+
+Section 5. General Information About Project Gutenberg™ electronic works
+
+Professor Michael S. Hart was the originator of the Project
+Gutenberg™ concept of a library of electronic works that could be
+freely shared with anyone. For forty years, he produced and
+distributed Project Gutenberg™ eBooks with only a loose network of
+volunteer support.
+
+Project Gutenberg™ eBooks are often created from several printed
+editions, all of which are confirmed as not protected by copyright in
+the U.S. unless a copyright notice is included. Thus, we do not
+necessarily keep eBooks in compliance with any particular paper
+edition.
+
+Most people start at our website which has the main PG search
+facility: www.gutenberg.org.
+
+This website includes information about Project Gutenberg™,
+including how to make donations to the Project Gutenberg Literary
+Archive Foundation, how to help produce our new eBooks, and how to
+subscribe to our email newsletter to hear about new eBooks.
+
+
