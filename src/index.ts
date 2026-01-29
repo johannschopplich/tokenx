@@ -1,6 +1,6 @@
-import type { LanguageConfig, SplitByTokensOptions, TokenEstimationOptions } from './types'
+import type { LanguageConfig, SplitByTokensOptions, TokenEstimationOptions } from './types.ts'
 
-export * from './types'
+export * from './types.ts'
 
 const PATTERNS = {
   whitespace: /^\s+$/,

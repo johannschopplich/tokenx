@@ -2,7 +2,7 @@ import * as fsp from 'node:fs/promises'
 import * as path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { encode } from 'gpt-tokenizer'
-import { estimateTokenCount } from '../src/index'
+import { estimateTokenCount } from '../src/index.ts'
 
 const rootDir = fileURLToPath(new URL('../', import.meta.url))
 const benchPath = path.join(rootDir, 'docs/bench.md')
