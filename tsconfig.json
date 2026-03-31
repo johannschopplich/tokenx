@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "ESNext",
+    "moduleDetection": "force",
     "rootDir": ".",
     "module": "ESNext",
     "moduleResolution": "Bundler",
@@ -10,9 +11,7 @@
     "noUncheckedIndexedAccess": true,
     "declaration": true,
     "noEmit": true,
-    "esModuleInterop": true,
     "isolatedDeclarations": true,
-    "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "erasableSyntaxOnly": true,
     "skipLibCheck": true
