@@ -1,13 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
     "moduleDetection": "force",
-    "rootDir": ".",
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
+    "types": ["node"],
     "allowImportingTsExtensions": true,
-    "strict": true,
     "noUncheckedIndexedAccess": true,
     "declaration": true,
     "noEmit": true,
