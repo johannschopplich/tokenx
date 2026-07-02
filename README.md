@@ -1,7 +1,5 @@
 # tokenx
 
-[![npm version](https://img.shields.io/npm/v/tokenx)](https://www.npmjs.com/package/tokenx)
-
 Fast and lightweight token count estimation for any LLM without requiring a full tokenizer. This library provides quick approximations that are good enough for most use cases while keeping your bundle size minimal.
 
 For advanced use cases requiring precise token counts, please use a full tokenizer like [`gpt-tokenizer`](https://github.com/niieani/gpt-tokenizer).
@@ -26,16 +24,15 @@ The following table shows the accuracy of the token count approximation for diff
 
 ## Features
 
-- ⚡ **~95-98% accuracy** compared to full tokenizers (see benchmarks below)
+- ⚡ **~96% average accuracy** compared to full tokenizers (see [benchmarks](#benchmarks))
 - 📦 **Just 2kB** bundle size with zero dependencies
 - 🌍 Multi-language support with configurable language rules
 - 🗣️ Built-in support for accented characters (German, French, Spanish, Slavic languages)
 - 🀄 CJK (Chinese, Japanese, Korean) character handling
+- 🔢 Numeric sequences count as single tokens, including decimals and thousands separators (`1,234.56`)
 - 🔧 Configurable and extensible
 
 ## Installation
-
-Run the following command to add `tokenx` to your project.
 
 ```bash
 # npm
