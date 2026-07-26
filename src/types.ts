@@ -22,6 +22,6 @@ export interface LanguageConfig {
  * Configuration options for splitting text by tokens
  */
 export interface SplitByTokensOptions extends TokenEstimationOptions {
-  /** Number of tokens to overlap between consecutive chunks (default: 0) */
+  /** Number of tokens to overlap between consecutive chunks (default: 0, clamped below the target chunk size) */
   overlap?: number
 }

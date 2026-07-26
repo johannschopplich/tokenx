@@ -120,21 +120,28 @@ export function splitByTokens(
     return []
 
   const resolvedOptions = resolveOptions(options)
-  const { overlap = 0 } = options
+  // An overlap of at least the chunk size would prevent chunks from ever
+  // draining, duplicating content without bound
+  const overlap = Math.max(0, Math.min(options.overlap ?? 0, tokensPerChunk - 1))
 
   const segments = text.split(TOKEN_SPLIT_PATTERN).filter(Boolean)
   const chunks: string[] = []
   let currentChunk: string[] = []
   let currentTokenCount = 0
+  // Overlap segments alone don't justify a trailing chunk – it would only
+  // duplicate the end of the previous chunk
+  let hasUnchunkedSegments = false
 
   for (const segment of segments) {
     const tokenCount = estimateSegmentTokens(segment, resolvedOptions)
 
     currentChunk.push(segment)
     currentTokenCount += tokenCount
+    hasUnchunkedSegments = true
 
     if (currentTokenCount >= tokensPerChunk) {
       chunks.push(currentChunk.join(''))
+      hasUnchunkedSegments = false
 
       if (overlap > 0) {
         const overlapSegments: string[] = []
@@ -156,7 +163,7 @@ export function splitByTokens(
     }
   }
 
-  if (currentChunk.length > 0)
+  if (currentChunk.length > 0 && hasUnchunkedSegments)
     chunks.push(currentChunk.join(''))
 
   return chunks

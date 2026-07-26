@@ -207,5 +207,17 @@ describe('token-related functions', () => {
       expect(chunks).toEqual([shortText])
     })
 
+    it('should not emit a trailing chunk containing only overlap content', () => {
+      const chunks = splitByTokens('aaaa bbbb cccc dddd', 2, { overlap: 1 })
+      expect(chunks).toEqual(['aaaa bbbb', 'bbbb cccc', 'cccc dddd'])
+    })
+
+    it('should clamp overlap below the chunk size', () => {
+      const text = 'aaaa bbbb cccc dddd eeee'
+      const oversizedOverlapChunks = splitByTokens(text, 2, { overlap: 5 })
+      const clampedOverlapChunks = splitByTokens(text, 2, { overlap: 1 })
+
+      expect(oversizedOverlapChunks).toEqual(clampedOverlapChunks)
+    })
   })
 })
