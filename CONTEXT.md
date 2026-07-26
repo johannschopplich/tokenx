@@ -19,6 +19,9 @@ The atomic unit of estimation – a run of text (word, whitespace, or punctuatio
 The relative difference between an estimated count and the reference tokenizer's count for the same text. The library's accuracy measure.
 _Avoid_: accuracy percentage, error rate
 
+**Sample corpus**:
+The fixed set of texts whose Deviation is measured against the reference tokenizer – the single source for both the published benchmarks and the enforced accuracy bounds.
+
 **Language config**:
 A rule pairing a script-detection pattern with that script's average characters per token. Custom configs take precedence over all built-in heuristics.
 _Avoid_: locale, language pack
