@@ -60,6 +60,34 @@ describe('token-related functions', () => {
       // With shorter chars per token, we should get more tokens
       expect(customCount).toBeGreaterThan(defaultCount)
     })
+
+    it('should let custom language configs override built-in CJK handling', () => {
+      const input = '你好世界你好世界'
+      const customOptions = {
+        languageConfigs: [{ pattern: /[\u4E00-\u9FFF]/, averageCharsPerToken: 2 }],
+      }
+
+      expect(estimateTokenCount(input)).toBe(8)
+      expect(estimateTokenCount(input, customOptions)).toBe(4)
+    })
+
+    it('should price emoji runs above their character count without catching attached symbols', () => {
+      expect(estimateTokenCount('🏀🔥')).toBe(3)
+      // ™ is Extended_Pictographic – the emoji rule must not reprice the whole word
+      expect(estimateTokenCount('Gutenberg™')).toBe(2)
+    })
+
+    it('should not be affected by stateful regex flags in language configs', () => {
+      const input = 'éléphant éléphant éléphant éléphant'
+      const statefulOptions = {
+        languageConfigs: [{ pattern: /[éè]/g, averageCharsPerToken: 3 }],
+      }
+      const statelessOptions = {
+        languageConfigs: [{ pattern: /[éè]/, averageCharsPerToken: 3 }],
+      }
+
+      expect(estimateTokenCount(input, statefulOptions)).toBe(estimateTokenCount(input, statelessOptions))
+    })
   })
 
   describe('isWithinTokenLimit', () => {
@@ -178,5 +206,6 @@ describe('token-related functions', () => {
       const chunks = splitByTokens(shortText, 100)
       expect(chunks).toEqual([shortText])
     })
+
   })
 })
