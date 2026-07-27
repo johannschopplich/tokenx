@@ -1,6 +1,5 @@
 import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import {
   approximateTokenSize,
@@ -10,7 +9,7 @@ import {
   splitByTokens,
 } from '../src/index'
 
-const fixturesDir = fileURLToPath(new URL('fixtures', import.meta.url))
+const fixturesDir = join(import.meta.dirname, 'fixtures')
 
 const ENGLISH_TEXT = 'Hello, world! This is a short sentence.'
 const GERMAN_TEXT = 'Die pünktlich gewünschte Trüffelfüllung im übergestülpten Würzkümmel-Würfel ist kümmerlich und dürfte fürderhin zu Rüffeln in Hülle und Fülle führen'
