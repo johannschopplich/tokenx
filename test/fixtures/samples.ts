@@ -14,15 +14,16 @@ export interface BenchmarkSample {
   input: string | { file: string }
 }
 
+const JSON_PAYLOAD = {
+  id: 'usr_29f84h',
+  name: 'Ada Lovelace',
+  email: 'ada@example.com',
+  roles: ['admin', 'editor'],
+  settings: { theme: 'dark', notifications: true, pageSize: 25 },
+  lastLogin: '2026-07-01T09:30:00Z',
+}
+
 export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
-  {
-    description: 'Short text (en)',
-    input: 'In the heart of the forest, a stream flowed gently over the smooth rocks and fallen leaves.',
-  },
-  {
-    description: 'Text with umlauts (de)',
-    input: 'Die pünktlich gewünschte Trüffelfüllung im übergestülpten Würzkümmel-Würfel ist kümmerlich und dürfte fürderhin zu Rüffeln in Hülle und Fülle führen',
-  },
   {
     description: 'Cyrillic text (ru)',
     input: 'В глубине леса ручей тихо струился по гладким камням и опавшим листьям, отражая последние лучи заходящего солнца.',
@@ -36,15 +37,12 @@ export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
     input: 'Hey! 😀 Did you see the game last night?? 🏀🔥 Absolutely insane finish 😱😱 We should totally watch the next one together 🍕🎉 Let me know! 👍',
   },
   {
-    description: 'JSON payload',
-    input: JSON.stringify({
-      id: 'usr_29f84h',
-      name: 'Ada Lovelace',
-      email: 'ada@example.com',
-      roles: ['admin', 'editor'],
-      settings: { theme: 'dark', notifications: true, pageSize: 25 },
-      lastLogin: '2026-07-01T09:30:00Z',
-    }, undefined, 2),
+    description: 'JSON payload (formatted)',
+    input: JSON.stringify(JSON_PAYLOAD, undefined, 2),
+  },
+  {
+    description: 'JSON payload (minified)',
+    input: JSON.stringify(JSON_PAYLOAD),
   },
   {
     description: 'Metamorphosis by Franz Kafka (en)',

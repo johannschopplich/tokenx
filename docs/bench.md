@@ -2,12 +2,11 @@ Bars grow left when tokenx underestimates and right when it overestimates; the a
 
 ```
                                                           under ◂·▸ over
-Short text (en)                          19 →     19             │               0.00%
-Text with umlauts (de)                   48 →     49             │█             +2.08%
 Cyrillic text (ru)                       35 →     36             │█             +2.86%
 Greek text (el)                          37 →     40             │████          +8.11%
 Emoji-heavy chat messages                39 →     41             │███           +5.13%
-JSON payload                             96 →     92           ██│              -4.17%
+JSON payload (formatted)                 96 →     92           ██│              -4.17%
+JSON payload (minified)                  62 →     62             │               0.00%
 Metamorphosis by Franz Kafka (en)    31,796 → 32,516             │█             +2.26%
 Die Verwandlung by Franz Kafka (de)  35,309 → 34,167           ██│              -3.23%
 道德經 by Laozi (zh)                  11,712 → 11,679             │              -0.28%
@@ -15,4 +14,4 @@ Die Verwandlung by Franz Kafka (de)  35,309 → 34,167           ██│      
 TypeScript ES5 Type Declarations     49,464 → 55,757             │██████       +12.72%
 ```
 
-Mean deviation across all samples: **4.81%**
+Mean deviation across all samples: **5.08%**
