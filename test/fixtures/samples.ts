@@ -41,15 +41,15 @@ export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
     input: { files: ['src/index.ts', 'src/segments.ts', 'src/types.ts'] },
   },
   {
-    description: 'Дама с собачкой by Anton Chekhov (ru)',
+    description: 'Дама с собачкой by Chekhov (ru)',
     input: { files: ['test/fixtures/texts/dama-s-sobachkoy-ru.txt'] },
   },
   {
-    description: 'The Great Gatsby by F. Scott Fitzgerald (en)',
+    description: 'The Great Gatsby by Fitzgerald (en)',
     input: { files: ['test/fixtures/texts/great-gatsby-en.txt'] },
   },
   {
-    description: 'Die Verwandlung by Franz Kafka (de)',
+    description: 'Die Verwandlung by Kafka (de)',
     input: { files: ['test/fixtures/texts/die-verwandlung-de.txt'] },
   },
   {
@@ -57,7 +57,7 @@ export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
     input: { files: ['test/fixtures/texts/a-q-zheng-zhuan-zh.txt'] },
   },
   {
-    description: '羅生門 by Akutagawa Ryūnosuke (ja)',
+    description: '羅生門 by Akutagawa (ja)',
     input: { files: ['test/fixtures/texts/rashomon-ja.txt'] },
   },
 ]
