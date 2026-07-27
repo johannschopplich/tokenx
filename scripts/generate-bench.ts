@@ -9,6 +9,12 @@ const benchPath = path.resolve(import.meta.dirname, '../docs/bench.md')
 const BAR_CELLS_PER_SIDE = 10
 const PERCENT_PER_BAR_CELL = MAX_SAMPLE_DEVIATION / BAR_CELLS_PER_SIDE
 
+// GitHub's monospace font stack has no CJK glyphs and falls back to a
+// proportional CJK font at ~5/3 of a Latin column (1em vs 0.6em), so the
+// corpus titles (道德經, 羅生門) are calibrated to the rendered README rather
+// than to the two columns a true monospace terminal would use
+const CJK_COLUMNS_PER_GLYPH = 5 / 3
+
 interface SampleMeasurement {
   description: string
   referenceTokenCount: number
@@ -90,20 +96,23 @@ function formatCount(tokenCount: number): string {
   return tokenCount.toLocaleString('en-US')
 }
 
-// CJK glyphs occupy two monospace columns – count them double so the corpus
-// titles (道德經, 羅生門) align with the Latin ones
 function displayWidth(text: string): number {
-  let width = 0
+  let narrowGlyphCount = 0
+  let cjkGlyphCount = 0
 
   for (const character of text) {
     const codePoint = character.codePointAt(0)!
-    const isWideGlyph
+    const isCjkGlyph
       = (codePoint >= 0x2E80 && codePoint <= 0x9FFF)
         || (codePoint >= 0xAC00 && codePoint <= 0xD7A3)
         || (codePoint >= 0xF900 && codePoint <= 0xFAFF)
         || (codePoint >= 0xFF00 && codePoint <= 0xFF60)
-    width += isWideGlyph ? 2 : 1
+
+    if (isCjkGlyph)
+      cjkGlyphCount++
+    else
+      narrowGlyphCount++
   }
 
-  return width
+  return narrowGlyphCount + Math.round(cjkGlyphCount * CJK_COLUMNS_PER_GLYPH)
 }

@@ -10,8 +10,8 @@ Emoji-heavy chat messages                39 →     41             │███ 
 JSON payload                             96 →     79    █████████│             -17.71%
 Metamorphosis by Franz Kafka (en)    31,796 → 32,325             │█             +1.66%
 Die Verwandlung by Franz Kafka (de)  35,309 → 33,970           ██│              -3.79%
-道德經 by Laozi (zh)                 11,712 → 11,427            █│              -2.43%
-羅生門 by Akutagawa Ryūnosuke (ja)    9,517 → 10,535             │█████        +10.70%
+道德經 by Laozi (zh)                  11,712 → 11,427            █│              -2.43%
+羅生門 by Akutagawa Ryūnosuke (ja)     9,517 → 10,535             │█████        +10.70%
 TypeScript ES5 Type Declarations     49,464 → 51,883             │██            +4.89%
 ```
 

@@ -19,7 +19,7 @@ export function isWithinTokenLimit(
 export const approximateTokenSize: typeof estimateTokenCount = estimateTokenCount
 
 /**
- * Estimates the number of tokens in a text string using heuristic rules.
+ * Estimates the number of tokens in a text string using heuristic rules
  */
 export function estimateTokenCount(text?: string, options: TokenEstimationOptions = {}): number {
   if (!text)
@@ -34,7 +34,7 @@ export function estimateTokenCount(text?: string, options: TokenEstimationOption
 }
 
 /**
- * Extracts a portion of text based on token positions, similar to Array.prototype.slice().
+ * Extracts a portion of text based on token positions, similar to Array.prototype.slice()
  */
 export function sliceByTokens(
   text: string,
@@ -84,7 +84,7 @@ export function sliceByTokens(
 }
 
 /**
- * Splits text into chunks based on token count.
+ * Splits text into chunks based on token count
  */
 export function splitByTokens(
   text: string,
