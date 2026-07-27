@@ -10,8 +10,8 @@ export const MAX_MEAN_DEVIATION = 7
 
 export interface BenchmarkSample {
   description: string
-  /** Inline text, or a repo-root-relative file to load */
-  input: string | { file: string }
+  /** Inline text, or repo-root-relative files to load and concatenate */
+  input: string | { files: string[] }
 }
 
 const JSON_PAYLOAD = {
@@ -25,14 +25,6 @@ const JSON_PAYLOAD = {
 
 export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
   {
-    description: 'Cyrillic text (ru)',
-    input: 'В глубине леса ручей тихо струился по гладким камням и опавшим листьям, отражая последние лучи заходящего солнца.',
-  },
-  {
-    description: 'Greek text (el)',
-    input: 'Στην καρδιά του δάσους, ένα ρυάκι κυλούσε απαλά πάνω από τις λείες πέτρες και τα πεσμένα φύλλα.',
-  },
-  {
     description: 'Emoji-heavy chat messages',
     input: 'Hey! 😀 Did you see the game last night?? 🏀🔥 Absolutely insane finish 😱😱 We should totally watch the next one together 🍕🎉 Let me know! 👍',
   },
@@ -45,29 +37,39 @@ export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
     input: JSON.stringify(JSON_PAYLOAD),
   },
   {
+    description: 'tokenx source code',
+    input: { files: ['src/index.ts', 'src/segments.ts', 'src/types.ts'] },
+  },
+  {
+    description: 'Cyrillic text (ru)',
+    input: 'В глубине леса ручей тихо струился по гладким камням и опавшим листьям, отражая последние лучи заходящего солнца.',
+  },
+  {
+    description: 'Greek text (el)',
+    input: 'Στην καρδιά του δάσους, ένα ρυάκι κυλούσε απαλά πάνω από τις λείες πέτρες και τα πεσμένα φύλλα.',
+  },
+  {
     description: 'Metamorphosis by Franz Kafka (en)',
-    input: { file: 'test/fixtures/ebooks/pg5200.txt' },
+    input: { files: ['test/fixtures/ebooks/pg5200.txt'] },
   },
   {
     description: 'Die Verwandlung by Franz Kafka (de)',
-    input: { file: 'test/fixtures/ebooks/pg22367.txt' },
+    input: { files: ['test/fixtures/ebooks/pg22367.txt'] },
   },
   {
     description: '道德經 by Laozi (zh)',
-    input: { file: 'test/fixtures/ebooks/pg7337.txt' },
+    input: { files: ['test/fixtures/ebooks/pg7337.txt'] },
   },
   {
     description: '羅生門 by Akutagawa Ryūnosuke (ja)',
-    input: { file: 'test/fixtures/ebooks/pg1982.txt' },
-  },
-  {
-    description: 'TypeScript ES5 Type Declarations',
-    input: { file: 'node_modules/typescript/lib/lib.es5.d.ts' },
+    input: { files: ['test/fixtures/ebooks/pg1982.txt'] },
   },
 ]
 
 export async function readSampleText(sample: BenchmarkSample): Promise<string> {
-  return typeof sample.input === 'string'
-    ? sample.input
-    : readFile(join(rootDir, sample.input.file), 'utf-8')
+  if (typeof sample.input === 'string')
+    return sample.input
+
+  const contents = await Promise.all(sample.input.files.map(file => readFile(join(rootDir, file), 'utf-8')))
+  return contents.join('')
 }
