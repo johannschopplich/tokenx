@@ -25,22 +25,22 @@ describe('estimateTokenCount', () => {
 
   it('estimates the token count of the English ebook', async () => {
     const input = await readFile(join(fixturesDir, 'ebooks/pg5200.txt'), 'utf-8')
-    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`32325`)
+    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`32516`)
   })
 
   it('estimates the token count of the German ebook', async () => {
     const input = await readFile(join(fixturesDir, 'ebooks/pg22367.txt'), 'utf-8')
-    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`33970`)
+    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`34167`)
   })
 
   it('estimates the token count of the Chinese ebook', async () => {
     const input = await readFile(join(fixturesDir, 'ebooks/pg7337.txt'), 'utf-8')
-    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`11427`)
+    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`11679`)
   })
 
   it('estimates the token count of the Japanese ebook', async () => {
     const input = await readFile(join(fixturesDir, 'ebooks/pg1982.txt'), 'utf-8')
-    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`10535`)
+    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`10664`)
   })
 
   it('returns 0 for empty input', () => {
@@ -53,6 +53,15 @@ describe('estimateTokenCount', () => {
     // chars-per-token heuristic, not count each character as a token
     const url = 'https://example.com/path/to/resource'
     expect(estimateTokenCount(url)).toBeLessThan(url.length / 2)
+  })
+
+  it('treats line-wrap newlines like spaces', () => {
+    expect(estimateTokenCount('Hello\nworld')).toBe(estimateTokenCount('Hello world'))
+  })
+
+  it('prices indentation and blank lines as a token', () => {
+    expect(estimateTokenCount('Hello\n  world')).toBe(estimateTokenCount('Hello world') + 1)
+    expect(estimateTokenCount('Hello\n\nworld')).toBe(estimateTokenCount('Hello world') + 1)
   })
 
   it('yields more tokens for a lower defaultCharsPerToken', () => {

@@ -2,6 +2,7 @@ import type { LanguageConfig, TokenEstimationOptions } from './types.ts'
 
 const PATTERNS = {
   whitespace: /^\s+$/,
+  structuredWhitespace: /\n\s/,
   cjk: /[\u4E00-\u9FFF\u3400-\u4DBF\u3000-\u303F\uFF00-\uFFEF\u30A0-\u30FF\u2E80-\u2EFF\u31C0-\u31EF\u3200-\u32FF\u3300-\u33FF\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uD7B0-\uD7FF]/,
   numeric: /^\d+$/,
   punctuation: /[.,!?;(){}[\]<>:/\\|@#$%^&*+=`~_"-]/,
@@ -32,7 +33,7 @@ export interface SegmentEstimate {
 /**
  * Walks a text as (segment, estimated token count) pairs. The segments
  * concatenate back to the original text; whitespace segments count zero
- * tokens.
+ * tokens unless they carry structure (indentation or blank lines).
  */
 export function* walkSegments(text: string, options: TokenEstimationOptions = {}): Generator<SegmentEstimate> {
   if (!text)
@@ -63,7 +64,9 @@ function estimateSegmentTokens(
   { languageConfigs, defaultCharsPerToken }: ResolvedTokenEstimationOptions,
 ): number {
   if (PATTERNS.whitespace.test(segment)) {
-    return 0
+    // Indentation and blank lines cost a token in o200k, while line-wrap
+    // newlines and single spaces merge into the neighboring word tokens
+    return PATTERNS.structuredWhitespace.test(segment) ? 1 : 0
   }
 
   // Checked before the built-in rules so custom configs can override them
