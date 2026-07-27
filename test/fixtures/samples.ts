@@ -53,8 +53,8 @@ export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
     input: { files: ['test/fixtures/texts/die-verwandlung-de.txt'] },
   },
   {
-    description: '道德經 by Laozi (zh)',
-    input: { files: ['test/fixtures/texts/dao-de-jing-zh.txt'] },
+    description: '阿Q正傳 by Lu Xun (zh)',
+    input: { files: ['test/fixtures/texts/a-q-zheng-zhuan-zh.txt'] },
   },
   {
     description: '羅生門 by Akutagawa Ryūnosuke (ja)',

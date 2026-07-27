@@ -11,6 +11,8 @@ interface CorpusText {
   /** Cut at the last paragraph boundary below this length */
   maxLength?: number
   hasWikiMarkup?: boolean
+  /** Source is rendered HTML (Wikisource REST API), not plain text */
+  isRenderedHtml?: boolean
 }
 
 // All sources are public domain; Gutenberg texts are trimmed to the story
@@ -36,9 +38,13 @@ const CORPUS_TEXTS: CorpusText[] = [
     hasWikiMarkup: true,
   },
   {
-    file: 'dao-de-jing-zh.txt',
-    url: 'https://www.gutenberg.org/cache/epub/7337/pg7337.txt',
-    startMarker: '老子《道德經》',
+    // Rendered via the REST API because the wiki page only transcludes
+    // scanned PDF pages
+    file: 'a-q-zheng-zhuan-zh.txt',
+    url: 'https://zh.wikisource.org/api/rest_v1/page/html/%E9%98%BFQ%E6%AD%A3%E5%82%B3',
+    startMarker: '第一章',
+    maxLength: 8_000,
+    isRenderedHtml: true,
   },
   {
     file: 'rashomon-ja.txt',
@@ -59,6 +65,9 @@ for (const corpusText of CORPUS_TEXTS) {
   if (corpusText.hasWikiMarkup)
     text = stripWikiMarkup(text)
 
+  if (corpusText.isRenderedHtml)
+    text = stripRenderedHtml(text)
+
   const endMarkerIndex = text.search(/\*\*\* ?END OF (?:THE|THIS) PROJECT GUTENBERG EBOOK/i)
   if (endMarkerIndex !== -1)
     text = text.slice(0, endMarkerIndex)
@@ -74,6 +83,17 @@ for (const corpusText of CORPUS_TEXTS) {
   text = `${text.trim()}\n`
   await fsp.writeFile(path.join(textsDir, corpusText.file), text, 'utf-8')
   console.log(`${corpusText.file}: ${text.length.toLocaleString('en-US')} chars`)
+}
+
+function stripRenderedHtml(html: string): string {
+  return html
+    .replace(/<style[\s\S]*?<\/style>/g, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    // Zero-width characters from the proofread page layer
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
+    .replace(/\n{3,}/g, '\n\n')
 }
 
 function stripWikiMarkup(text: string): string {

@@ -34,8 +34,8 @@ describe('estimateTokenCount', () => {
   })
 
   it('estimates the token count of the Chinese excerpt', async () => {
-    const input = await readFile(join(fixturesDir, 'texts/dao-de-jing-zh.txt'), 'utf-8')
-    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`7078`)
+    const input = await readFile(join(fixturesDir, 'texts/a-q-zheng-zhuan-zh.txt'), 'utf-8')
+    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`5640`)
   })
 
   it('estimates the token count of the Japanese excerpt', async () => {

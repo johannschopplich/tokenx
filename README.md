@@ -31,11 +31,11 @@ tokenx source code                            2,680 → 2,830             │█
 Дама с собачкой by Anton Chekhov (ru)         6,153 → 6,254             │█             +1.64%
 The Great Gatsby by F. Scott Fitzgerald (en)  4,649 → 4,868             │██            +4.71%
 Die Verwandlung by Franz Kafka (de)           4,791 → 4,830             │              +0.81%
-道德經 by Laozi (zh)                           7,487 → 7,078          ███│              -5.46%
+阿Q正傳 by Lu Xun (zh)                         5,421 → 5,640             │██            +4.04%
 羅生門 by Akutagawa Ryūnosuke (ja)             5,250 → 5,115            █│              -2.57%
 ```
 
-Mean deviation across all samples: **3.41%**
+Mean deviation across all samples: **3.25%**
 
 <!-- /automd -->
 
