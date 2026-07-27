@@ -41,28 +41,24 @@ export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
     input: { files: ['src/index.ts', 'src/segments.ts', 'src/types.ts'] },
   },
   {
-    description: 'Cyrillic text (ru)',
-    input: 'В глубине леса ручей тихо струился по гладким камням и опавшим листьям, отражая последние лучи заходящего солнца.',
+    description: 'Дама с собачкой by Anton Chekhov (ru)',
+    input: { files: ['test/fixtures/texts/dama-s-sobachkoy-ru.txt'] },
   },
   {
-    description: 'Greek text (el)',
-    input: 'Στην καρδιά του δάσους, ένα ρυάκι κυλούσε απαλά πάνω από τις λείες πέτρες και τα πεσμένα φύλλα.',
-  },
-  {
-    description: 'Metamorphosis by Franz Kafka (en)',
-    input: { files: ['test/fixtures/ebooks/pg5200.txt'] },
+    description: 'The Great Gatsby by F. Scott Fitzgerald (en)',
+    input: { files: ['test/fixtures/texts/great-gatsby-en.txt'] },
   },
   {
     description: 'Die Verwandlung by Franz Kafka (de)',
-    input: { files: ['test/fixtures/ebooks/pg22367.txt'] },
+    input: { files: ['test/fixtures/texts/die-verwandlung-de.txt'] },
   },
   {
     description: '道德經 by Laozi (zh)',
-    input: { files: ['test/fixtures/ebooks/pg7337.txt'] },
+    input: { files: ['test/fixtures/texts/dao-de-jing-zh.txt'] },
   },
   {
     description: '羅生門 by Akutagawa Ryūnosuke (ja)',
-    input: { files: ['test/fixtures/ebooks/pg1982.txt'] },
+    input: { files: ['test/fixtures/texts/rashomon-ja.txt'] },
   },
 ]
 

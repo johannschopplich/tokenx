@@ -3,7 +3,7 @@ import type { LanguageConfig, TokenEstimationOptions } from './types.ts'
 const PATTERNS = {
   whitespace: /^\s+$/,
   structuredWhitespace: /\n\s/,
-  cjk: /[\u4E00-\u9FFF\u3400-\u4DBF\u3000-\u303F\uFF00-\uFFEF\u30A0-\u30FF\u2E80-\u2EFF\u31C0-\u31EF\u3200-\u32FF\u3300-\u33FF\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uD7B0-\uD7FF]/,
+  cjk: /[\u4E00-\u9FFF\u3400-\u4DBF\u3000-\u30FF\uFF00-\uFFEF\u2E80-\u2EFF\u31C0-\u31EF\u3200-\u32FF\u3300-\u33FF\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uD7B0-\uD7FF]/,
   numeric: /^\d+$/,
   punctuation: /[.,!?;(){}[\]<>:/\\|@#$%^&*+=`~_"-]/,
 } as const
@@ -13,12 +13,15 @@ const TOKEN_SPLIT_PATTERN = new RegExp(`(\\s+|${PATTERNS.punctuation.source}+)`)
 // All ratios are calibrated against OpenAI's o200k_base encoding
 const DEFAULT_CHARS_PER_TOKEN = 6
 const SHORT_TOKEN_THRESHOLD = 3
+// Kana runs merge into multi-character tokens (particles, common words),
+// unlike kanji and hanzi which price at roughly one token per character
+const KANA_CHARS_PER_TOKEN = 1.35
 
 const DEFAULT_LANGUAGE_CONFIGS: LanguageConfig[] = [
-  { pattern: /[äöüßẞ]/i, averageCharsPerToken: 3 },
+  { pattern: /[äöüßẞ]/i, averageCharsPerToken: 2.6 },
   { pattern: /[éèêëàâîïôûùüÿçœæáíóúñ]/i, averageCharsPerToken: 3 },
   { pattern: /[ąćęłńóśźżěščřžýůúďťň]/i, averageCharsPerToken: 3.5 },
-  { pattern: /[\u0430-\u044F\u0451]/i, averageCharsPerToken: 3.5 },
+  { pattern: /[\u0430-\u044F\u0451]/i, averageCharsPerToken: 4 },
   { pattern: /[\u03AC-\u03CE]/i, averageCharsPerToken: 2.75 },
   // Anchored to pure emoji runs – symbols like ™ are Extended_Pictographic
   // too, and an unanchored match would misprice the whole attached word
@@ -76,7 +79,7 @@ function estimateSegmentTokens(
   }
 
   if (PATTERNS.cjk.test(segment)) {
-    return getCharacterCount(segment)
+    return estimateCjkTokens(segment)
   }
 
   if (PATTERNS.numeric.test(segment)) {
@@ -106,4 +109,21 @@ function getLanguageSpecificCharsPerToken(segment: string, languageConfigs: Lang
 
 function getCharacterCount(text: string): number {
   return Array.from(text).length
+}
+
+function estimateCjkTokens(segment: string): number {
+  let kanaCount = 0
+  let otherCount = 0
+
+  for (const character of segment) {
+    const codePoint = character.codePointAt(0)!
+    const isKanaGlyph = codePoint >= 0x3040 && codePoint <= 0x30FF
+
+    if (isKanaGlyph)
+      kanaCount++
+    else
+      otherCount++
+  }
+
+  return otherCount + Math.ceil(kanaCount / KANA_CHARS_PER_TOKEN)
 }

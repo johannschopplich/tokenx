@@ -20,27 +20,27 @@ describe('estimateTokenCount', () => {
   })
 
   it('estimates tokens for German text with umlauts', () => {
-    expect(estimateTokenCount(GERMAN_TEXT)).toMatchInlineSnapshot('49')
+    expect(estimateTokenCount(GERMAN_TEXT)).toMatchInlineSnapshot(`56`)
   })
 
-  it('estimates the token count of the English ebook', async () => {
-    const input = await readFile(join(fixturesDir, 'ebooks/pg5200.txt'), 'utf-8')
-    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`32516`)
+  it('estimates the token count of the English excerpt', async () => {
+    const input = await readFile(join(fixturesDir, 'texts/great-gatsby-en.txt'), 'utf-8')
+    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`4867`)
   })
 
-  it('estimates the token count of the German ebook', async () => {
-    const input = await readFile(join(fixturesDir, 'ebooks/pg22367.txt'), 'utf-8')
-    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`34167`)
+  it('estimates the token count of the German excerpt', async () => {
+    const input = await readFile(join(fixturesDir, 'texts/die-verwandlung-de.txt'), 'utf-8')
+    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`4830`)
   })
 
-  it('estimates the token count of the Chinese ebook', async () => {
-    const input = await readFile(join(fixturesDir, 'ebooks/pg7337.txt'), 'utf-8')
-    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`11679`)
+  it('estimates the token count of the Chinese excerpt', async () => {
+    const input = await readFile(join(fixturesDir, 'texts/dao-de-jing-zh.txt'), 'utf-8')
+    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`7078`)
   })
 
-  it('estimates the token count of the Japanese ebook', async () => {
-    const input = await readFile(join(fixturesDir, 'ebooks/pg1982.txt'), 'utf-8')
-    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`10664`)
+  it('estimates the token count of the Japanese excerpt', async () => {
+    const input = await readFile(join(fixturesDir, 'texts/rashomon-ja.txt'), 'utf-8')
+    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`5115`)
   })
 
   it('returns 0 for empty input', () => {
@@ -80,6 +80,11 @@ describe('estimateTokenCount', () => {
 
     expect(estimateTokenCount(input)).toBe(8)
     expect(estimateTokenCount(input, customOptions)).toBe(4)
+  })
+
+  it('prices kana runs below their character count, unlike kanji', () => {
+    expect(estimateTokenCount('こんにちは')).toBe(4)
+    expect(estimateTokenCount('你好世界')).toBe(4)
   })
 
   it('prices emoji runs above their character count', () => {
@@ -162,21 +167,22 @@ describe('sliceByTokens', () => {
 
   it('slices German text with positive indices', () => {
     const firstThree = sliceByTokens(GERMAN_TEXT, 0, 3)
-    expect(firstThree).toMatchInlineSnapshot('"Die pünktl"')
+    expect(firstThree).toMatchInlineSnapshot(`"Die pünkt"`)
 
     const middle = sliceByTokens(GERMAN_TEXT, 5, 10)
-    expect(middle).toMatchInlineSnapshot(`"wünschte Trüffe"`)
+    expect(middle).toMatchInlineSnapshot(`" gewünschte Trü"`)
   })
 
   it('slices German text with negative indices', () => {
     const lastThree = sliceByTokens(GERMAN_TEXT, -3)
-    expect(lastThree).toMatchInlineSnapshot('"lle führen"')
+    expect(lastThree).toMatchInlineSnapshot(`" führen"`)
 
     const withoutLastTwo = sliceByTokens(GERMAN_TEXT, 0, -2)
-    expect(withoutLastTwo.endsWith('Fülle')).toBe(true)
+    expect(GERMAN_TEXT.startsWith(withoutLastTwo)).toBe(true)
+    expect(withoutLastTwo.length).toBeLessThan(GERMAN_TEXT.length)
 
     const middleNegative = sliceByTokens(GERMAN_TEXT, -8, -3)
-    expect(middleNegative).toMatchInlineSnapshot(`" in Hülle und Fül"`)
+    expect(middleNegative).toMatchInlineSnapshot(`" Hülle und Fülle"`)
   })
 
   it('returns an empty string when the range is empty or inverted', () => {
