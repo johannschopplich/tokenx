@@ -2,7 +2,7 @@
 
 Fast and lightweight token count estimation without requiring a full tokenizer. This library provides quick approximations that are good enough for most use cases while keeping your bundle size minimal.
 
-Estimates are calibrated against OpenAI's `o200k_base` encoding – the tokenizer of all current OpenAI models (GPT-4o, o-series, GPT-5.x). Counts for other LLM families will differ somewhat; the `defaultCharsPerToken` and `languageConfigs` options let you tune the heuristics for your model.
+Estimates are calibrated against OpenAI's `o200k_base` encoding – the tokenizer of all current GPT models. Counts for other LLM families will differ somewhat; the `defaultCharsPerToken` and `languageConfigs` options let you tune the heuristics for your model.
 
 For advanced use cases requiring precise token counts, please use a full tokenizer like [`gpt-tokenizer`](https://github.com/niieani/gpt-tokenizer).
 
