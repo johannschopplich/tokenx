@@ -16,19 +16,19 @@ export interface BenchmarkSample {
 
 export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
   {
-    description: 'Short English text',
+    description: 'Short text (en)',
     input: 'In the heart of the forest, a stream flowed gently over the smooth rocks and fallen leaves.',
   },
   {
-    description: 'German text with umlauts',
+    description: 'Text with umlauts (de)',
     input: 'Die pünktlich gewünschte Trüffelfüllung im übergestülpten Würzkümmel-Würfel ist kümmerlich und dürfte fürderhin zu Rüffeln in Hülle und Fülle führen',
   },
   {
-    description: 'Russian text (Cyrillic)',
+    description: 'Cyrillic text (ru)',
     input: 'В глубине леса ручей тихо струился по гладким камням и опавшим листьям, отражая последние лучи заходящего солнца.',
   },
   {
-    description: 'Greek text',
+    description: 'Greek text (el)',
     input: 'Στην καρδιά του δάσους, ένα ρυάκι κυλούσε απαλά πάνω από τις λείες πέτρες και τα πεσμένα φύλλα.',
   },
   {
@@ -47,23 +47,23 @@ export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
     }, undefined, 2),
   },
   {
-    description: 'Metamorphosis by Franz Kafka (English)',
+    description: 'Metamorphosis by Franz Kafka (en)',
     input: { file: 'test/fixtures/ebooks/pg5200.txt' },
   },
   {
-    description: 'Die Verwandlung by Franz Kafka (German)',
+    description: 'Die Verwandlung by Franz Kafka (de)',
     input: { file: 'test/fixtures/ebooks/pg22367.txt' },
   },
   {
-    description: '道德經 by Laozi (Chinese)',
+    description: '道德經 by Laozi (zh)',
     input: { file: 'test/fixtures/ebooks/pg7337.txt' },
   },
   {
-    description: '羅生門 by Akutagawa Ryūnosuke (Japanese)',
+    description: '羅生門 by Akutagawa Ryūnosuke (ja)',
     input: { file: 'test/fixtures/ebooks/pg1982.txt' },
   },
   {
-    description: 'TypeScript ES5 Type Declarations (~4000 loc)',
+    description: 'TypeScript ES5 Type Declarations',
     input: { file: 'node_modules/typescript/lib/lib.es5.d.ts' },
   },
 ]
