@@ -1,10 +1,7 @@
 import { encode } from 'gpt-tokenizer/encoding/o200k_base'
 import { describe, expect, it } from 'vitest'
 import { estimateTokenCount } from '../src/index'
-import { BENCHMARK_SAMPLES, readSampleText } from './fixtures/samples'
-
-const MAX_SAMPLE_DEVIATION = 20
-const MAX_MEAN_DEVIATION = 7
+import { BENCHMARK_SAMPLES, MAX_MEAN_DEVIATION, MAX_SAMPLE_DEVIATION, readSampleText } from './fixtures/samples'
 
 async function measureDeviation(sample: (typeof BENCHMARK_SAMPLES)[number]): Promise<number> {
   const text = await readSampleText(sample)

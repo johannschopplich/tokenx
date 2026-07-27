@@ -3,6 +3,11 @@ import { join, resolve } from 'node:path'
 
 const rootDir = resolve(import.meta.dirname, '../..')
 
+/** Per-sample deviation bound (%) – enforced in CI, visualized as the bench chart's axis span */
+export const MAX_SAMPLE_DEVIATION = 20
+/** Mean deviation bound (%) across the corpus – enforced in CI */
+export const MAX_MEAN_DEVIATION = 7
+
 export interface BenchmarkSample {
   description: string
   /** Inline text, or a repo-root-relative file to load */
