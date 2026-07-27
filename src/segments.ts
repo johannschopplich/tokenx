@@ -13,14 +13,17 @@ const TOKEN_SPLIT_PATTERN = new RegExp(`(\\s+|${PATTERNS.punctuation.source}+)`)
 // All ratios are calibrated against OpenAI's o200k_base encoding
 const DEFAULT_CHARS_PER_TOKEN = 6
 const SHORT_TOKEN_THRESHOLD = 3
-// Kana runs merge into multi-character tokens (particles, common words),
-// unlike kanji and hanzi which price at roughly one token per character
+// Kana runs merge into multi-character tokens (particles, common words);
+// kanji and hanzi price at one token per character – the safe upper bound,
+// as modern vocabulary merges below it and classical text splits above it
 const KANA_CHARS_PER_TOKEN = 1.35
 
 const DEFAULT_LANGUAGE_CONFIGS: LanguageConfig[] = [
   { pattern: /[äöüßẞ]/i, averageCharsPerToken: 2.6 },
   { pattern: /[éèêëàâîïôûùüÿçœæáíóúñ]/i, averageCharsPerToken: 3 },
-  { pattern: /[ąćęłńóśźżěščřžýůúďťň]/i, averageCharsPerToken: 3.5 },
+  // Below the ~3.0 of accented segments on purpose: unaccented Slavic words
+  // fall through to the default ratio, and this compensates the shortfall
+  { pattern: /[ąćęłńóśźżěščřžýůúďťň]/i, averageCharsPerToken: 2.5 },
   { pattern: /[\u0430-\u044F\u0451]/i, averageCharsPerToken: 4 },
   { pattern: /[\u03AC-\u03CE]/i, averageCharsPerToken: 2.75 },
   // Anchored to pure emoji runs – symbols like ™ are Extended_Pictographic
@@ -83,7 +86,8 @@ function estimateSegmentTokens(
   }
 
   if (PATTERNS.numeric.test(segment)) {
-    return 1
+    // o200k chunks digit runs into groups of up to three digits
+    return Math.ceil(segment.length / 3)
   }
 
   if (segment.length <= SHORT_TOKEN_THRESHOLD) {

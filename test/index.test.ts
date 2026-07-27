@@ -25,7 +25,7 @@ describe('estimateTokenCount', () => {
 
   it('estimates the token count of the English excerpt', async () => {
     const input = await readFile(join(fixturesDir, 'texts/great-gatsby-en.txt'), 'utf-8')
-    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`4867`)
+    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`4868`)
   })
 
   it('estimates the token count of the German excerpt', async () => {
@@ -85,6 +85,11 @@ describe('estimateTokenCount', () => {
   it('prices kana runs below their character count, unlike kanji', () => {
     expect(estimateTokenCount('こんにちは')).toBe(4)
     expect(estimateTokenCount('你好世界')).toBe(4)
+  })
+
+  it('prices digit runs in groups of three like o200k', () => {
+    expect(estimateTokenCount('123')).toBe(1)
+    expect(estimateTokenCount('1234567890')).toBe(4)
   })
 
   it('prices emoji runs above their character count', () => {
