@@ -6,8 +6,16 @@ import {
   splitByTokens,
 } from '../src/index'
 
-const ENGLISH_TEXT = 'Hello, world! This is a short sentence.'
-const GERMAN_TEXT = 'Die pünktlich gewünschte Trüffelfüllung im übergestülpten Würzkümmel-Würfel ist kümmerlich und dürfte fürderhin zu Rüffeln in Hülle und Fülle führen'
+/**
+ * Pins the slice snapshots below to a ratio of the test's own choosing, so
+ * recalibrating the shipped ratios moves the benchmark rather than these tests
+ */
+const FIXED_OPTIONS = { defaultCharsPerToken: 4, languageConfigs: [] }
+
+/** Every word costs one token, so slice boundaries land between words */
+const SINGLE_TOKEN_WORDS = 'The old cat sat on a warm red mat.'
+/** Every word costs several, so slice boundaries land inside them */
+const MULTI_TOKEN_WORDS = 'Die pünktlich gewünschte Trüffelfüllung im übergestülpten Würzkümmel-Würfel ist kümmerlich und dürfte fürderhin zu Rüffeln in Hülle und Fülle führen.'
 
 describe('estimateTokenCount', () => {
   it('returns zero for empty input', () => {
@@ -17,17 +25,17 @@ describe('estimateTokenCount', () => {
 
   describe('pricing rules', () => {
     it('prices kana runs below one token per character', () => {
-      const kana = 'こんにちは'
+      const kana = 'こんにちはみなさん'
       expect(estimateTokenCount(kana)).toBeLessThan(kana.length)
     })
 
     it('prices han characters below one token each', () => {
-      const han = '你好世界'
+      const han = '人工智能技术发展迅速'
       expect(estimateTokenCount(han)).toBeLessThan(han.length)
     })
 
     it('prices hangul below one token each', () => {
-      const hangul = '안녕하세요'
+      const hangul = '안녕하세요반갑습니다'
       expect(estimateTokenCount(hangul)).toBeLessThan(hangul.length)
     })
 
@@ -42,7 +50,7 @@ describe('estimateTokenCount', () => {
     })
 
     it('prices words with an attached pictographic symbol like plain words', () => {
-      expect(estimateTokenCount('Gutenberg™')).toBe(2)
+      expect(estimateTokenCount('Gutenberg™')).toBe(estimateTokenCount('Gutenbergs'))
     })
 
     it('prices URLs well below one token per character', () => {
@@ -81,8 +89,8 @@ describe('estimateTokenCount', () => {
         languageConfigs: [{ pattern: /[\u4E00-\u9FFF]/, averageCharsPerToken: 2 }],
       }
 
-      expect(estimateTokenCount(input)).toBe(6)
       expect(estimateTokenCount(input, customOptions)).toBe(4)
+      expect(estimateTokenCount(input, customOptions)).not.toBe(estimateTokenCount(input))
     })
 
     it('ignores stateful regex flags in language configs', () => {
@@ -144,48 +152,50 @@ describe('sliceByTokens', () => {
   })
 
   it('returns the entire text when no bounds are given', () => {
-    expect(sliceByTokens(ENGLISH_TEXT)).toBe(ENGLISH_TEXT)
+    expect(sliceByTokens(SINGLE_TOKEN_WORDS)).toBe(SINGLE_TOKEN_WORDS)
   })
 
   it('reconstructs the input from adjacent slices', () => {
-    const firstTwoTokens = sliceByTokens(ENGLISH_TEXT, 0, 2)
-    const fromThirdToken = sliceByTokens(ENGLISH_TEXT, 2)
+    const firstTwoTokens = sliceByTokens(SINGLE_TOKEN_WORDS, 0, 2, FIXED_OPTIONS)
+    const fromThirdToken = sliceByTokens(SINGLE_TOKEN_WORDS, 2, undefined, FIXED_OPTIONS)
 
-    expect(firstTwoTokens).toMatchInlineSnapshot('"Hello,"')
-    expect(fromThirdToken).toMatchInlineSnapshot('" world! This is a short sentence."')
-    expect(firstTwoTokens + fromThirdToken).toBe(ENGLISH_TEXT)
+    expect(firstTwoTokens).toMatchInlineSnapshot(`"The old"`)
+    expect(fromThirdToken).toMatchInlineSnapshot(`" cat sat on a warm red mat."`)
+    expect(firstTwoTokens + fromThirdToken).toBe(SINGLE_TOKEN_WORDS)
   })
 
   it('cuts inside a segment when the boundary falls mid-word', () => {
-    expect(sliceByTokens(GERMAN_TEXT, 0, 3)).toMatchInlineSnapshot(`"Die pünktl"`)
-    expect(sliceByTokens(GERMAN_TEXT, 5, 10)).toMatchInlineSnapshot(`"wünschte Trüffe"`)
+    expect(sliceByTokens(MULTI_TOKEN_WORDS, 0, 3, FIXED_OPTIONS)).toMatchInlineSnapshot(`"Die pünktl"`)
+    expect(sliceByTokens(MULTI_TOKEN_WORDS, 5, 10, FIXED_OPTIONS)).toMatchInlineSnapshot(`"ünschte Trüffelfüll"`)
   })
 
   it('counts back from the end for negative indices', () => {
-    expect(sliceByTokens(GERMAN_TEXT, -3)).toMatchInlineSnapshot(`"lle führen"`)
-    expect(sliceByTokens(GERMAN_TEXT, -8, -3)).toMatchInlineSnapshot(`" in Hülle und Fül"`)
+    expect(sliceByTokens(MULTI_TOKEN_WORDS, -3, undefined, FIXED_OPTIONS)).toMatchInlineSnapshot(`" führen."`)
+    expect(sliceByTokens(MULTI_TOKEN_WORDS, -8, -3, FIXED_OPTIONS)).toMatchInlineSnapshot(`" Hülle und Fülle"`)
 
-    const withoutLastTwo = sliceByTokens(GERMAN_TEXT, 0, -2)
-    expect(GERMAN_TEXT.startsWith(withoutLastTwo)).toBe(true)
-    expect(withoutLastTwo.length).toBeLessThan(GERMAN_TEXT.length)
+    const withoutLastTwo = sliceByTokens(MULTI_TOKEN_WORDS, 0, -2, FIXED_OPTIONS)
+    expect(MULTI_TOKEN_WORDS.startsWith(withoutLastTwo)).toBe(true)
+    expect(withoutLastTwo.length).toBeLessThan(MULTI_TOKEN_WORDS.length)
   })
 
   it('returns an empty string when the range is empty or inverted', () => {
-    expect(sliceByTokens(GERMAN_TEXT, 10, 5)).toBe('')
-    expect(sliceByTokens(GERMAN_TEXT, 5, 5)).toBe('')
+    expect(sliceByTokens(MULTI_TOKEN_WORDS, 10, 5)).toBe('')
+    expect(sliceByTokens(MULTI_TOKEN_WORDS, 5, 5)).toBe('')
   })
 
   it('clamps out-of-range indices like Array.prototype.slice', () => {
-    const totalTokens = estimateTokenCount(GERMAN_TEXT)
+    const totalTokens = estimateTokenCount(MULTI_TOKEN_WORDS)
 
-    expect(sliceByTokens(GERMAN_TEXT, totalTokens + 10)).toBe('')
-    expect(sliceByTokens(GERMAN_TEXT, 0, totalTokens + 10)).toBe(GERMAN_TEXT)
-    expect(sliceByTokens(GERMAN_TEXT, -1000)).toBe(GERMAN_TEXT)
+    expect(sliceByTokens(MULTI_TOKEN_WORDS, totalTokens + 10)).toBe('')
+    expect(sliceByTokens(MULTI_TOKEN_WORDS, 0, totalTokens + 10)).toBe(MULTI_TOKEN_WORDS)
+    expect(sliceByTokens(MULTI_TOKEN_WORDS, -1000)).toBe(MULTI_TOKEN_WORDS)
   })
 
   it('applies custom options to slice boundaries', () => {
-    const defaultSlice = sliceByTokens(ENGLISH_TEXT, 0, 3)
-    const customSlice = sliceByTokens(ENGLISH_TEXT, 0, 3, { defaultCharsPerToken: 2 })
+    // Long ASCII words, so the default ratio governs rather than a language rule
+    const text = 'Estimation heuristics without a tokenizer'
+    const defaultSlice = sliceByTokens(text, 0, 3)
+    const customSlice = sliceByTokens(text, 0, 3, { defaultCharsPerToken: 2 })
 
     // With more tokens per text, the same token range covers less of it
     expect(customSlice.length).toBeLessThan(defaultSlice.length)
@@ -194,9 +204,9 @@ describe('sliceByTokens', () => {
 
 describe('splitByTokens', () => {
   it('splits text into chunks that reconstruct the input', () => {
-    const chunks = splitByTokens(ENGLISH_TEXT, 5)
+    const chunks = splitByTokens(SINGLE_TOKEN_WORDS, 5)
     expect(chunks.length).toBeGreaterThan(1)
-    expect(chunks.join('')).toBe(ENGLISH_TEXT)
+    expect(chunks.join('')).toBe(SINGLE_TOKEN_WORDS)
   })
 
   it('repeats trailing tokens of a chunk at the start of the next when overlap is set', () => {
