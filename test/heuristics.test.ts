@@ -8,10 +8,15 @@ import { estimateTokenCount } from '../src/index'
  * diff rather than a pass or a fail.
  */
 interface HeuristicBucket {
-  /** Chat-sized inputs – the scale where per-segment rounding bias shows first */
+  /** Sentence-length inputs – the scale where per-segment rounding bias shows first */
   short?: string[]
   /** Paragraph-length inputs, where that same rounding bias amortizes away */
   medium?: string[]
+  /**
+   * Set where the bucket records a gap rather than a rule that was fitted to
+   * it, so the deviation bound below does not apply
+   */
+  documentsGap?: boolean
 }
 
 interface SampleMeasurement {
@@ -32,29 +37,36 @@ const MAX_BUCKET_MEAN_ABSOLUTE_DEVIATION = 40
 
 const SAMPLE_LABEL_WIDTH = 46
 
+// Every language bucket is running text from an encyclopedia article on one
+// subject, not sentences written for the rule under test. A sentence built to
+// carry an accent in every word prices a language through a density its prose
+// never reaches, and fitting against one put the romance ratio 18% off the
+// mark it hits on real text
 const BUCKETS = {
   german: {
     short: [
-      'Schönes Wetter heute, oder?',
-      'Ich hätte gerne ein Stück Kuchen.',
-      'Die Universität ist für ihre Forschung berühmt.',
-      'Können wir das Meeting auf morgen verschieben?',
-      'Über den Dächern der Stadt geht die Sonne unter.',
+      'Röst- und Mahlgrad variieren je nach Zubereitungsart.',
+      'Je nach Sorte und Anbauort gibt es unterschiedliche Qualitätsstufen.',
+      'Zudem interagiert Kaffee signifikant mit verschiedenen Medikamenten.',
+      'Der Kaffeeanbau brachte Arabien eine Monopolrolle ein.',
+      'In den deutschen Sprachraum war der Kaffee bereits vorher gelangt.',
     ],
     medium: [
-      'Wir haben letzten Donnerstag den neuen Anmeldeprozess ausgerollt, und die Zahlen sehen schon jetzt besser aus als erwartet. Die Abschlussquote ist um etwa elf Prozent gestiegen, und Supportanfragen zum E-Mail-Schritt gibt es praktisch keine mehr. Ich würde es gern noch eine Woche laufen lassen, bevor wir etwas anderes ändern.',
+      'Ursprünglich konnten sich nur gut situierte Bürger und Aristokraten das aromatische Getränk leisten. Von ärmeren Bevölkerungsschichten und in Krisenzeiten wurde der Kaffee durch kaffeeähnliche Getränke wie Muckefuck, Malzkaffee, Stragelkaffee oder Zichorie ersetzt. Der nur noch wenig verbreitete Ausdruck „echter Bohnenkaffee“ entstand zur Abgrenzung gegenüber ebenfalls als Kaffee bezeichneten Ersatzprodukten.',
     ],
   },
   romance: {
     short: [
-      'Je voudrais un café et un croissant.',
-      'On se retrouve à la gare demain matin.',
-      '¿Cómo estás? Mañana será otro día.',
-      'Los niños están jugando en el jardín.',
+      'Les caféiers sont des arbustes des régions tropicales du genre Coffea, de la famille des Rubiacées.',
+      'La consommation de café s\'étendit à l\'Égypte.',
+      'Les pamphlets et libelles sont distribués dans les cafés.',
+      'Dependiendo de la receta hay diversas formas de prepararlo.',
+      'Tienen hojas persistentes y opuestas y bajo un poco de sombra crecen mejor.',
+      'Produce un café fino y aromático, y necesita un clima fresco.',
     ],
     medium: [
-      'On a déployé le nouveau parcours d\'inscription jeudi dernier, et les chiffres sont déjà meilleurs que prévu. Le taux de finalisation a augmenté d\'environ onze pour cent, et les tickets support sur l\'étape e-mail ont pratiquement disparu. J\'aimerais qu\'on laisse tourner encore une semaine avant de toucher à autre chose.',
-      'Lanzamos el nuevo proceso de registro el jueves pasado y los números ya se ven mejor de lo esperado. La tasa de finalización subió alrededor de un once por ciento y los tickets de soporte sobre el paso del email prácticamente desaparecieron. Me gustaría dejarlo así una semana más antes de tocar otra cosa.',
+      'Le café est une boisson énergisante psychotrope stimulante, obtenue à partir des graines torréfiées de diverses variétés de caféiers, des arbustes du genre Coffea. C\'est l\'une des trois boissons contenant de la caféine les plus consommées dans le monde, avec le thé et le maté.',
+      'El café es una bebida que se obtiene mediante el percolado de agua caliente a través de los granos tostados y molidos de los frutos de la planta del café (cafeto); es altamente estimulante por su contenido de cafeína, una sustancia psicoactiva. Es uno de los productos más comercializados a nivel mundial, además de estar entre las tres bebidas más consumidas por el ser humano (junto con el agua y el té).',
     ],
   },
   // Polish only. Czech shares í, á, é and ú with the romance config, which is
@@ -62,116 +74,107 @@ const BUCKETS = {
   // the `czechShadowed` bucket. Mixing the two would blur the 2.5 this measures
   slavicLatin: {
     short: [
-      'Dziękuję bardzo, do zobaczenia jutro.',
-      'Czy możemy przełożyć spotkanie na jutro?',
-      'Wrócę później, muszę jeszcze skończyć raport.',
-      'Życzę miłego weekendu i do usłyszenia.',
-      'Gdzie znajdę najbliższą stację kolejową?',
+      'Jedna z najpopularniejszych używek na świecie i główne źródło kofeiny.',
+      'Nazwa kawy pochodzi prawdopodobnie od arabskiego kahwa.',
+      'Nazwa może wywodzić się od znanego z uprawy kawy regionu Kaffa w Etiopii.',
+      'Wraz z ekspansją arabską zwyczaj picia kawy rozpowszechnił się na całym Bliskim Wschodzie.',
+      'Początkowo budził on wiele nieufności, czy wręcz niechęci.',
     ],
     medium: [
-      'Nowy proces rejestracji wdrożyliśmy w zeszły czwartek i wyniki już teraz wyglądają lepiej, niż się spodziewaliśmy. Odsetek ukończonych rejestracji wzrósł o jakieś jedenaście procent, a zgłoszeń do supportu dotyczących kroku z adresem e-mail praktycznie nie ma. Chciałbym zostawić to jeszcze na tydzień, zanim zmienimy cokolwiek innego.',
+      'Kawa – napój sporządzany z palonych, a następnie zmielonych lub poddanych instantyzacji ziaren kawowca, zwykle podawany na gorąco. Pochodzi z Etiopii, w Europie pojawiła się około XVI wieku. Jedna z najpopularniejszych używek na świecie i główne źródło kofeiny.',
     ],
   },
   czechShadowed: {
     short: [
-      'Děkuji, přeji hezký den.',
-      'Na shledanou, uvidíme se zítra večer.',
-      'Podíl dokončených registrací vzrostl.',
-      'Jedenáct procent je lepší než nic.',
+      'Označují se tak i samotná semena, případně semena rozemletá na prášek.',
+      'Především se káva pije pro své povzbuzující účinky.',
+      'Je také velmi oblíbeným nápojem při setkávání lidí a je často podávána po jídle.',
+      'Nejčastěji se pije káva ze zrnek druhu arabika a robusta.',
+      'Pravlastí kávovníku je africký kontinent, konkrétně Etiopie.',
     ],
     medium: [
-      'Nový registrační proces jsme nasadili minulý čtvrtek a čísla už teď vypadají lépe, než jsme čekali. Podíl dokončených registrací vzrostl přibližně o jedenáct procent a dotazy na podporu ohledně kroku s e-mailem prakticky zmizely. Rád bych to nechal běžet ještě týden, než budeme měnit něco dalšího.',
+      'Existují dva základní druhy kávovníků, které se odlišují růstem, svými nároky na pěstování i finální chutí kávy. Oblast, ve které kávovník roste, má rovněž vliv na chuť kávy. Kávovníky pěstované ve vyšších nadmořských výškách poskytují kávová zrna jemnější chuti a s nižším obsahem kofeinu.',
     ],
   },
   cyrillic: {
     short: [
-      'Привет, как дела?',
-      'Сегодня хорошая погода.',
-      'Я изучаю русский язык.',
-      'Можем ли мы перенести встречу на завтра?',
-      'Спасибо за помощь!',
+      'После кофейное дерево было привезено на Аравийский полуостров.',
+      'В XVI веке стал широко распространяться в Османской империи.',
+      'Это послужило концом арабской монополии на выращивание кофе.',
+      'Арабика — наиболее распространённый вид кофе.',
+      'Робуста обычно считается менее изысканным сортом кофейного зерна.',
     ],
     medium: [
-      'Новый процесс регистрации мы выкатили в прошлый четверг, и цифры уже выглядят лучше, чем мы ожидали. Доля завершённых регистраций выросла примерно на одиннадцать процентов, а обращения в поддержку по шагу с вводом почты практически исчезли. Хотел бы оставить всё как есть ещё на неделю, прежде чем менять что-то ещё.',
+      'В России кофе появился при царе Алексее Михайловиче и считался средством от многих болезней, в том числе от мигрени. Тем не менее именно обычай пить кофе связывают с именем Петра I. Он, по утверждениям историков, насильно поил «горьким пойлом» приближённых. В 1703 году был открыт первый кофейный дом.',
     ],
   },
   greek: {
     short: [
-      'Καλημέρα, τι κάνεις σήμερα;',
-      'Ευχαριστώ πολύ για τη βοήθεια.',
-      'Θα τα πούμε αύριο το πρωί.',
+      'Όταν ο καφές πρωτοήρθε στην Ευρώπη ήταν γνωστός ως «αραβικό κρασί».',
+      'Η ιστορία είναι λίγο ασαφής ως προς το τι συνέβη μετά.',
+      'Είναι ένα «εύρωστο» είδος με υψηλή παραγωγή ανά φυτό.',
+      'Η πιο γνωστή επίδραση του καφέ αφορά στο κεντρικό νευρικό σύστημα.',
+      'Για αυτό τον λόγο ο καφές συνήθως καταναλώνεται τις πρωινές ώρες ή κατά τη διάρκεια της εργασίας.',
     ],
     medium: [
-      'Ανεβάσαμε τη νέα διαδικασία εγγραφής την περασμένη Πέμπτη και τα νούμερα δείχνουν ήδη καλύτερα από ό,τι περιμέναμε. Το ποσοστό ολοκλήρωσης ανέβηκε περίπου έντεκα τοις εκατό και τα αιτήματα υποστήριξης για το βήμα με το email έχουν σχεδόν σταματήσει. Θα ήθελα να το αφήσουμε άλλη μία εβδομάδα πριν αλλάξουμε κάτι άλλο.',
+      'Οι Ολλανδοί ήταν οι πρώτοι που κατάφεραν να πάρουν σπόρους καφέ και να τον καλλιεργήσουν αρχικά στις αποικίες τους στην Ινδονησία. Την ίδια εποχή μάλιστα το φυτό του καφέ πέρασε και στην Ινδία, όπου μετέφερε σπόρους λαθραία ο Μπάμπα Μπουντάν κρύβοντας τους στις πτυχές των ρούχων του επιστρέφοντας από τη Μέκκα.',
     ],
   },
   english: {
     short: [
-      'Hey, are you coming to the meeting later?',
-      'Sounds good, see you at 5!',
-      'Can you send me the report by tomorrow morning?',
-      'Thanks for the quick turnaround on this!',
+      'Coffee is a beverage brewed from roasted ground coffee beans.',
+      'It is usually served hot, although chilled or iced coffee is common.',
+      'Green, unroasted coffee is traded as an agricultural commodity.',
+      'The drink appears to be a relatively recent development.',
+      'Accounts differ on the origin of the coffee plant before its appearance in Yemen.',
     ],
     medium: [
-      'We shipped the new onboarding flow last Thursday and the numbers already look better than expected. Sign-up completion is up about eleven percent, and support tickets about the email step have basically stopped. I would like to leave it running for another week before we touch anything else.',
-      'Vite strives to offer established patterns out of the box, so before creating a new plugin make sure that you check the Features guide to see if your need is covered. Also review available community plugins, both in the form of a compatible Rollup plugin and Vite specific plugins.',
+      'Coffee has become a vital cash crop for many developing countries. Over 100 million people in developing countries have become dependent on coffee as their primary source of income. It has become the primary export and economic backbone for African countries like Uganda, Burundi, Rwanda, and Ethiopia, as well as many Central American countries.',
     ],
   },
   japanese: {
     short: [
-      'お疲れさまです、今いいですか？',
-      'ありがとうございました。',
-      '今日は天気がいいですね。',
-      'ミーティング、リスケできますか？',
-      '今向かってます。',
-      '東京タワー、行きませんか？',
-      'すみません、駅はどこですか？',
-      'だいじょうぶです。',
-      '来週の予定を共有しておきます。',
-      '資料は明日の朝までに送ります。',
-      '確認しましたので、進めてください。',
-      'この設定はデフォルトのままで大丈夫です。',
+      'コーヒー中のカフェインなどの興奮作用から労働者には最適な嗜好品とされている。',
+      '精製された生豆は生産国で集積され、選別・等級付けされてから消費国に輸出される。',
+      '生豆は消費地においてコーヒー独特の香味を生み出すために焙煎される。',
+      'だが、記録が残っていないだけでアラビアコーヒーの歴史はそれよりずっと古いと推測されている。',
+      'コーヒー文化が広まるにつれ、抽出法が工夫され始めた。',
     ],
     medium: [
-      '先週木曜に新しい登録フローをリリースしたのですが、数字は思っていたより良さそうです。登録完了率は一割ちょっと上がって、メール周りの問い合わせもほぼ来なくなりました。ほかに手を入れる前に、もう一週間このまま様子を見たいと思っています。',
-      'プラグインを作成する際には、vite.config.js にインラインで記述できます。そのために新しいパッケージを作成する必要はありません。あるプラグインが自分のプロジェクトで役に立ったことがわかったら、エコシステムにいる他の人を助けるために共有することを検討してください。',
+      '伝播ルートはエチオピア→イエメン→メッカ（アラビアコーヒー）→オスマントルコ帝国（トルココーヒー）→ヨーロッパ→世界中に広まったと推定されるがはっきりはしていない。各間の伝播には「直接伝わった」のか「記録が無いだけで、その間に何か中継があったのか」もはっきりしていない。アラビアコーヒーで最古記録はイエメンの修道院で15世紀半ばである。だが、記録が残っていないだけでアラビアコーヒーの歴史はそれよりずっと古いと推測されている。',
     ],
   },
   chinese: {
     short: [
-      '你好，在吗？',
-      '今天天气不错啊。',
-      '我最近在学中文。',
-      '人工智能这块变化太快了。',
-      '请问洗手间在哪里？',
-      '谢谢你帮忙，辛苦了。',
-      '这个方案我觉得可行。',
-      '会议改到下周三下午。',
+      '采收的成熟咖啡果会经过剥离果肉的初步加工，再经过烘焙的工序，而成为能制作咖啡的咖啡豆。',
+      '因此，公平贸易咖啡与有机咖啡是一个不断扩大的市场。',
+      '但此故事截至1671年并没有得到任何记载，因此可能是杜撰的。',
+      '研磨的方法产出的咖啡末比较均匀，在烹制的时候出味也比较一致。',
+      '研磨的速度越慢，摩擦产生的热量越少，因而咖啡的香气不易流失。',
     ],
     medium: [
-      '新的注册流程上周四已经上线了，数据看起来比预期还要好。注册完成率提高了一成多，邮箱验证那一步的工单基本上没有了。我想再观察一周，再考虑动其他地方。',
-      '人工智能应用中较为知名的例子包括高级网络搜索引擎、聊天机器人、虚拟助手、自动驾驶汽车，以及在策略游戏（如国际象棋和围棋）中的对弈和分析。自2020年代以来，生成式人工智能已被广泛用于根据文本提示生成图像、音频和视频。',
+      '16世纪初，咖啡从也门的摩卡港传播到埃及，随后咖啡馆还出现在叙利亚阿勒颇，并于1554年在奥斯曼帝国首都伊斯坦布尔开业。1511年，由于也门麦加的宗教领袖认为咖啡具有刺激作用，便开始禁止穆斯林饮用咖啡，造成其余阿拉伯世界的苏丹和宗教领袖也相继效仿；其中两位奥斯曼帝国苏丹更是同样出于政治考量，而在1517年和1623年两度禁止咖啡。',
     ],
   },
   korean: {
     short: [
-      '안녕하세요, 오늘 회의 몇 시죠?',
-      '네, 알겠습니다. 감사합니다!',
-      '내일 아침까지 보고서 보내주실 수 있나요?',
-      '빨리 처리해 주셔서 감사합니다.',
-      '점심 뭐 드실래요?',
-      '이번 주 금요일까지 마무리하겠습니다.',
-      '설정은 기본값 그대로 두셔도 됩니다.',
+      '일반적으로 뜨겁게 제공되지만 차가운 아이스 커피가 일반적이다.',
+      '16세기에 이 음료는 중동과 북아프리카의 나머지 지역으로 퍼져나갔고 나중에 유럽으로 퍼졌다.',
+      '커피는 많은 사회에서 중요한 역할을 해왔다.',
+      '그곳에서부터 커피는 이집트와 예멘으로 전파되었다.',
+      '이집트와 예멘에서는 커피가 종교적 의식에 사용되기도 했다.',
     ],
     medium: [
-      '지난주 목요일에 새 가입 플로우를 배포했는데 수치가 예상보다 잘 나오고 있습니다. 가입 완료율이 눈에 띄게 올랐고, 이메일 인증 단계 문의는 거의 안 들어옵니다. 다른 걸 건드리기 전에 일주일 정도 더 지켜보려고 합니다.',
-      '플러그인을 만들 때는 vite.config.js 안에 인라인으로 작성할 수 있습니다. 이를 위해 새 패키지를 만들 필요는 없습니다. 어떤 플러그인이 여러 프로젝트에서 유용하다는 것을 확인했다면, 생태계의 다른 사람들을 돕기 위해 공유하는 것을 고려해 보세요.',
+      '커피는 이제 세계적인 상품이 되었지만 홍해 주변의 음식 전통과 밀접하게 연관되어 있는 오랜 역사를 가지고 있다. 현대 음료로서 커피를 마시는 것에 대한 가장 신뢰할 수 있는 증거는 15세기 중반 아라비아 남부의 현대 예멘 수피 사원에서 나타난다. 그곳에서 커피 씨앗은 현재 준비되는 방식과 유사한 방식으로 처음으로 로스팅되고 양조되었다. 커피 원두는 소말리아 해안 중개인을 통해 에티오피아고원의 예멘인이 조달하여 예멘에서 재배했다. 16세기에 이 음료는 중동과 북아프리카의 나머지 지역으로 퍼져나갔고 나중에 유럽으로 퍼졌다.',
     ],
   },
   // Arabic, Hindi, Thai, and Hebrew share one path – they match no language
   // config and fall through to `defaultCharsPerToken`. One bucket, because
-  // four would measure the same branch four times
+  // four would measure the same branch four times. Translations of one
+  // paragraph rather than running text: with no rule to misfit, holding the
+  // content constant is what makes the four scripts comparable
   unconfigured: {
+    documentsGap: true,
     short: [
       'مرحبا، هل الاجتماع اليوم الساعة الثالثة؟',
       'नमस्ते, आज मीटिंग तीन बजे है क्या?',
@@ -201,18 +204,22 @@ const BUCKETS = {
       'plagiaristic impressionability neighbourhood dissimilarity aggressively irrelevantly entertained instructions',
     ],
   },
-  // Runs of four characters and up are the only inputs that reach the
-  // punctuation rule – shorter ones exit at the short-token threshold first
+  // No ratio fits a punctuation run: o200k has single tokens for long repeats
+  // of one character, so a 32-character rule costs one token, while `}]}},`
+  // costs three. Measured here at 1.5 to 32 characters per token. The shipped
+  // ratio is not fitted against this bucket but against whole documents, where
+  // most punctuation merges into the word token before it instead
   punctuationRuns: {
+    documentsGap: true,
     short: [
       '----',
-      '======',
-      '***',
-      '...',
-      '/* */',
-      '<!-- -->',
-      '=>',
-      '::::',
+      '--------------------------------',
+      '============================================',
+      '......',
+      '>>>>>>>',
+      '}]}},',
+      '?!?!?!',
+      '</div></section>',
     ],
   },
   mixedScript: {
@@ -263,95 +270,111 @@ const BUCKETS = {
       '### Conditional application\n\nBy default plugins are invoked for both serve and build. In cases where a plugin needs to be conditionally applied only during serve or build, use the `apply` property:\n\n```js\nexport default defineConfig({\n  plugins: [\n    {\n      ...typescript2(),\n      apply: \'build\',\n    },\n  ],\n})\n```\n',
     ],
   },
+  // Line-broken text against its wrapped equivalent: a break after a word
+  // buys a token of its own, so lists and chat logs cost more than a
+  // paragraph carrying the same words
+  lineBreaks: {
+    medium: [
+      '- Install the package\n- Run the CLI\n- Inspect the output\n- Report a bug\n',
+      'alice: are we still on for the review?\nbob: yes, ten minutes\nalice: perfect\nbob: bringing the notes\n',
+      'The estimate walks the text once, splitting it into\nsegments on whitespace and punctuation, and prices\neach segment with the first rule that matches it.\n',
+      'name,plan,seats\nusr_29f84h,pro,12\nusr_71b2c9,team,4\nusr_04d8e1,free,1\n',
+    ],
+  },
 } satisfies Record<string, HeuristicBucket>
 
 describe('heuristic calibration', () => {
   describe('accented and non-Latin alphabets', () => {
     it('prices German text', () => {
       expect(measureBucket(BUCKETS.german)).toMatchInlineSnapshot(`
-        "short    8 →  8     0.0%  Schönes Wetter heute, oder?
-        short    7 →  9   +28.6%  Ich hätte gerne ein Stück Kuchen.
-        short   10 → 14   +40.0%  Die Universität ist für ihre Forschung berühm…
-        short   11 → 10    -9.1%  Können wir das Meeting auf morgen verschieben?
-        short   12 → 13    +8.3%  Über den Dächern der Stadt geht die Sonne unt…
-        medium  68 → 70    +2.9%  Wir haben letzten Donnerstag den neuen Anmeld…
-        mean              +11.8%
-        mean |dev|         14.8%"
+        "short   16 → 14   -12.5%  Röst- und Mahlgrad variieren je nach Zubereit…
+        short   14 → 17   +21.4%  Je nach Sorte und Anbauort gibt es unterschie…
+        short   14 → 12   -14.3%  Zudem interagiert Kaffee signifikant mit vers…
+        short   13 → 10   -23.1%  Der Kaffeeanbau brachte Arabien eine Monopolr…
+        short   13 → 13     0.0%  In den deutschen Sprachraum war der Kaffee be…
+        medium  95 → 93    -2.1%  Ursprünglich konnten sich nur gut situierte B…
+        mean               -5.1%
+        mean |dev|         12.2%"
       `)
     })
 
     it('prices French and Spanish text', () => {
       expect(measureBucket(BUCKETS.romance)).toMatchInlineSnapshot(`
-        "short    9 → 11   +22.2%  Je voudrais un café et un croissant.
-        short    9 → 10   +11.1%  On se retrouve à la gare demain matin.
-        short   10 → 12   +20.0%  ¿Cómo estás? Mañana será otro día.
-        short    8 → 11   +37.5%  Los niños están jugando en el jardín.
-        medium  66 → 71    +7.6%  On a déployé le nouveau parcours d'inscriptio…
-        medium  63 → 72   +14.3%  Lanzamos el nuevo proceso de registro el juev…
-        mean              +18.8%
-        mean |dev|         18.8%"
+        "short   24 → 25    +4.2%  Les caféiers sont des arbustes des régions tr…
+        short   14 → 14     0.0%  La consommation de café s'étendit à l'Égypte.
+        short   13 → 15   +15.4%  Les pamphlets et libelles sont distribués dan…
+        short   12 → 13    +8.3%  Dependiendo de la receta hay diversas formas …
+        short   18 → 16   -11.1%  Tienen hojas persistentes y opuestas y bajo u…
+        short   14 → 17   +21.4%  Produce un café fino y aromático, y necesita …
+        medium  69 → 69     0.0%  Le café est une boisson énergisante psychotro…
+        medium  93 → 97    +4.3%  El café es una bebida que se obtiene mediante…
+        mean               +5.3%
+        mean |dev|          8.1%"
       `)
     })
 
     it('prices Polish text', () => {
       expect(measureBucket(BUCKETS.slavicLatin)).toMatchInlineSnapshot(`
-        "short    13 →  11   -15.4%  Dziękuję bardzo, do zobaczenia jutro.
-        short    11 →  13   +18.2%  Czy możemy przełożyć spotkanie na jutro?
-        short    15 →  14    -6.7%  Wrócę później, muszę jeszcze skończyć raport.
-        short    14 →  14     0.0%  Życzę miłego weekendu i do usłyszenia.
-        short    14 →  16   +14.3%  Gdzie znajdę najbliższą stację kolejową?
-        medium  106 → 103    -2.8%  Nowy proces rejestracji wdrożyliśmy w zeszły …
-        mean                 +1.3%
-        mean |dev|            9.6%"
+        "short   21 → 19    -9.5%  Jedna z najpopularniejszych używek na świecie…
+        short   16 → 11   -31.3%  Nazwa kawy pochodzi prawdopodobnie od arabski…
+        short   27 → 19   -29.6%  Nazwa może wywodzić się od znanego z uprawy k…
+        short   31 → 27   -12.9%  Wraz z ekspansją arabską zwyczaj picia kawy r…
+        short   23 → 22    -4.3%  Początkowo budził on wiele nieufności, czy wr…
+        medium  81 → 73    -9.9%  Kawa – napój sporządzany z palonych, a następ…
+        mean              -16.3%
+        mean |dev|         16.3%"
       `)
     })
 
     it('prices Czech text, which the romance config shadows', () => {
       expect(measureBucket(BUCKETS.czechShadowed)).toMatchInlineSnapshot(`
-        "short   12 → 10   -16.7%  Děkuji, přeji hezký den.
-        short   16 → 12   -25.0%  Na shledanou, uvidíme se zítra večer.
-        short   11 → 12    +9.1%  Podíl dokončených registrací vzrostl.
-        short   10 → 11   +10.0%  Jedenáct procent je lepší než nic.
-        medium  92 → 91    -1.1%  Nový registrační proces jsme nasadili minulý …
-        mean               -4.7%
-        mean |dev|         12.4%"
+        "short    25 →  21   -16.0%  Označují se tak i samotná semena, případně se…
+        short    17 →  16    -5.9%  Především se káva pije pro své povzbuzující ú…
+        short    26 →  27    +3.8%  Je také velmi oblíbeným nápojem při setkávání…
+        short    22 →  15   -31.8%  Nejčastěji se pije káva ze zrnek druhu arabik…
+        short    22 →  18   -18.2%  Pravlastí kávovníku je africký kontinent, kon…
+        medium  101 →  92    -8.9%  Existují dva základní druhy kávovníků, které …
+        mean                -12.8%
+        mean |dev|           14.1%"
       `)
     })
 
     it('prices Russian text', () => {
       expect(measureBucket(BUCKETS.cyrillic)).toMatchInlineSnapshot(`
-        "short    6 →  5   -16.7%  Привет, как дела?
-        short    6 →  6     0.0%  Сегодня хорошая погода.
-        short    6 →  6     0.0%  Я изучаю русский язык.
-        short   12 → 10   -16.7%  Можем ли мы перенести встречу на завтра?
-        short    4 →  5   +25.0%  Спасибо за помощь!
-        medium  76 → 76     0.0%  Новый процесс регистрации мы выкатили в прошл…
-        mean               -1.4%
-        mean |dev|          9.7%"
+        "short   18 → 13   -27.8%  После кофейное дерево было привезено на Арави…
+        short   16 → 14   -12.5%  В XVI веке стал широко распространяться в Осм…
+        short   17 → 13   -23.5%  Это послужило концом арабской монополии на вы…
+        short   11 → 11     0.0%  Арабика — наиболее распространённый вид кофе.
+        short   19 → 13   -31.6%  Робуста обычно считается менее изысканным сор…
+        medium  88 → 71   -19.3%  В России кофе появился при царе Алексее Михай…
+        mean              -19.1%
+        mean |dev|         19.1%"
       `)
     })
 
     it('prices Greek text', () => {
       expect(measureBucket(BUCKETS.greek)).toMatchInlineSnapshot(`
-        "short    10 →  10     0.0%  Καλημέρα, τι κάνεις σήμερα;
-        short    12 →  11    -8.3%  Ευχαριστώ πολύ για τη βοήθεια.
-        short    11 →  10    -9.1%  Θα τα πούμε αύριο το πρωί.
-        medium  106 → 108    +1.9%  Ανεβάσαμε τη νέα διαδικασία εγγραφής την περα…
-        mean                 -3.9%
-        mean |dev|            4.8%"
+        "short    28 →  24   -14.3%  Όταν ο καφές πρωτοήρθε στην Ευρώπη ήταν γνωστ…
+        short    18 →  20   +11.1%  Η ιστορία είναι λίγο ασαφής ως προς το τι συν…
+        short    20 →  18   -10.0%  Είναι ένα «εύρωστο» είδος με υψηλή παραγωγή α…
+        short    23 →  23     0.0%  Η πιο γνωστή επίδραση του καφέ αφορά στο κεντ…
+        short    31 →  35   +12.9%  Για αυτό τον λόγο ο καφές συνήθως καταναλώνετ…
+        medium  114 → 106    -7.0%  Οι Ολλανδοί ήταν οι πρώτοι που κατάφεραν να π…
+        mean                 -1.2%
+        mean |dev|            9.2%"
       `)
     })
 
     it('prices English text at the default ratio', () => {
       expect(measureBucket(BUCKETS.english)).toMatchInlineSnapshot(`
-        "short   10 → 10     0.0%  Hey, are you coming to the meeting later?
-        short    9 →  8   -11.1%  Sounds good, see you at 5!
-        short   10 → 11   +10.0%  Can you send me the report by tomorrow mornin…
-        short    8 →  9   +12.5%  Thanks for the quick turnaround on this!
-        medium  53 → 60   +13.2%  We shipped the new onboarding flow last Thurs…
-        medium  56 → 61    +8.9%  Vite strives to offer established patterns ou…
-        mean               +5.6%
-        mean |dev|          9.3%"
+        "short   11 → 12    +9.1%  Coffee is a beverage brewed from roasted grou…
+        short   14 → 15    +7.1%  It is usually served hot, although chilled or…
+        short   13 → 14    +7.7%  Green, unroasted coffee is traded as an agric…
+        short   10 → 12   +20.0%  The drink appears to be a relatively recent d…
+        short   15 → 17   +13.3%  Accounts differ on the origin of the coffee p…
+        medium  62 → 72   +16.1%  Coffee has become a vital cash crop for many …
+        mean              +12.2%
+        mean |dev|         12.2%"
       `)
     })
   })
@@ -360,55 +383,40 @@ describe('heuristic calibration', () => {
   describe('CJK scripts', () => {
     it('prices Japanese text', () => {
       expect(measureBucket(BUCKETS.japanese)).toMatchInlineSnapshot(`
-        "short   12 → 10   -16.7%  お疲れさまです、今いいですか？
-        short    2 →  8  +300.0%  ありがとうございました。
-        short    7 →  8   +14.3%  今日は天気がいいですね。
-        short   10 → 11   +10.0%  ミーティング、リスケできますか？
-        short    6 →  6     0.0%  今向かってます。
-        short   10 →  9   -10.0%  東京タワー、行きませんか？
-        short   11 →  9   -18.2%  すみません、駅はどこですか？
-        short    7 →  6   -14.3%  だいじょうぶです。
-        short   11 → 10    -9.1%  来週の予定を共有しておきます。
-        short   10 → 10     0.0%  資料は明日の朝までに送ります。
-        short    9 → 11   +22.2%  確認しましたので、進めてください。
-        short   13 → 13     0.0%  この設定はデフォルトのままで大丈夫です。
-        medium  80 → 75    -6.3%  先週木曜に新しい登録フローをリリースしたのですが、数字は思っていたより良さそうです。登録完…
-        medium  85 → 85     0.0%  プラグインを作成する際には、vite.config.js にインラインで記述できます。その…
-        mean              +19.4%
-        mean |dev|         30.1%"
+        "short    33 →  25   -24.2%  コーヒー中のカフェインなどの興奮作用から労働者には最適な嗜好品とされている。
+        short    33 →  26   -21.2%  精製された生豆は生産国で集積され、選別・等級付けされてから消費国に輸出される。
+        short    32 →  22   -31.3%  生豆は消費地においてコーヒー独特の香味を生み出すために焙煎される。
+        short    37 →  29   -21.6%  だが、記録が残っていないだけでアラビアコーヒーの歴史はそれよりずっと古いと推測されている。
+        short    23 →  17   -26.1%  コーヒー文化が広まるにつれ、抽出法が工夫され始めた。
+        medium  186 → 136   -26.9%  伝播ルートはエチオピア→イエメン→メッカ（アラビアコーヒー）→オスマントルコ帝国（トルココ…
+        mean                -25.2%
+        mean |dev|           25.2%"
       `)
     })
 
     it('prices Chinese text', () => {
       expect(measureBucket(BUCKETS.chinese)).toMatchInlineSnapshot(`
-        "short    4 →  4     0.0%  你好，在吗？
-        short    6 →  6     0.0%  今天天气不错啊。
-        short    6 →  6     0.0%  我最近在学中文。
-        short    9 →  8   -11.1%  人工智能这块变化太快了。
-        short    7 →  6   -14.3%  请问洗手间在哪里？
-        short    9 →  7   -22.2%  谢谢你帮忙，辛苦了。
-        short    7 →  7     0.0%  这个方案我觉得可行。
-        short    8 →  7   -12.5%  会议改到下周三下午。
-        medium  51 → 49    -3.9%  新的注册流程上周四已经上线了，数据看起来比预期还要好。注册完成率提高了一成多，邮箱验证那一…
-        medium  76 → 72    -5.3%  人工智能应用中较为知名的例子包括高级网络搜索引擎、聊天机器人、虚拟助手、自动驾驶汽车，以及…
-        mean               -6.9%
-        mean |dev|          6.9%"
+        "short    41 →  29   -29.3%  采收的成熟咖啡果会经过剥离果肉的初步加工，再经过烘焙的工序，而成为能制作咖啡的咖啡豆。
+        short    20 →  17   -15.0%  因此，公平贸易咖啡与有机咖啡是一个不断扩大的市场。
+        short    21 →  20    -4.8%  但此故事截至1671年并没有得到任何记载，因此可能是杜撰的。
+        short    24 →  20   -16.7%  研磨的方法产出的咖啡末比较均匀，在烹制的时候出味也比较一致。
+        short    29 →  20   -31.0%  研磨的速度越慢，摩擦产生的热量越少，因而咖啡的香气不易流失。
+        medium  147 → 111   -24.5%  16世纪初，咖啡从也门的摩卡港传播到埃及，随后咖啡馆还出现在叙利亚阿勒颇，并于1554年在…
+        mean                -20.2%
+        mean |dev|           20.2%"
       `)
     })
 
     it('prices Korean text', () => {
       expect(measureBucket(BUCKETS.korean)).toMatchInlineSnapshot(`
-        "short   10 → 12   +20.0%  안녕하세요, 오늘 회의 몇 시죠?
-        short    7 → 10   +42.9%  네, 알겠습니다. 감사합니다!
-        short   14 → 14     0.0%  내일 아침까지 보고서 보내주실 수 있나요?
-        short   10 → 10     0.0%  빨리 처리해 주셔서 감사합니다.
-        short    8 →  7   -12.5%  점심 뭐 드실래요?
-        short   11 → 12    +9.1%  이번 주 금요일까지 마무리하겠습니다.
-        short   11 → 11     0.0%  설정은 기본값 그대로 두셔도 됩니다.
-        medium  68 → 72    +5.9%  지난주 목요일에 새 가입 플로우를 배포했는데 수치가 예상보다 잘 나오고 있습니다.…
-        medium  67 → 82   +22.4%  플러그인을 만들 때는 vite.config.js 안에 인라인으로 작성할 수 있습니…
-        mean               +9.7%
-        mean |dev|         12.5%"
+        "short    22 →  18   -18.2%  일반적으로 뜨겁게 제공되지만 차가운 아이스 커피가 일반적이다.
+        short    36 →  29   -19.4%  16세기에 이 음료는 중동과 북아프리카의 나머지 지역으로 퍼져나갔고 나중에 유럽으…
+        short    12 →  14   +16.7%  커피는 많은 사회에서 중요한 역할을 해왔다.
+        short    19 →  16   -15.8%  그곳에서부터 커피는 이집트와 예멘으로 전파되었다.
+        short    21 →  18   -14.3%  이집트와 예멘에서는 커피가 종교적 의식에 사용되기도 했다.
+        medium  180 → 172    -4.4%  커피는 이제 세계적인 상품이 되었지만 홍해 주변의 음식 전통과 밀접하게 연관되어 …
+        mean                 -9.2%
+        mean |dev|           14.8%"
       `)
     })
   })
@@ -462,18 +470,29 @@ describe('heuristic calibration', () => {
   })
 
   describe('structural segments', () => {
+    // No bucket mean – the runs pull in both directions by construction, and
+    // averaging them would hide the spread that makes the ratio unfittable
     it('prices punctuation runs', () => {
-      expect(measureBucket(BUCKETS.punctuationRuns)).toMatchInlineSnapshot(`
+      expect(measureBucket(BUCKETS.punctuationRuns, { hasMean: false })).toMatchInlineSnapshot(`
         "short  1 → 1     0.0%  ----
-        short  1 → 1     0.0%  ======
-        short  1 → 1     0.0%  ***
-        short  1 → 1     0.0%  ...
-        short  2 → 2     0.0%  /* */
-        short  2 → 2     0.0%  <!-- -->
-        short  1 → 1     0.0%  =>
-        short  1 → 1     0.0%  ::::
-        mean             0.0%
-        mean |dev|       0.0%"
+        short  1 → 6  +500.0%  --------------------------------
+        short  2 → 8  +300.0%  ============================================
+        short  1 → 1     0.0%  ......
+        short  1 → 2  +100.0%  >>>>>>>
+        short  3 → 1   -66.7%  }]}},
+        short  2 → 1   -50.0%  ?!?!?!
+        short  5 → 5     0.0%  </div></section>"
+      `)
+    })
+
+    it('prices line breaks against their wrapped equivalent', () => {
+      expect(measureBucket(BUCKETS.lineBreaks)).toMatchInlineSnapshot(`
+        "medium  20 → 20     0.0%  - Install the package\\n- Run the CLI\\n- Inspe…
+        medium  27 → 28    +3.7%  alice: are we still on for the review?\\nbob: …
+        medium  30 → 35   +16.7%  The estimate walks the text once, splitting i…
+        medium  41 → 30   -26.8%  name,plan,seats\\nusr_29f84h,pro,12\\nusr_71b2c…
+        mean               -1.6%
+        mean |dev|         11.8%"
       `)
     })
 
@@ -535,8 +554,11 @@ describe('heuristic calibration', () => {
     })
   })
 
-  it('keeps every bucket within the mean absolute deviation bound', () => {
-    const runawayBuckets = Object.entries(BUCKETS)
+  it('keeps every fitted bucket within the mean absolute deviation bound', () => {
+    const fittedBuckets: [string, HeuristicBucket][] = Object.entries(BUCKETS)
+      .filter(([, bucket]) => !('documentsGap' in bucket && bucket.documentsGap))
+
+    const runawayBuckets = fittedBuckets
       .filter(([, bucket]) => meanAbsoluteDeviation(measureSamples(bucket)) >= MAX_BUCKET_MEAN_ABSOLUTE_DEVIATION)
       .map(([name]) => name)
 
