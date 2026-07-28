@@ -10,7 +10,7 @@ export const MAX_MEAN_DEVIATION = 5
 
 export interface BenchmarkSample {
   description: string
-  input: string | { files: string[] }
+  input: { files: string[] }
 }
 
 export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
@@ -53,9 +53,6 @@ export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
 ]
 
 export async function readSampleText(sample: BenchmarkSample): Promise<string> {
-  if (typeof sample.input === 'string')
-    return sample.input
-
   const contents = await Promise.all(sample.input.files.map(file => readFile(join(rootDir, file), 'utf-8')))
   return contents.join('')
 }
