@@ -1,122 +1,90 @@
-import { readFile } from 'node:fs/promises'
-import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
-  approximateTokenSize,
   estimateTokenCount,
   isWithinTokenLimit,
   sliceByTokens,
   splitByTokens,
 } from '../src/index'
 
-const fixturesDir = join(import.meta.dirname, 'fixtures')
-
 const ENGLISH_TEXT = 'Hello, world! This is a short sentence.'
 const GERMAN_TEXT = 'Die pünktlich gewünschte Trüffelfüllung im übergestülpten Würzkümmel-Würfel ist kümmerlich und dürfte fürderhin zu Rüffeln in Hülle und Fülle führen'
 
 describe('estimateTokenCount', () => {
-  it('estimates tokens for short English text', () => {
-    expect(estimateTokenCount(ENGLISH_TEXT)).toMatchInlineSnapshot('11')
-  })
-
-  it('estimates tokens for German text with umlauts', () => {
-    expect(estimateTokenCount(GERMAN_TEXT)).toMatchInlineSnapshot(`56`)
-  })
-
-  it('estimates the token count of the English excerpt', async () => {
-    const input = await readFile(join(fixturesDir, 'texts/great-gatsby-en.txt'), 'utf-8')
-    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`4868`)
-  })
-
-  it('estimates the token count of the German excerpt', async () => {
-    const input = await readFile(join(fixturesDir, 'texts/die-verwandlung-de.txt'), 'utf-8')
-    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`4830`)
-  })
-
-  it('estimates the token count of the Chinese excerpt', async () => {
-    const input = await readFile(join(fixturesDir, 'texts/a-q-zheng-zhuan-zh.txt'), 'utf-8')
-    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`5640`)
-  })
-
-  it('estimates the token count of the Japanese excerpt', async () => {
-    const input = await readFile(join(fixturesDir, 'texts/rashomon-ja.txt'), 'utf-8')
-    expect(estimateTokenCount(input)).toMatchInlineSnapshot(`5115`)
-  })
-
-  it('returns 0 for empty input', () => {
+  it('returns zero for empty input', () => {
     expect(estimateTokenCount('')).toBe(0)
     expect(estimateTokenCount()).toBe(0)
   })
 
-  it('does not overcount mixed content like URLs', () => {
-    // Regression test for #4: mixed content (URLs, code) should use
-    // chars-per-token heuristic, not count each character as a token
-    const url = 'https://example.com/path/to/resource'
-    expect(estimateTokenCount(url)).toBeLessThan(url.length / 2)
+  describe('pricing rules', () => {
+    it('prices kana runs below one token per character', () => {
+      const kana = 'こんにちは'
+      expect(estimateTokenCount(kana)).toBeLessThan(kana.length)
+    })
+
+    it('prices han characters at one token each', () => {
+      const han = '你好世界'
+      expect(estimateTokenCount(han)).toBe(han.length)
+    })
+
+    it('prices digit runs in groups of three', () => {
+      expect(estimateTokenCount('123')).toBe(1)
+      expect(estimateTokenCount('1234567890')).toBe(4)
+    })
+
+    it('prices emoji above one token per character', () => {
+      const emoji = '🏀🔥'
+      expect(estimateTokenCount(emoji)).toBeGreaterThan(Array.from(emoji).length)
+    })
+
+    it('prices words with an attached pictographic symbol like plain words', () => {
+      expect(estimateTokenCount('Gutenberg™')).toBe(2)
+    })
+
+    it('prices URLs well below one token per character', () => {
+      const url = 'https://example.com/path/to/resource'
+      expect(estimateTokenCount(url)).toBeLessThan(url.length / 2)
+    })
+
+    it('prices indentation and blank lines as one token', () => {
+      expect(estimateTokenCount('Hello\n  world')).toBe(estimateTokenCount('Hello world') + 1)
+      expect(estimateTokenCount('Hello\n\nworld')).toBe(estimateTokenCount('Hello world') + 1)
+    })
+
+    it('treats line-wrap newlines like spaces', () => {
+      expect(estimateTokenCount('Hello\nworld')).toBe(estimateTokenCount('Hello world'))
+    })
   })
 
-  it('treats line-wrap newlines like spaces', () => {
-    expect(estimateTokenCount('Hello\nworld')).toBe(estimateTokenCount('Hello world'))
-  })
+  describe('options', () => {
+    it('returns more tokens for a lower defaultCharsPerToken', () => {
+      const input = 'Hello world'
+      const defaultCount = estimateTokenCount(input)
+      const customCount = estimateTokenCount(input, { defaultCharsPerToken: 4 })
 
-  it('prices indentation and blank lines as a token', () => {
-    expect(estimateTokenCount('Hello\n  world')).toBe(estimateTokenCount('Hello world') + 1)
-    expect(estimateTokenCount('Hello\n\nworld')).toBe(estimateTokenCount('Hello world') + 1)
-  })
+      expect(customCount).toBeGreaterThan(defaultCount)
+    })
 
-  it('yields more tokens for a lower defaultCharsPerToken', () => {
-    const input = 'Hello world'
-    const defaultCount = estimateTokenCount(input)
-    const customCount = estimateTokenCount(input, { defaultCharsPerToken: 4 })
+    it('lets custom language configs override built-in CJK handling', () => {
+      const input = '你好世界你好世界'
+      const customOptions = {
+        languageConfigs: [{ pattern: /[\u4E00-\u9FFF]/, averageCharsPerToken: 2 }],
+      }
 
-    expect(customCount).toBeGreaterThan(defaultCount)
-  })
+      expect(estimateTokenCount(input)).toBe(8)
+      expect(estimateTokenCount(input, customOptions)).toBe(4)
+    })
 
-  it('lets custom language configs override built-in CJK handling', () => {
-    const input = '你好世界你好世界'
-    const customOptions = {
-      languageConfigs: [{ pattern: /[\u4E00-\u9FFF]/, averageCharsPerToken: 2 }],
-    }
+    it('ignores stateful regex flags in language configs', () => {
+      const input = 'éléphant éléphant éléphant éléphant'
+      const statefulOptions = {
+        languageConfigs: [{ pattern: /[éè]/g, averageCharsPerToken: 3 }],
+      }
+      const statelessOptions = {
+        languageConfigs: [{ pattern: /[éè]/, averageCharsPerToken: 3 }],
+      }
 
-    expect(estimateTokenCount(input)).toBe(8)
-    expect(estimateTokenCount(input, customOptions)).toBe(4)
-  })
-
-  it('prices kana runs below their character count, unlike kanji', () => {
-    expect(estimateTokenCount('こんにちは')).toBe(4)
-    expect(estimateTokenCount('你好世界')).toBe(4)
-  })
-
-  it('prices digit runs in groups of three like o200k', () => {
-    expect(estimateTokenCount('123')).toBe(1)
-    expect(estimateTokenCount('1234567890')).toBe(4)
-  })
-
-  it('prices emoji runs above their character count', () => {
-    expect(estimateTokenCount('🏀🔥')).toBe(3)
-  })
-
-  it('does not reprice words with attached pictographic symbols', () => {
-    // ™ is Extended_Pictographic – the emoji rule must not reprice the whole word
-    expect(estimateTokenCount('Gutenberg™')).toBe(2)
-  })
-
-  it('is not affected by stateful regex flags in language configs', () => {
-    const input = 'éléphant éléphant éléphant éléphant'
-    const statefulOptions = {
-      languageConfigs: [{ pattern: /[éè]/g, averageCharsPerToken: 3 }],
-    }
-    const statelessOptions = {
-      languageConfigs: [{ pattern: /[éè]/, averageCharsPerToken: 3 }],
-    }
-
-    expect(estimateTokenCount(input, statefulOptions)).toBe(estimateTokenCount(input, statelessOptions))
-  })
-})
-
-describe('approximateTokenSize', () => {
-  it('returns the same estimate as estimateTokenCount', () => {
-    expect(approximateTokenSize(GERMAN_TEXT)).toBe(estimateTokenCount(GERMAN_TEXT))
+      expect(estimateTokenCount(input, statefulOptions)).toBe(estimateTokenCount(input, statelessOptions))
+    })
   })
 })
 
@@ -159,35 +127,27 @@ describe('sliceByTokens', () => {
     expect(sliceByTokens(ENGLISH_TEXT)).toBe(ENGLISH_TEXT)
   })
 
-  it('slices English text with positive indices', () => {
+  it('reconstructs the input from adjacent slices', () => {
     const firstTwoTokens = sliceByTokens(ENGLISH_TEXT, 0, 2)
     const fromThirdToken = sliceByTokens(ENGLISH_TEXT, 2)
 
     expect(firstTwoTokens).toMatchInlineSnapshot('"Hello,"')
     expect(fromThirdToken).toMatchInlineSnapshot('" world! This is a short sentence."')
-
-    // Adjacent slices at a segment boundary reconstruct the input exactly
     expect(firstTwoTokens + fromThirdToken).toBe(ENGLISH_TEXT)
   })
 
-  it('slices German text with positive indices', () => {
-    const firstThree = sliceByTokens(GERMAN_TEXT, 0, 3)
-    expect(firstThree).toMatchInlineSnapshot(`"Die pünkt"`)
-
-    const middle = sliceByTokens(GERMAN_TEXT, 5, 10)
-    expect(middle).toMatchInlineSnapshot(`" gewünschte Trü"`)
+  it('cuts inside a segment when the boundary falls mid-word', () => {
+    expect(sliceByTokens(GERMAN_TEXT, 0, 3)).toMatchInlineSnapshot(`"Die pünkt"`)
+    expect(sliceByTokens(GERMAN_TEXT, 5, 10)).toMatchInlineSnapshot(`" gewünschte Trü"`)
   })
 
-  it('slices German text with negative indices', () => {
-    const lastThree = sliceByTokens(GERMAN_TEXT, -3)
-    expect(lastThree).toMatchInlineSnapshot(`" führen"`)
+  it('counts back from the end for negative indices', () => {
+    expect(sliceByTokens(GERMAN_TEXT, -3)).toMatchInlineSnapshot(`" führen"`)
+    expect(sliceByTokens(GERMAN_TEXT, -8, -3)).toMatchInlineSnapshot(`" Hülle und Fülle"`)
 
     const withoutLastTwo = sliceByTokens(GERMAN_TEXT, 0, -2)
     expect(GERMAN_TEXT.startsWith(withoutLastTwo)).toBe(true)
     expect(withoutLastTwo.length).toBeLessThan(GERMAN_TEXT.length)
-
-    const middleNegative = sliceByTokens(GERMAN_TEXT, -8, -3)
-    expect(middleNegative).toMatchInlineSnapshot(`" Hülle und Fülle"`)
   })
 
   it('returns an empty string when the range is empty or inverted', () => {
@@ -238,7 +198,7 @@ describe('splitByTokens', () => {
     expect(splitByTokens(shortText, 100)).toEqual([shortText])
   })
 
-  it('can exceed the target when a single segment crosses it', () => {
+  it('exceeds the target when a single segment crosses it', () => {
     const longWord = 'supercalifragilisticexpialidocious'
 
     expect(estimateTokenCount(longWord)).toBeGreaterThan(2)

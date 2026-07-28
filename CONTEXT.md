@@ -16,11 +16,14 @@ _Avoid_: cl100k_base (legacy), "the tokenizer"
 The atomic unit of estimation – a run of text (word, whitespace, or punctuation) that receives a token count as a whole and is never subdivided during counting.
 
 **Deviation**:
-The relative difference between an estimated count and the reference tokenizer's count for the same text. The library's accuracy measure.
+The relative difference between an estimated count and the reference tokenizer's count for the same text. Positive when tokenx overestimates, negative when it underestimates.
 _Avoid_: accuracy percentage, error rate
 
 **Sample corpus**:
-The fixed set of texts whose Deviation is measured against the reference tokenizer – the single source for both the published benchmarks and the enforced accuracy bounds.
+The fixed set of long-form texts whose Deviation is measured against the reference tokenizer – the single source for both the published benchmarks and the enforced accuracy bounds.
+
+**Heuristic bucket**:
+A group of short and medium-length inputs that all exercise one estimation rule, recording where that rule's calibration currently sits. Distinct from the Sample corpus, which measures published accuracy on long-form text.
 
 **Language config**:
 A rule pairing a script-detection pattern with that script's average characters per token. Custom configs take precedence over all built-in heuristics.
