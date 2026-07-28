@@ -103,11 +103,8 @@ function estimateSegmentTokens(
 }
 
 function getLanguageSpecificCharsPerToken(segment: string, languageConfigs: LanguageConfig[]): number | undefined {
-  // Every built-in config needs a non-ASCII character to match, so ASCII-only
-  // segments skip the loop on one test instead of six searches. Custom configs
-  // carry no such guarantee, which is why the shortcut checks for the defaults
   if (languageConfigs === DEFAULT_LANGUAGE_CONFIGS && !PATTERNS.nonAscii.test(segment)) {
-    return undefined
+    return
   }
 
   for (const config of languageConfigs) {
