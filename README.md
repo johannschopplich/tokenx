@@ -28,14 +28,13 @@ Emoji-heavy chat messages               39 →    41             │███   
 JSON payload (formatted)                96 →    93           ██│              -3.13%
 JSON payload (minified)                 62 →    63             │█             +1.61%
 tokenx source code                   2,680 → 2,830             │███           +5.60%
-Дама с собачкой by Chekhov (ru)      6,153 → 6,254             │█             +1.64%
 The Great Gatsby by Fitzgerald (en)  4,649 → 4,868             │██            +4.71%
 Die Verwandlung by Kafka (de)        4,791 → 4,830             │              +0.81%
-阿Q正傳 by Lu Xun (zh)                5,421 → 5,640             │██            +4.04%
-羅生門 by Akutagawa (ja)              5,250 → 5,115            █│              -2.57%
+Ah Q Zhengzhuan by Lu Xun (zh)       5,421 → 5,640             │██            +4.04%
+Rashomon by Akutagawa (ja)           5,250 → 5,115            █│              -2.57%
+                                                     ─────────────────────
+mean                                                                           3.45%
 ```
-
-Mean deviation across all samples: **3.25%**
 
 <!-- /automd -->
 

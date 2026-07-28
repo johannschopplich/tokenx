@@ -5,15 +5,16 @@ import { estimateTokenCount } from '../src/index.ts'
 import { BENCHMARK_SAMPLES, MAX_SAMPLE_DEVIATION, readSampleText } from '../test/fixtures/samples.ts'
 
 const benchPath = path.resolve(import.meta.dirname, '../docs/bench.md')
+const chartPath = path.resolve(import.meta.dirname, '../docs/bench.chart.txt')
 
 const BAR_CELLS_PER_SIDE = 10
 const PERCENT_PER_BAR_CELL = MAX_SAMPLE_DEVIATION / BAR_CELLS_PER_SIDE
 
-// GitHub's monospace font stack has no CJK glyphs and falls back to a
-// proportional CJK font at ~5/3 of a Latin column (1em vs 0.6em), so the
-// corpus titles (道德經, 羅生門) are calibrated to the rendered README rather
-// than to the two columns a true monospace terminal would use
-const CJK_COLUMNS_PER_GLYPH = 5 / 3
+/** Wraps an already laid-out span in an ansis style, so padding never counts markers */
+type Paint = (text: string, style: string) => string
+
+const plainPaint: Paint = text => text
+const markerPaint: Paint = (text, style) => `[${style}]${text}[/]`
 
 interface SampleMeasurement {
   description: string
@@ -47,42 +48,44 @@ const benchMarkdown = `
 Bars grow left when tokenx underestimates and right when it overestimates; the axis spans the ±${MAX_SAMPLE_DEVIATION}% per-sample deviation bound enforced in CI.
 
 \`\`\`
-${renderDeviationChart(measurements)}
+${renderDeviationChart(measurements, plainPaint)}
 \`\`\`
-
-Mean deviation across all samples: **${meanDeviation.toFixed(2)}%**
 `.trimStart()
 
 console.log(benchMarkdown)
 
 await fsp.writeFile(benchPath, benchMarkdown, 'utf-8')
+await fsp.writeFile(chartPath, `${renderDeviationChart(measurements, markerPaint)}\n`, 'utf-8')
 
-function renderDeviationChart(measurements: SampleMeasurement[]): string {
-  const labelWidth = Math.max(...measurements.map(measurement => displayWidth(measurement.description)))
+function renderDeviationChart(measurements: SampleMeasurement[], paint: Paint): string {
+  const labelWidth = Math.max(...measurements.map(measurement => measurement.description.length))
   const countWidth = Math.max(...measurements.map(measurement => Math.max(
     formatCount(measurement.referenceTokenCount).length,
     formatCount(measurement.estimatedTokenCount).length,
   )))
 
   const rows = measurements.map((measurement) => {
-    const label = measurement.description + ' '.repeat(labelWidth - displayWidth(measurement.description))
+    const label = measurement.description.padEnd(labelWidth)
     const counts = `${formatCount(measurement.referenceTokenCount).padStart(countWidth)} → ${formatCount(measurement.estimatedTokenCount).padStart(countWidth)}`
 
-    return `${label}  ${counts}   ${renderDeviationBar(measurement.signedDeviation)}  ${formatSignedPercent(measurement.signedDeviation)}`
+    return `${label}  ${paint(counts, '245')}   ${renderDeviationBar(measurement.signedDeviation, paint)}  ${formatSignedPercent(measurement.signedDeviation)}`
   })
 
   const barColumnOffset = labelWidth + 2 + (countWidth * 2 + 3) + 3
-  const axisHeader = `${' '.repeat(barColumnOffset)}${'under ◂'.padStart(BAR_CELLS_PER_SIDE)}·▸ over`
+  const axisHeader = paint(`${' '.repeat(barColumnOffset)}${'under ◂'.padStart(BAR_CELLS_PER_SIDE)}·▸ over`, '245')
+  const barWidth = BAR_CELLS_PER_SIDE * 2 + 1
+  const meanSeparator = paint(`${' '.repeat(barColumnOffset)}${'─'.repeat(barWidth)}`, 'black')
+  const meanRow = `${paint('mean', '245')}${' '.repeat(barColumnOffset + barWidth - 'mean'.length + 2)}${`${meanDeviation.toFixed(2)}%`.padStart(8)}`
 
-  return [axisHeader, ...rows].join('\n')
+  return [axisHeader, ...rows, meanSeparator, meanRow].join('\n')
 }
 
-function renderDeviationBar(signedDeviation: number): string {
+function renderDeviationBar(signedDeviation: number, paint: Paint): string {
   const cellCount = Math.min(BAR_CELLS_PER_SIDE, Math.round(Math.abs(signedDeviation) / PERCENT_PER_BAR_CELL))
   const leftCells = signedDeviation < 0 ? cellCount : 0
   const rightCells = signedDeviation > 0 ? cellCount : 0
 
-  return `${'█'.repeat(leftCells).padStart(BAR_CELLS_PER_SIDE)}│${'█'.repeat(rightCells).padEnd(BAR_CELLS_PER_SIDE)}`
+  return `${'█'.repeat(leftCells).padStart(BAR_CELLS_PER_SIDE)}${paint('│', 'black')}${'█'.repeat(rightCells).padEnd(BAR_CELLS_PER_SIDE)}`
 }
 
 function formatSignedPercent(signedDeviation: number): string {
@@ -94,25 +97,4 @@ function formatSignedPercent(signedDeviation: number): string {
 
 function formatCount(tokenCount: number): string {
   return tokenCount.toLocaleString('en-US')
-}
-
-function displayWidth(text: string): number {
-  let narrowGlyphCount = 0
-  let cjkGlyphCount = 0
-
-  for (const character of text) {
-    const codePoint = character.codePointAt(0)!
-    const isCjkGlyph
-      = (codePoint >= 0x2E80 && codePoint <= 0x9FFF)
-        || (codePoint >= 0xAC00 && codePoint <= 0xD7A3)
-        || (codePoint >= 0xF900 && codePoint <= 0xFAFF)
-        || (codePoint >= 0xFF00 && codePoint <= 0xFF60)
-
-    if (isCjkGlyph)
-      cjkGlyphCount++
-    else
-      narrowGlyphCount++
-  }
-
-  return narrowGlyphCount + Math.round(cjkGlyphCount * CJK_COLUMNS_PER_GLYPH)
 }
