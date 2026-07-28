@@ -3,6 +3,7 @@ import type { LanguageConfig, TokenEstimationOptions } from './types.ts'
 const PATTERNS = {
   whitespace: /^\s+$/,
   structuredWhitespace: /\n\s/,
+  nonAscii: /[\u0080-\uFFFF]/,
   cjk: /[\u4E00-\u9FFF\u3400-\u4DBF\u3000-\u30FF\uFF00-\uFFEF\u2E80-\u2EFF\u31C0-\u31EF\u3200-\u32FF\u3300-\u33FF\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uD7B0-\uD7FF]/,
   numeric: /^\d+$/,
   punctuation: /[.,!?;(){}[\]<>:/\\|@#$%^&*+=`~_"-]/,
@@ -102,6 +103,13 @@ function estimateSegmentTokens(
 }
 
 function getLanguageSpecificCharsPerToken(segment: string, languageConfigs: LanguageConfig[]): number | undefined {
+  // Every built-in config needs a non-ASCII character to match, so ASCII-only
+  // segments skip the loop on one test instead of six searches. Custom configs
+  // carry no such guarantee, which is why the shortcut checks for the defaults
+  if (languageConfigs === DEFAULT_LANGUAGE_CONFIGS && !PATTERNS.nonAscii.test(segment)) {
+    return undefined
+  }
+
   for (const config of languageConfigs) {
     // `search` instead of `test`: it ignores `lastIndex`, so stateful flags
     // (`/g`, `/y`) on user-supplied patterns can't skew matching

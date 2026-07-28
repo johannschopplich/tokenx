@@ -85,6 +85,15 @@ describe('estimateTokenCount', () => {
 
       expect(estimateTokenCount(input, statefulOptions)).toBe(estimateTokenCount(input, statelessOptions))
     })
+
+    it('applies custom language configs that only match ASCII', () => {
+      const input = 'hello world hello world'
+      const asciiOptions = {
+        languageConfigs: [{ pattern: /[aeiou]/, averageCharsPerToken: 2 }],
+      }
+
+      expect(estimateTokenCount(input, asciiOptions)).toBeGreaterThan(estimateTokenCount(input))
+    })
   })
 })
 
