@@ -6,7 +6,7 @@ Estimates are calibrated against OpenAI's `o200k_base` encoding – the tokenize
 
 ## Features
 
-- ⚡ **~95% average accuracy** compared to GPT token counts
+- ⚡ **Within 10% of the real count** on every sample in the benchmark below
 - 📦 **Just 2kB** bundle size with zero dependencies
 - 🌍 Multi-language support with configurable language rules
 - 🗣️ Built-in rules for accented scripts (German, French, Spanish, Slavic), Cyrillic, and Greek
@@ -39,7 +39,15 @@ Artificial intelligence article (zh)  10,043 → 10,010             │         
 
 <!-- /automd -->
 
-Deviation tracks vocabulary rather than length: a 300-character excerpt deviates about as much as the whole book it came from, while contemporary business prose of the same length runs roughly three times higher. Read the figures above as a range across registers, not a bound on any single input.
+Deviation tracks vocabulary rather than length: a 300-character excerpt deviates about as much as the whole book it came from. Read the figures above as a range across registers, not a bound on any single input.
+
+Three cases are knowingly outside that range, all of them underestimates:
+
+- **High-entropy strings** – base64 payloads, hashes, and file digests. An npm registry document, dense with `sha512` integrity hashes, lands near -20%. Pricing them properly would cost every caller runtime for a case that ordinary traffic rarely carries, so it is left uncorrected.
+- **Traditional and classical Chinese.** The hanzi rate is calibrated on contemporary simplified Chinese, which `o200k_base` merges far more aggressively. Traditional text runs about -20%, classical text about -40%.
+- **Scripts without a built-in rule** – Arabic and Hindi fall through to the default ratio at roughly -27%, Hebrew at -53%, Thai at -59%. Supply a `languageConfig` if you measure them.
+
+If you need a safety margin, add it yourself rather than assuming one is built in: the estimate is calibrated to sit on the real count, not above it.
 
 ## Installation
 
@@ -84,7 +92,7 @@ console.log(`Split into ${chunks.length} chunks`)
 const customOptions = {
   defaultCharsPerToken: 4, // More conservative estimation
   languageConfigs: [
-    { pattern: /[\u4E00-\u9FFF]/, averageCharsPerToken: 1.5 }, // Custom Chinese rule
+    { pattern: /[\u4E00-\u9FFF]/, averageCharsPerToken: 2 }, // Custom Chinese rule
   ]
 }
 
@@ -121,7 +129,7 @@ function estimateTokenCount(
 ): number
 
 interface TokenEstimationOptions {
-  /** Default average characters per token when no language-specific rule applies (default: 6) */
+  /** Default average characters per token when no language-specific rule applies (default: 7) */
   defaultCharsPerToken?: number
   /** Custom language configurations to override defaults */
   languageConfigs?: LanguageConfig[]
