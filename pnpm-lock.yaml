@@ -14,6 +14,9 @@ importers:
       '@types/node':
         specifier: ^26.1.1
         version: 26.1.1
+      ansis:
+        specifier: ^4.3.1
+        version: 4.3.1
       automd:
         specifier: ^0.4.3
         version: 0.4.3
