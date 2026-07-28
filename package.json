@@ -37,7 +37,7 @@
   ],
   "scripts": {
     "build": "tsdown",
-    "automd": "node scripts/generate-bench.ts && automd",
+    "bench": "node scripts/generate-bench.ts && automd",
     "bench:png": "node scripts/render-bench.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
