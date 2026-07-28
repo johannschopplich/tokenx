@@ -31,15 +31,6 @@ const CORPUS_TEXTS: CorpusText[] = [
     maxLength: 20_000,
   },
   {
-    file: 'dama-s-sobachkoy-ru.txt',
-    url: 'https://ru.wikisource.org/w/index.php?action=raw&title=%D0%94%D0%B0%D0%BC%D0%B0%20%D1%81%20%D1%81%D0%BE%D0%B1%D0%B0%D1%87%D0%BA%D0%BE%D0%B9%20(%D0%A7%D0%B5%D1%85%D0%BE%D0%B2)',
-    startMarker: 'Говорили, что на набережной',
-    maxLength: 20_000,
-    hasWikiMarkup: true,
-  },
-  {
-    // Rendered via the REST API because the wiki page only transcludes
-    // scanned PDF pages
     file: 'a-q-zheng-zhuan-zh.txt',
     url: 'https://zh.wikisource.org/api/rest_v1/page/html/%E9%98%BFQ%E6%AD%A3%E5%82%B3',
     startMarker: '第一章',
@@ -97,7 +88,7 @@ function stripRenderedHtml(html: string): string {
 }
 
 function stripWikiMarkup(text: string): string {
-  // Innermost templates first so nested {{...}} blocks unwrap over the passes
+  // Innermost templates first so nested `{{...}}` blocks unwrap over the passes
   for (let pass = 0; pass < 10; pass++) {
     text = text.replace(/\{\{[^{}]*\}\}/g, '')
   }
