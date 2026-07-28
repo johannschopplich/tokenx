@@ -69,7 +69,7 @@ const BUCKETS = {
     ],
   },
   // Polish only. Czech shares í, á, é and ú with the romance config, which is
-  // checked first, so Czech words carrying no other accent price at 3.0 – see
+  // checked first, so Czech words carrying no other accent price at 4.5 – see
   // the `czechShadowed` bucket. Mixing the two would blur the 2.5 this measures
   slavicLatin: {
     short: [
