@@ -6,13 +6,13 @@ Estimates are calibrated against OpenAI's `o200k_base` encoding – the tokenize
 
 ## Features
 
-- ⚡ **~96% average accuracy** compared to actual GPT token counts (see [benchmarks](#benchmarks))
+- ⚡ **~96% average accuracy** compared to GPT token counts
 - 📦 **Just 2kB** bundle size with zero dependencies
 - 🌍 Multi-language support with configurable language rules
 - 🗣️ Built-in rules for accented scripts (German, French, Spanish, Slavic), Cyrillic, and Greek
 - 🀄 CJK (Chinese, Japanese, Korean) character handling
 - 😀 Emoji-aware pricing (emoji cost more tokens than their character count suggests)
-- 🔧 Configurable and extensible – custom language rules take precedence over all built-in heuristics
+- 🔧 Configurable and extensible
 
 ## Benchmarks
 
