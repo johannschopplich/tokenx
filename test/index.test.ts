@@ -21,9 +21,14 @@ describe('estimateTokenCount', () => {
       expect(estimateTokenCount(kana)).toBeLessThan(kana.length)
     })
 
-    it('prices han characters at one token each', () => {
+    it('prices han characters below one token each', () => {
       const han = '你好世界'
-      expect(estimateTokenCount(han)).toBe(han.length)
+      expect(estimateTokenCount(han)).toBeLessThan(han.length)
+    })
+
+    it('prices hangul below one token each', () => {
+      const hangul = '안녕하세요'
+      expect(estimateTokenCount(hangul)).toBeLessThan(hangul.length)
     })
 
     it('prices digit runs in groups of three', () => {
@@ -70,7 +75,7 @@ describe('estimateTokenCount', () => {
         languageConfigs: [{ pattern: /[\u4E00-\u9FFF]/, averageCharsPerToken: 2 }],
       }
 
-      expect(estimateTokenCount(input)).toBe(8)
+      expect(estimateTokenCount(input)).toBe(6)
       expect(estimateTokenCount(input, customOptions)).toBe(4)
     })
 
@@ -146,13 +151,13 @@ describe('sliceByTokens', () => {
   })
 
   it('cuts inside a segment when the boundary falls mid-word', () => {
-    expect(sliceByTokens(GERMAN_TEXT, 0, 3)).toMatchInlineSnapshot(`"Die pünkt"`)
-    expect(sliceByTokens(GERMAN_TEXT, 5, 10)).toMatchInlineSnapshot(`" gewünschte Trü"`)
+    expect(sliceByTokens(GERMAN_TEXT, 0, 3)).toMatchInlineSnapshot(`"Die pünktl"`)
+    expect(sliceByTokens(GERMAN_TEXT, 5, 10)).toMatchInlineSnapshot(`"wünschte Trüffe"`)
   })
 
   it('counts back from the end for negative indices', () => {
-    expect(sliceByTokens(GERMAN_TEXT, -3)).toMatchInlineSnapshot(`" führen"`)
-    expect(sliceByTokens(GERMAN_TEXT, -8, -3)).toMatchInlineSnapshot(`" Hülle und Fülle"`)
+    expect(sliceByTokens(GERMAN_TEXT, -3)).toMatchInlineSnapshot(`"lle führen"`)
+    expect(sliceByTokens(GERMAN_TEXT, -8, -3)).toMatchInlineSnapshot(`" in Hülle und Fül"`)
 
     const withoutLastTwo = sliceByTokens(GERMAN_TEXT, 0, -2)
     expect(GERMAN_TEXT.startsWith(withoutLastTwo)).toBe(true)

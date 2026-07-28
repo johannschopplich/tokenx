@@ -1,12 +1,12 @@
 [245]                                                           under ◂·▸ over[/]
-Emoji-heavy chat messages             [245]    39 →     41[/]             [240]│[/]█             +5.13%
-GitHub releases API response          [245]10,805 → 12,105[/]             [240]│[/]██           +12.03%
-tokenx source code                    [245] 2,720 →  2,872[/]             [240]│[/]█             +5.59%
-Vite plugin API docs (en)             [245] 6,901 →  7,769[/]             [240]│[/]███          +12.58%
-The Great Gatsby by Fitzgerald (en)   [245] 4,391 →  4,878[/]             [240]│[/]██           +11.09%
-Die Verwandlung by Kafka (de)         [245] 4,437 →  4,830[/]             [240]│[/]██            +8.86%
-Vite plugin API docs (ja)             [245] 9,240 → 10,520[/]             [240]│[/]███          +13.85%
-Vite plugin API docs (ko)             [245] 8,224 → 10,221[/]             [240]│[/]█████        +24.28%
-Artificial intelligence article (zh)  [245]10,043 → 14,828[/]             [240]│[/]██████████   +47.65%
+Emoji-heavy chat messages             [245]    39 →     40[/]             [240]│[/]███           +2.56%
+GitHub releases API response          [245]10,805 → 11,684[/]             [240]│[/]████████      +8.14%
+tokenx source code                    [245] 2,970 →  2,870[/]          ███[240]│[/]              -3.37%
+Vite plugin API docs (en)             [245] 6,901 →  7,291[/]             [240]│[/]██████        +5.65%
+The Great Gatsby by Fitzgerald (en)   [245] 4,391 →  4,628[/]             [240]│[/]█████         +5.40%
+Die Verwandlung by Kafka (de)         [245] 4,437 →  4,452[/]             [240]│[/]              +0.34%
+Vite plugin API docs (ja)             [245] 9,240 →  9,138[/]            █[240]│[/]              -1.10%
+Vite plugin API docs (ko)             [245] 8,224 →  8,676[/]             [240]│[/]█████         +5.50%
+Artificial intelligence article (zh)  [245]10,043 → 10,010[/]             [240]│[/]              -0.33%
 [240]                                                        ─────────────────────[/]
-[239]github.com/johannschopplich/tokenx[/]                                       [245]mean[/]    15.67%
+[239]github.com/johannschopplich/tokenx[/]                                       [245]mean[/]     3.60%

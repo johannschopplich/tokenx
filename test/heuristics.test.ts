@@ -28,7 +28,7 @@ interface SampleMeasurement {
  * Absolute, not signed: a bucket of +40% and -40% samples averages to zero
  * while being useless, and a signed bound would wave it through.
  */
-const MAX_BUCKET_MEAN_ABSOLUTE_DEVIATION = 100
+const MAX_BUCKET_MEAN_ABSOLUTE_DEVIATION = 40
 
 const SAMPLE_LABEL_WIDTH = 46
 
@@ -271,12 +271,12 @@ describe('heuristic calibration', () => {
       expect(measureBucket(BUCKETS.german)).toMatchInlineSnapshot(`
         "short    8 →  8     0.0%  Schönes Wetter heute, oder?
         short    7 →  9   +28.6%  Ich hätte gerne ein Stück Kuchen.
-        short   10 → 16   +60.0%  Die Universität ist für ihre Forschung berühm…
-        short   11 → 12    +9.1%  Können wir das Meeting auf morgen verschieben?
+        short   10 → 14   +40.0%  Die Universität ist für ihre Forschung berühm…
+        short   11 → 10    -9.1%  Können wir das Meeting auf morgen verschieben?
         short   12 → 13    +8.3%  Über den Dächern der Stadt geht die Sonne unt…
-        medium  68 → 77   +13.2%  Wir haben letzten Donnerstag den neuen Anmeld…
-        mean              +19.9%
-        mean |dev|        +19.9%"
+        medium  68 → 70    +2.9%  Wir haben letzten Donnerstag den neuen Anmeld…
+        mean              +11.8%
+        mean |dev|         14.8%"
       `)
     })
 
@@ -285,11 +285,11 @@ describe('heuristic calibration', () => {
         "short    9 → 11   +22.2%  Je voudrais un café et un croissant.
         short    9 → 10   +11.1%  On se retrouve à la gare demain matin.
         short   10 → 12   +20.0%  ¿Cómo estás? Mañana será otro día.
-        short    8 → 12   +50.0%  Los niños están jugando en el jardín.
-        medium  66 → 82   +24.2%  On a déployé le nouveau parcours d'inscriptio…
-        medium  63 → 79   +25.4%  Lanzamos el nuevo proceso de registro el juev…
-        mean              +25.5%
-        mean |dev|        +25.5%"
+        short    8 → 11   +37.5%  Los niños están jugando en el jardín.
+        medium  66 → 71    +7.6%  On a déployé le nouveau parcours d'inscriptio…
+        medium  63 → 72   +14.3%  Lanzamos el nuevo proceso de registro el juev…
+        mean              +18.8%
+        mean |dev|         18.8%"
       `)
     })
 
@@ -297,61 +297,61 @@ describe('heuristic calibration', () => {
       expect(measureBucket(BUCKETS.slavicLatin)).toMatchInlineSnapshot(`
         "short    13 →  11   -15.4%  Dziękuję bardzo, do zobaczenia jutro.
         short    11 →  13   +18.2%  Czy możemy przełożyć spotkanie na jutro?
-        short    15 →  16    +6.7%  Wrócę później, muszę jeszcze skończyć raport.
+        short    15 →  14    -6.7%  Wrócę później, muszę jeszcze skończyć raport.
         short    14 →  14     0.0%  Życzę miłego weekendu i do usłyszenia.
         short    14 →  16   +14.3%  Gdzie znajdę najbliższą stację kolejową?
-        medium  106 → 107    +0.9%  Nowy proces rejestracji wdrożyliśmy w zeszły …
-        mean                 +4.1%
-        mean |dev|           +9.2%"
+        medium  106 → 103    -2.8%  Nowy proces rejestracji wdrożyliśmy w zeszły …
+        mean                 +1.3%
+        mean |dev|            9.6%"
       `)
     })
 
     it('prices Czech text, which the romance config shadows', () => {
       expect(measureBucket(BUCKETS.czechShadowed)).toMatchInlineSnapshot(`
         "short   12 → 10   -16.7%  Děkuji, přeji hezký den.
-        short   16 → 13   -18.8%  Na shledanou, uvidíme se zítra večer.
-        short   11 → 14   +27.3%  Podíl dokončených registrací vzrostl.
-        short   10 → 12   +20.0%  Jedenáct procent je lepší než nic.
-        medium  92 → 98    +6.5%  Nový registrační proces jsme nasadili minulý …
-        mean               +3.7%
-        mean |dev|        +17.8%"
+        short   16 → 12   -25.0%  Na shledanou, uvidíme se zítra večer.
+        short   11 → 12    +9.1%  Podíl dokončených registrací vzrostl.
+        short   10 → 11   +10.0%  Jedenáct procent je lepší než nic.
+        medium  92 → 91    -1.1%  Nový registrační proces jsme nasadili minulý …
+        mean               -4.7%
+        mean |dev|         12.4%"
       `)
     })
 
     it('prices Russian text', () => {
       expect(measureBucket(BUCKETS.cyrillic)).toMatchInlineSnapshot(`
-        "short    6 →  6     0.0%  Привет, как дела?
-        short    6 →  7   +16.7%  Сегодня хорошая погода.
-        short    6 →  7   +16.7%  Я изучаю русский язык.
-        short   12 → 13    +8.3%  Можем ли мы перенести встречу на завтра?
-        short    4 →  6   +50.0%  Спасибо за помощь!
-        medium  76 → 93   +22.4%  Новый процесс регистрации мы выкатили в прошл…
-        mean              +19.0%
-        mean |dev|        +19.0%"
+        "short    6 →  5   -16.7%  Привет, как дела?
+        short    6 →  6     0.0%  Сегодня хорошая погода.
+        short    6 →  6     0.0%  Я изучаю русский язык.
+        short   12 → 10   -16.7%  Можем ли мы перенести встречу на завтра?
+        short    4 →  5   +25.0%  Спасибо за помощь!
+        medium  76 → 76     0.0%  Новый процесс регистрации мы выкатили в прошл…
+        mean               -1.4%
+        mean |dev|          9.7%"
       `)
     })
 
     it('prices Greek text', () => {
       expect(measureBucket(BUCKETS.greek)).toMatchInlineSnapshot(`
-        "short    10 →  12   +20.0%  Καλημέρα, τι κάνεις σήμερα;
-        short    12 →  13    +8.3%  Ευχαριστώ πολύ για τη βοήθεια.
+        "short    10 →  10     0.0%  Καλημέρα, τι κάνεις σήμερα;
+        short    12 →  11    -8.3%  Ευχαριστώ πολύ για τη βοήθεια.
         short    11 →  10    -9.1%  Θα τα πούμε αύριο το πρωί.
-        medium  106 → 122   +15.1%  Ανεβάσαμε τη νέα διαδικασία εγγραφής την περα…
-        mean                 +8.6%
-        mean |dev|          +13.1%"
+        medium  106 → 108    +1.9%  Ανεβάσαμε τη νέα διαδικασία εγγραφής την περα…
+        mean                 -3.9%
+        mean |dev|            4.8%"
       `)
     })
 
     it('prices English text at the default ratio', () => {
       expect(measureBucket(BUCKETS.english)).toMatchInlineSnapshot(`
-        "short   10 → 11   +10.0%  Hey, are you coming to the meeting later?
+        "short   10 → 10     0.0%  Hey, are you coming to the meeting later?
         short    9 →  8   -11.1%  Sounds good, see you at 5!
-        short   10 → 12   +20.0%  Can you send me the report by tomorrow mornin…
+        short   10 → 11   +10.0%  Can you send me the report by tomorrow mornin…
         short    8 →  9   +12.5%  Thanks for the quick turnaround on this!
-        medium  53 → 69   +30.2%  We shipped the new onboarding flow last Thurs…
-        medium  56 → 65   +16.1%  Vite strives to offer established patterns ou…
-        mean              +12.9%
-        mean |dev|        +16.6%"
+        medium  53 → 60   +13.2%  We shipped the new onboarding flow last Thurs…
+        medium  56 → 61    +8.9%  Vite strives to offer established patterns ou…
+        mean               +5.6%
+        mean |dev|          9.3%"
       `)
     })
   })
@@ -360,55 +360,55 @@ describe('heuristic calibration', () => {
   describe('CJK scripts', () => {
     it('prices Japanese text', () => {
       expect(measureBucket(BUCKETS.japanese)).toMatchInlineSnapshot(`
-        "short    12 →  13    +8.3%  お疲れさまです、今いいですか？
-        short     2 →  10  +400.0%  ありがとうございました。
-        short     7 →  11   +57.1%  今日は天気がいいですね。
-        short    10 →  13   +30.0%  ミーティング、リスケできますか？
-        short     6 →   7   +16.7%  今向かってます。
-        short    10 →  11   +10.0%  東京タワー、行きませんか？
-        short    11 →  12    +9.1%  すみません、駅はどこですか？
-        short     7 →   7     0.0%  だいじょうぶです。
-        short    11 →  13   +18.2%  来週の予定を共有しておきます。
-        short    10 →  13   +30.0%  資料は明日の朝までに送ります。
-        short     9 →  14   +55.6%  確認しましたので、進めてください。
-        short    13 →  17   +30.8%  この設定はデフォルトのままで大丈夫です。
-        medium   80 →  97   +21.3%  先週木曜に新しい登録フローをリリースしたのですが、数字は思っていたより良さそうです。登録完…
-        medium   85 → 106   +24.7%  プラグインを作成する際には、vite.config.js にインラインで記述できます。その…
-        mean                +50.8%
-        mean |dev|          +50.8%"
+        "short   12 → 10   -16.7%  お疲れさまです、今いいですか？
+        short    2 →  8  +300.0%  ありがとうございました。
+        short    7 →  8   +14.3%  今日は天気がいいですね。
+        short   10 → 11   +10.0%  ミーティング、リスケできますか？
+        short    6 →  6     0.0%  今向かってます。
+        short   10 →  9   -10.0%  東京タワー、行きませんか？
+        short   11 →  9   -18.2%  すみません、駅はどこですか？
+        short    7 →  6   -14.3%  だいじょうぶです。
+        short   11 → 10    -9.1%  来週の予定を共有しておきます。
+        short   10 → 10     0.0%  資料は明日の朝までに送ります。
+        short    9 → 11   +22.2%  確認しましたので、進めてください。
+        short   13 → 13     0.0%  この設定はデフォルトのままで大丈夫です。
+        medium  80 → 75    -6.3%  先週木曜に新しい登録フローをリリースしたのですが、数字は思っていたより良さそうです。登録完…
+        medium  85 → 85     0.0%  プラグインを作成する際には、vite.config.js にインラインで記述できます。その…
+        mean              +19.4%
+        mean |dev|         30.1%"
       `)
     })
 
     it('prices Chinese text', () => {
       expect(measureBucket(BUCKETS.chinese)).toMatchInlineSnapshot(`
-        "short     4 →   6   +50.0%  你好，在吗？
-        short     6 →   8   +33.3%  今天天气不错啊。
-        short     6 →   8   +33.3%  我最近在学中文。
-        short     9 →  12   +33.3%  人工智能这块变化太快了。
-        short     7 →   9   +28.6%  请问洗手间在哪里？
-        short     9 →  10   +11.1%  谢谢你帮忙，辛苦了。
-        short     7 →  10   +42.9%  这个方案我觉得可行。
-        short     8 →  10   +25.0%  会议改到下周三下午。
-        medium   51 →  73   +43.1%  新的注册流程上周四已经上线了，数据看起来比预期还要好。注册完成率提高了一成多，邮箱验证那一…
-        medium   76 → 108   +42.1%  人工智能应用中较为知名的例子包括高级网络搜索引擎、聊天机器人、虚拟助手、自动驾驶汽车，以及…
-        mean                +34.3%
-        mean |dev|          +34.3%"
+        "short    4 →  4     0.0%  你好，在吗？
+        short    6 →  6     0.0%  今天天气不错啊。
+        short    6 →  6     0.0%  我最近在学中文。
+        short    9 →  8   -11.1%  人工智能这块变化太快了。
+        short    7 →  6   -14.3%  请问洗手间在哪里？
+        short    9 →  7   -22.2%  谢谢你帮忙，辛苦了。
+        short    7 →  7     0.0%  这个方案我觉得可行。
+        short    8 →  7   -12.5%  会议改到下周三下午。
+        medium  51 → 49    -3.9%  新的注册流程上周四已经上线了，数据看起来比预期还要好。注册完成率提高了一成多，邮箱验证那一…
+        medium  76 → 72    -5.3%  人工智能应用中较为知名的例子包括高级网络搜索引擎、聊天机器人、虚拟助手、自动驾驶汽车，以及…
+        mean               -6.9%
+        mean |dev|          6.9%"
       `)
     })
 
     it('prices Korean text', () => {
       expect(measureBucket(BUCKETS.korean)).toMatchInlineSnapshot(`
-        "short    10 →  14   +40.0%  안녕하세요, 오늘 회의 몇 시죠?
-        short     7 →  14  +100.0%  네, 알겠습니다. 감사합니다!
-        short    14 →  18   +28.6%  내일 아침까지 보고서 보내주실 수 있나요?
-        short    10 →  14   +40.0%  빨리 처리해 주셔서 감사합니다.
-        short     8 →   8     0.0%  점심 뭐 드실래요?
-        short    11 →  17   +54.5%  이번 주 금요일까지 마무리하겠습니다.
-        short    11 →  16   +45.5%  설정은 기본값 그대로 두셔도 됩니다.
-        medium   68 →  92   +35.3%  지난주 목요일에 새 가입 플로우를 배포했는데 수치가 예상보다 잘 나오고 있습니다.…
-        medium   67 → 104   +55.2%  플러그인을 만들 때는 vite.config.js 안에 인라인으로 작성할 수 있습니…
-        mean                +44.3%
-        mean |dev|          +44.3%"
+        "short   10 → 12   +20.0%  안녕하세요, 오늘 회의 몇 시죠?
+        short    7 → 10   +42.9%  네, 알겠습니다. 감사합니다!
+        short   14 → 14     0.0%  내일 아침까지 보고서 보내주실 수 있나요?
+        short   10 → 10     0.0%  빨리 처리해 주셔서 감사합니다.
+        short    8 →  7   -12.5%  점심 뭐 드실래요?
+        short   11 → 12    +9.1%  이번 주 금요일까지 마무리하겠습니다.
+        short   11 → 11     0.0%  설정은 기본값 그대로 두셔도 됩니다.
+        medium  68 → 72    +5.9%  지난주 목요일에 새 가입 플로우를 배포했는데 수치가 예상보다 잘 나오고 있습니다.…
+        medium  67 → 82   +22.4%  플러그인을 만들 때는 vite.config.js 안에 인라인으로 작성할 수 있습니…
+        mean               +9.7%
+        mean |dev|         12.5%"
       `)
     })
   })
@@ -422,10 +422,10 @@ describe('heuristic calibration', () => {
         short   14 →  9   -35.7%  नमस्ते, आज मीटिंग तीन बजे है क्या?
         short   16 →  7   -56.3%  สวัสดีครับ ประชุมวันนี้บ่ายสามใช่ไหมครับ
         short    9 →  6   -33.3%  היי, הפגישה היום בשלוש?
-        medium  66 → 49   -25.8%  أطلقنا عملية التسجيل الجديدة يوم الخميس الماض…
-        medium  79 → 61   -22.8%  नई साइन-अप प्रोसेस हमने पिछले गुरुवार को लॉन्…
-        medium  87 → 40   -54.0%  เราปล่อยขั้นตอนการสมัครแบบใหม่เมื่อวันพฤหัสบด…
-        medium  82 → 46   -43.9%  השקנו את תהליך ההרשמה החדש ביום חמישי שעבר וה…"
+        medium  66 → 46   -30.3%  أطلقنا عملية التسجيل الجديدة يوم الخميس الماض…
+        medium  79 → 58   -26.6%  नई साइन-अप प्रोसेस हमने पिछले गुरुवार को लॉन्…
+        medium  87 → 33   -62.1%  เราปล่อยขั้นตอนการสมัครแบบใหม่เมื่อวันพฤหัสบด…
+        medium  82 → 44   -46.3%  השקנו את תהליך ההרשמה החדש ביום חמישי שעבר וה…"
       `)
     })
   })
@@ -433,30 +433,30 @@ describe('heuristic calibration', () => {
   describe('word length bands at the default ratio', () => {
     it('prices words of seven to ten characters', () => {
       expect(measureBucket(BUCKETS.wordsSevenToTen)).toMatchInlineSnapshot(`
-        "short  12 → 24  +100.0%  plugins because started prepend Western impre…
-        short  16 → 24   +50.0%  squeezed permanent leverage balloon promise w…
-        mean             +75.0%
-        mean |dev|       +75.0%"
+        "short  12 → 17   +41.7%  plugins because started prepend Western impre…
+        short  16 → 16     0.0%  squeezed permanent leverage balloon promise w…
+        mean             +20.8%
+        mean |dev|        20.8%"
       `)
     })
 
     it('prices words of eleven characters and up', () => {
       expect(measureBucket(BUCKETS.wordsElevenPlus)).toMatchInlineSnapshot(`
-        "short  17 → 19   +11.8%  environment viteMetadata experimental IndexHt…
-        short  16 → 19   +18.8%  plagiaristic impressionability neighbourhood …
-        mean             +15.3%
-        mean |dev|       +15.3%"
+        "short  17 → 18    +5.9%  environment viteMetadata experimental IndexHt…
+        short  16 → 17    +6.3%  plagiaristic impressionability neighbourhood …
+        mean              +6.1%
+        mean |dev|         6.1%"
       `)
     })
 
     it('prices text mixing scripts within a line', () => {
       expect(measureBucket(BUCKETS.mixedScript)).toMatchInlineSnapshot(`
-        "short   7 → 11   +57.1%  GPT-4o를 사용하는 방법
-        short   5 →  6   +20.0%  React と Vue の比較
-        short  10 → 10     0.0%  AI 技术在 2026 年的应用
-        short   8 → 10   +25.0%  Der Build-Prozess läuft über Vite
-        mean             +25.5%
-        mean |dev|       +25.5%"
+        "short   7 →  9   +28.6%  GPT-4o를 사용하는 방법
+        short   5 →  5     0.0%  React と Vue の比較
+        short  10 →  8   -20.0%  AI 技术在 2026 年的应用
+        short   8 →  9   +12.5%  Der Build-Prozess läuft über Vite
+        mean              +5.3%
+        mean |dev|        15.3%"
       `)
     })
   })
@@ -464,31 +464,31 @@ describe('heuristic calibration', () => {
   describe('structural segments', () => {
     it('prices punctuation runs', () => {
       expect(measureBucket(BUCKETS.punctuationRuns)).toMatchInlineSnapshot(`
-        "short  1 → 2  +100.0%  ----
-        short  1 → 3  +200.0%  ======
+        "short  1 → 1     0.0%  ----
+        short  1 → 1     0.0%  ======
         short  1 → 1     0.0%  ***
         short  1 → 1     0.0%  ...
         short  2 → 2     0.0%  /* */
-        short  2 → 3   +50.0%  <!-- -->
+        short  2 → 2     0.0%  <!-- -->
         short  1 → 1     0.0%  =>
-        short  1 → 2  +100.0%  ::::
-        mean           +56.3%
-        mean |dev|     +56.3%"
+        short  1 → 1     0.0%  ::::
+        mean             0.0%
+        mean |dev|       0.0%"
       `)
     })
 
     it('prices emoji runs', () => {
       expect(measureBucket(BUCKETS.emoji)).toMatchInlineSnapshot(`
-        "short   3 →  4   +33.3%  😀😀😀
-        short   1 →  2  +100.0%  👍
-        short   5 →  4   -20.0%  🏀🔥😱
-        short   7 →  6   -14.3%  Great job! 🎉🎉
-        short   8 →  7   -12.5%  See you soon 😀🍕🎉
-        short   2 →  2     0.0%  🎉
-        short   8 → 11   +37.5%  😀😀😀😀😀😀😀😀
-        short   4 →  4     0.0%  Ship it 🚀
-        mean             +15.5%
-        mean |dev|       +27.2%"
+        "short  3 → 4   +33.3%  😀😀😀
+        short  1 → 2  +100.0%  👍
+        short  5 → 4   -20.0%  🏀🔥😱
+        short  7 → 6   -14.3%  Great job! 🎉🎉
+        short  8 → 7   -12.5%  See you soon 😀🍕🎉
+        short  2 → 2     0.0%  🎉
+        short  8 → 9   +12.5%  😀😀😀😀😀😀😀😀
+        short  4 → 4     0.0%  Ship it 🚀
+        mean           +12.4%
+        mean |dev|      24.1%"
       `)
     })
 
@@ -496,19 +496,19 @@ describe('heuristic calibration', () => {
       expect(measureBucket(BUCKETS.numeric)).toMatchInlineSnapshot(`
         "short   5 →  4   -20.0%  12345 67890
         short  12 → 11    -8.3%  2026-07-27 09:30:00
-        short  16 → 17    +6.3%  Order #48291 shipped, tracking 94055118992231…
-        mean              -7.4%
-        mean |dev|       +11.5%"
+        short  16 → 16     0.0%  Order #48291 shipped, tracking 94055118992231…
+        mean              -9.4%
+        mean |dev|         9.4%"
       `)
     })
 
     it('prices code and URLs', () => {
       expect(measureBucket(BUCKETS.code)).toMatchInlineSnapshot(`
         "short  19 → 20    +5.3%  const total = items.reduce((sum, item) => sum…
-        short  11 → 17   +54.5%  https://example.com/path/to/resource?query=1
+        short  11 → 16   +45.5%  https://example.com/path/to/resource?query=1
         short  11 → 11     0.0%  SELECT id, name FROM users WHERE active = tru…
-        mean             +19.9%
-        mean |dev|       +19.9%"
+        mean             +16.9%
+        mean |dev|        16.9%"
       `)
     })
   })
@@ -520,17 +520,17 @@ describe('heuristic calibration', () => {
         short  29 → 23   -20.7%  {\\n  "id": "usr_29f84h",\\n  "plan": "pro",\\n …
         short  14 → 14     0.0%  {"ok":true,"error":null,"retryAfter":30}
         mean             -13.9%
-        mean |dev|       +13.9%"
+        mean |dev|        13.9%"
       `)
     })
 
     it('prices Markdown documents', () => {
       expect(measureBucket(BUCKETS.markdown)).toMatchInlineSnapshot(`
-        "medium   76 →  90   +18.4%  # Getting started\\n\\nInstall the package:\\n\\n…
-        medium   93 → 103   +10.8%  ## Plugin ordering\\n\\nA Vite plugin can addit…
-        medium   71 →  80   +12.7%  ### Conditional application\\n\\nBy default plu…
-        mean                +13.9%
-        mean |dev|          +13.9%"
+        "medium  76 → 81    +6.6%  # Getting started\\n\\nInstall the package:\\n\\n…
+        medium  93 → 93     0.0%  ## Plugin ordering\\n\\nA Vite plugin can addit…
+        medium  71 → 72    +1.4%  ### Conditional application\\n\\nBy default plu…
+        mean               +2.7%
+        mean |dev|          2.7%"
       `)
     })
   })
@@ -603,7 +603,7 @@ function measureBucket(bucket: HeuristicBucket, { hasMean = true } = {}): string
   return [
     ...rows,
     `${'mean'.padEnd(leadWidth)}  ${formatSignedPercent(meanSignedDeviation(measurements))}`,
-    `${'mean |dev|'.padEnd(leadWidth)}  ${formatSignedPercent(meanAbsoluteDeviation(measurements))}`,
+    `${'mean |dev|'.padEnd(leadWidth)}  ${`${meanAbsoluteDeviation(measurements).toFixed(1)}%`.padStart(7)}`,
   ].join('\n')
 }
 

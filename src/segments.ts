@@ -11,25 +11,29 @@ const PATTERNS = {
 
 const TOKEN_SPLIT_PATTERN = new RegExp(`(\\s+|${PATTERNS.punctuation.source}+)`)
 
-// All ratios are calibrated against OpenAI's o200k_base encoding
-const DEFAULT_CHARS_PER_TOKEN = 6
+// All ratios are calibrated against OpenAI's o200k_base encoding, each fitted
+// against the segments its own rule prices
+const DEFAULT_CHARS_PER_TOKEN = 7
 const SHORT_TOKEN_THRESHOLD = 3
-// Kana runs merge into multi-character tokens (particles, common words);
-// kanji and hanzi price at one token per character – the safe upper bound,
-// as modern vocabulary merges below it and classical text splits above it
-const KANA_CHARS_PER_TOKEN = 1.35
+const PUNCTUATION_CHARS_PER_TOKEN = 6
+// Kana and hangul merge into multi-character tokens; hanzi merges least. Its
+// rate reflects contemporary simplified Chinese – traditional and classical
+// text merges far less and lands below the estimate
+const KANA_CHARS_PER_TOKEN = 1.6
+const HANGUL_CHARS_PER_TOKEN = 1.75
+const HANZI_CHARS_PER_TOKEN = 1.5
 
 const DEFAULT_LANGUAGE_CONFIGS: LanguageConfig[] = [
-  { pattern: /[äöüßẞ]/i, averageCharsPerToken: 2.6 },
-  { pattern: /[éèêëàâîïôûùüÿçœæáíóúñ]/i, averageCharsPerToken: 3 },
-  // Below the ~3.0 of accented segments on purpose: unaccented Slavic words
-  // fall through to the default ratio, and this compensates the shortfall
+  { pattern: /[äöüßẞ]/i, averageCharsPerToken: 3 },
+  { pattern: /[éèêëàâîïôûùüÿçœæáíóúñ]/i, averageCharsPerToken: 3.75 },
+  // Below the accented segments on purpose: unaccented Slavic words fall
+  // through to the default ratio, and this compensates the shortfall
   { pattern: /[ąćęłńóśźżěščřžýůúďťň]/i, averageCharsPerToken: 2.5 },
-  { pattern: /[\u0430-\u044F\u0451]/i, averageCharsPerToken: 4 },
-  { pattern: /[\u03AC-\u03CE]/i, averageCharsPerToken: 2.75 },
+  { pattern: /[\u0430-\u044F\u0451]/i, averageCharsPerToken: 6 },
+  { pattern: /[\u03AC-\u03CE]/i, averageCharsPerToken: 3 },
   // Anchored to pure emoji runs – symbols like ™ are Extended_Pictographic
   // too, and an unanchored match would misprice the whole attached word
-  { pattern: /^\p{Extended_Pictographic}[\p{Extended_Pictographic}\p{Emoji_Component}]*$/u, averageCharsPerToken: 0.75 },
+  { pattern: /^\p{Extended_Pictographic}[\p{Extended_Pictographic}\p{Emoji_Component}]*$/u, averageCharsPerToken: 0.9 },
 ]
 
 export interface SegmentEstimate {
@@ -96,7 +100,7 @@ function estimateSegmentTokens(
   }
 
   if (PATTERNS.punctuation.test(segment)) {
-    return Math.ceil(segment.length / 2)
+    return Math.ceil(segment.length / PUNCTUATION_CHARS_PER_TOKEN)
   }
 
   return Math.ceil(segment.length / defaultCharsPerToken)
@@ -122,17 +126,33 @@ function getCharacterCount(text: string): number {
 
 function estimateCjkTokens(segment: string): number {
   let kanaCount = 0
-  let otherCount = 0
+  let hangulCount = 0
+  let hanziCount = 0
 
   for (const character of segment) {
     const codePoint = character.codePointAt(0)!
-    const isKanaGlyph = codePoint >= 0x3040 && codePoint <= 0x30FF
 
-    if (isKanaGlyph)
+    if (codePoint >= 0x3040 && codePoint <= 0x30FF)
       kanaCount++
+    else if (isHangulCodePoint(codePoint))
+      hangulCount++
     else
-      otherCount++
+      hanziCount++
   }
 
-  return otherCount + Math.ceil(kanaCount / KANA_CHARS_PER_TOKEN)
+  // One rounding for the whole segment: rounding each script on its own would
+  // charge a token for every script boundary in mixed CJK text
+  return Math.ceil(
+    hanziCount / HANZI_CHARS_PER_TOKEN
+    + kanaCount / KANA_CHARS_PER_TOKEN
+    + hangulCount / HANGUL_CHARS_PER_TOKEN,
+  )
+}
+
+function isHangulCodePoint(codePoint: number): boolean {
+  return (codePoint >= 0xAC00 && codePoint <= 0xD7AF)
+    || (codePoint >= 0x1100 && codePoint <= 0x11FF)
+    || (codePoint >= 0x3130 && codePoint <= 0x318F)
+    || (codePoint >= 0xA960 && codePoint <= 0xA97F)
+    || (codePoint >= 0xD7B0 && codePoint <= 0xD7FF)
 }
