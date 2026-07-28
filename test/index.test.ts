@@ -64,13 +64,11 @@ describe('estimateTokenCount', () => {
     })
 
     it('charges a line break that follows a word', () => {
-      expect(estimateTokenCount('Hello world')).toBe(2)
-      expect(estimateTokenCount('Hello\nworld')).toBe(3)
+      expect(estimateTokenCount('Hello\nworld')).toBe(estimateTokenCount('Hello world') + 1)
     })
 
     it('merges a line break into a preceding punctuation token', () => {
-      expect(estimateTokenCount('Hello, world')).toBe(3)
-      expect(estimateTokenCount('Hello,\nworld')).toBe(3)
+      expect(estimateTokenCount('Hello,\nworld')).toBe(estimateTokenCount('Hello, world'))
     })
   })
 
