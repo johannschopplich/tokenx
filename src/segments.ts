@@ -11,15 +11,10 @@ const PATTERNS = {
 
 const TOKEN_SPLIT_PATTERN = new RegExp(`(\\s+|${PATTERNS.punctuation.source}+)`)
 
-// All ratios are calibrated against OpenAI's o200k_base encoding, each fitted
-// against the segments its own rule prices
+// All ratios are calibrated against OpenAI's o200k_base encoding
 const DEFAULT_CHARS_PER_TOKEN = 7
 const SHORT_TOKEN_THRESHOLD = 3
 const PUNCTUATION_CHARS_PER_TOKEN = 6
-// Fitted against a spread of Wikipedia articles per script rather than against
-// one document: subject matter moves the rate by more than the script does.
-// Hanzi ran from 0.98 on everyday prose to 1.42 on machine-learning vocabulary,
-// which o200k merges unusually well, so a single article sets it far too high
 const KANA_CHARS_PER_TOKEN = 1.4
 const HANGUL_CHARS_PER_TOKEN = 1.65
 const HANZI_CHARS_PER_TOKEN = 1.15
@@ -30,8 +25,8 @@ const DEFAULT_LANGUAGE_CONFIGS: LanguageConfig[] = [
   // language rather than against the segments the pattern matches
   { pattern: /[äöüßẞ]/i, averageCharsPerToken: 3 },
   { pattern: /[éèêëàâîïôûùüÿçœæáíóúñ]/i, averageCharsPerToken: 4.5 },
-  // Below the accented segments on purpose: unaccented Slavic words fall
-  // through to the default ratio, and this compensates the shortfall
+  // Set below what the accented segments alone would fit: unaccented Slavic
+  // words fall through to the default ratio, and this compensates the shortfall
   { pattern: /[ąćęłńóśźżěščřžýůúďťň]/i, averageCharsPerToken: 2.5 },
   { pattern: /[\u0430-\u044F\u0451]/i, averageCharsPerToken: 6 },
   { pattern: /[\u03AC-\u03CE]/i, averageCharsPerToken: 3 },
@@ -88,9 +83,8 @@ function estimateSegmentTokens(
     if (PATTERNS.structuredWhitespace.test(segment))
       return 1
 
-    // A line break merges into a preceding punctuation token but stands on its
-    // own after a word, which is why line-broken lists and chat logs cost more
-    // than their wrapped equivalent. Single spaces always merge
+    // A line break merges into a preceding punctuation token but stands on
+    // its own after a word. Single spaces always merge
     return segment.includes('\n') && !PATTERNS.punctuation.test(previousSegment.slice(-1)) ? 1 : 0
   }
 
@@ -121,6 +115,9 @@ function estimateSegmentTokens(
 }
 
 function getLanguageSpecificCharsPerToken(segment: string, languageConfigs: LanguageConfig[]): number | undefined {
+  // Every built-in config needs a non-ASCII character to match, so ASCII-only
+  // segments skip the loop – custom configs carry no such guarantee, which is
+  // why the shortcut checks for the defaults
   if (languageConfigs === DEFAULT_LANGUAGE_CONFIGS && !PATTERNS.nonAscii.test(segment)) {
     return
   }

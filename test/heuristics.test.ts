@@ -38,10 +38,9 @@ const MAX_BUCKET_MEAN_ABSOLUTE_DEVIATION = 40
 const SAMPLE_LABEL_WIDTH = 46
 
 // Every language bucket is running text from an encyclopedia article on one
-// subject, not sentences written for the rule under test. A sentence built to
+// subject, not sentences written for the rule under test: a sentence built to
 // carry an accent in every word prices a language through a density its prose
-// never reaches, and fitting against one put the romance ratio 18% off the
-// mark it hits on real text
+// never reaches
 const BUCKETS = {
   german: {
     short: [
@@ -206,9 +205,9 @@ const BUCKETS = {
   },
   // No ratio fits a punctuation run: o200k has single tokens for long repeats
   // of one character, so a 32-character rule costs one token, while `}]}},`
-  // costs three. Measured here at 1.5 to 32 characters per token. The shipped
-  // ratio is not fitted against this bucket but against whole documents, where
-  // most punctuation merges into the word token before it instead
+  // costs three. The shipped ratio is not fitted against this bucket but
+  // against whole documents, where most punctuation merges into the word
+  // token before it instead
   punctuationRuns: {
     documentsGap: true,
     short: [
@@ -587,11 +586,7 @@ function meanSignedDeviation(measurements: SampleMeasurement[]): number {
   return measurements.reduce((sum, measurement) => sum + measurement.signedDeviation, 0) / measurements.length
 }
 
-/**
- * The statistic that decides whether a bucket is calibrated. The signed mean
- * alone hides a bucket whose samples cancel out, so both are reported and only
- * this one is bounded.
- */
+/** The statistic the bucket bound is enforced on */
 function meanAbsoluteDeviation(measurements: SampleMeasurement[]): number {
   return measurements.reduce((sum, measurement) => sum + Math.abs(measurement.signedDeviation), 0) / measurements.length
 }
