@@ -1,11 +1,12 @@
-[245]                                                        under ◂·▸ over[/]
-Emoji-heavy chat messages            [245]   39 →    41[/]             [240]│[/]███           +5.13%
-JSON payload (formatted)             [245]   96 →    93[/]           ██[240]│[/]              -3.13%
-JSON payload (minified)              [245]   62 →    63[/]             [240]│[/]█             +1.61%
-tokenx source code                   [245]2,680 → 2,830[/]             [240]│[/]███           +5.60%
-The Great Gatsby by Fitzgerald (en)  [245]4,391 → 4,878[/]             [240]│[/]██████       +11.09%
-Die Verwandlung by Kafka (de)        [245]4,437 → 4,830[/]             [240]│[/]████          +8.86%
-Ah Q Zhengzhuan by Lu Xun (zh)       [245]7,845 → 7,869[/]             [240]│[/]              +0.31%
-Rashomon by Akutagawa (ja)           [245]5,101 → 5,049[/]            █[240]│[/]              -1.02%
-[240]                                                     ─────────────────────[/]
-[239]github.com/johannschopplich/tokenx[/]                                    [245]mean[/]     4.59%
+[245]                                                           under ◂·▸ over[/]
+Emoji-heavy chat messages             [245]    39 →     41[/]             [240]│[/]█             +5.13%
+GitHub releases API response          [245]10,805 → 12,105[/]             [240]│[/]██           +12.03%
+tokenx source code                    [245] 2,720 →  2,872[/]             [240]│[/]█             +5.59%
+Vite plugin API docs (en)             [245] 6,901 →  7,769[/]             [240]│[/]███          +12.58%
+The Great Gatsby by Fitzgerald (en)   [245] 4,391 →  4,878[/]             [240]│[/]██           +11.09%
+Die Verwandlung by Kafka (de)         [245] 4,437 →  4,830[/]             [240]│[/]██            +8.86%
+Vite plugin API docs (ja)             [245] 9,240 → 10,520[/]             [240]│[/]███          +13.85%
+Vite plugin API docs (ko)             [245] 8,224 → 10,221[/]             [240]│[/]█████        +24.28%
+Artificial intelligence article (zh)  [245]10,043 → 14,828[/]             [240]│[/]██████████   +47.65%
+[240]                                                        ─────────────────────[/]
+[239]github.com/johannschopplich/tokenx[/]                                       [245]mean[/]    15.67%

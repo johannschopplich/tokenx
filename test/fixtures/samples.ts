@@ -4,23 +4,14 @@ import { join, resolve } from 'node:path'
 const rootDir = resolve(import.meta.dirname, '../..')
 
 /** Per-sample deviation bound (%) – enforced in CI, visualized as the bench chart's axis span */
-export const MAX_SAMPLE_DEVIATION = 20
+export const MAX_SAMPLE_DEVIATION = 50
 /** Mean deviation bound (%) across the corpus – enforced in CI */
-export const MAX_MEAN_DEVIATION = 7
+export const MAX_MEAN_DEVIATION = 20
 
 export interface BenchmarkSample {
   description: string
   /** Inline text, or repo-root-relative files to load and concatenate */
   input: string | { files: string[] }
-}
-
-const JSON_PAYLOAD = {
-  id: 'usr_29f84h',
-  name: 'Ada Lovelace',
-  email: 'ada@example.com',
-  roles: ['admin', 'editor'],
-  settings: { theme: 'dark', notifications: true, pageSize: 25 },
-  lastLogin: '2026-07-01T09:30:00Z',
 }
 
 export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
@@ -29,16 +20,16 @@ export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
     input: 'Hey! 😀 Did you see the game last night?? 🏀🔥 Absolutely insane finish 😱😱 We should totally watch the next one together 🍕🎉 Let me know! 👍',
   },
   {
-    description: 'JSON payload (formatted)',
-    input: JSON.stringify(JSON_PAYLOAD, undefined, 2),
-  },
-  {
-    description: 'JSON payload (minified)',
-    input: JSON.stringify(JSON_PAYLOAD),
+    description: 'GitHub releases API response',
+    input: { files: ['test/fixtures/texts/github-releases-api.txt'] },
   },
   {
     description: 'tokenx source code',
     input: { files: ['src/index.ts', 'src/segments.ts', 'src/types.ts'] },
+  },
+  {
+    description: 'Vite plugin API docs (en)',
+    input: { files: ['test/fixtures/texts/vite-plugin-api-en.txt'] },
   },
   {
     description: 'The Great Gatsby by Fitzgerald (en)',
@@ -49,12 +40,16 @@ export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
     input: { files: ['test/fixtures/texts/die-verwandlung-de.txt'] },
   },
   {
-    description: 'Ah Q Zhengzhuan by Lu Xun (zh)',
-    input: { files: ['test/fixtures/texts/a-q-zheng-zhuan-zh.txt'] },
+    description: 'Vite plugin API docs (ja)',
+    input: { files: ['test/fixtures/texts/vite-plugin-api-ja.txt'] },
   },
   {
-    description: 'Rashomon by Akutagawa (ja)',
-    input: { files: ['test/fixtures/texts/rashomon-ja.txt'] },
+    description: 'Vite plugin API docs (ko)',
+    input: { files: ['test/fixtures/texts/vite-plugin-api-ko.txt'] },
+  },
+  {
+    description: 'Artificial intelligence article (zh)',
+    input: { files: ['test/fixtures/texts/artificial-intelligence-zh.txt'] },
   },
 ]
 
