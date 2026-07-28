@@ -517,20 +517,20 @@ describe('heuristic calibration', () => {
     it('prices JSON payloads', () => {
       expect(measureBucket(BUCKETS.json)).toMatchInlineSnapshot(`
         "short  19 → 15   -21.1%  {"id":"usr_29f84h","plan":"pro","seats":12}
-        short  29 → 23   -20.7%  {\\n  "id": "usr_29f84h",\\n  "plan": "pro",\\n …
+        short  29 → 24   -17.2%  {\\n  "id": "usr_29f84h",\\n  "plan": "pro",\\n …
         short  14 → 14     0.0%  {"ok":true,"error":null,"retryAfter":30}
-        mean             -13.9%
-        mean |dev|        13.9%"
+        mean             -12.8%
+        mean |dev|        12.8%"
       `)
     })
 
     it('prices Markdown documents', () => {
       expect(measureBucket(BUCKETS.markdown)).toMatchInlineSnapshot(`
-        "medium  76 → 81    +6.6%  # Getting started\\n\\nInstall the package:\\n\\n…
-        medium  93 → 93     0.0%  ## Plugin ordering\\n\\nA Vite plugin can addit…
-        medium  71 → 72    +1.4%  ### Conditional application\\n\\nBy default plu…
-        mean               +2.7%
-        mean |dev|          2.7%"
+        "medium  76 → 83    +9.2%  # Getting started\\n\\nInstall the package:\\n\\n…
+        medium  93 → 95    +2.2%  ## Plugin ordering\\n\\nA Vite plugin can addit…
+        medium  71 → 73    +2.8%  ### Conditional application\\n\\nBy default plu…
+        mean               +4.7%
+        mean |dev|          4.7%"
       `)
     })
   })

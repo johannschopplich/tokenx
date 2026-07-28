@@ -52,9 +52,13 @@ export function* walkSegments(text: string, options: TokenEstimationOptions = {}
 
   const resolvedOptions = resolveOptions(options)
 
+  let previousSegment = ''
+
   for (const segment of text.split(TOKEN_SPLIT_PATTERN)) {
-    if (segment)
-      yield { segment, tokenCount: estimateSegmentTokens(segment, resolvedOptions) }
+    if (segment) {
+      yield { segment, tokenCount: estimateSegmentTokens(segment, resolvedOptions, previousSegment) }
+      previousSegment = segment
+    }
   }
 }
 
@@ -73,11 +77,17 @@ function resolveOptions(options: TokenEstimationOptions): ResolvedTokenEstimatio
 function estimateSegmentTokens(
   segment: string,
   { languageConfigs, defaultCharsPerToken }: ResolvedTokenEstimationOptions,
+  previousSegment: string,
 ): number {
   if (PATTERNS.whitespace.test(segment)) {
-    // Indentation and blank lines cost a token in o200k, while line-wrap
-    // newlines and single spaces merge into the neighboring word tokens
-    return PATTERNS.structuredWhitespace.test(segment) ? 1 : 0
+    // Indentation and blank lines cost a token in o200k
+    if (PATTERNS.structuredWhitespace.test(segment))
+      return 1
+
+    // A line break merges into a preceding punctuation token but stands on its
+    // own after a word, which is why line-broken lists and chat logs cost more
+    // than their wrapped equivalent. Single spaces always merge
+    return segment.includes('\n') && !PATTERNS.punctuation.test(previousSegment.slice(-1)) ? 1 : 0
   }
 
   // Checked before the built-in rules so custom configs can override them
