@@ -16,16 +16,20 @@ const TOKEN_SPLIT_PATTERN = new RegExp(`(\\s+|${PATTERNS.punctuation.source}+)`)
 const DEFAULT_CHARS_PER_TOKEN = 7
 const SHORT_TOKEN_THRESHOLD = 3
 const PUNCTUATION_CHARS_PER_TOKEN = 6
-// Kana and hangul merge into multi-character tokens; hanzi merges least. Its
-// rate reflects contemporary simplified Chinese – traditional and classical
-// text merges far less and lands below the estimate
-const KANA_CHARS_PER_TOKEN = 1.6
-const HANGUL_CHARS_PER_TOKEN = 1.75
-const HANZI_CHARS_PER_TOKEN = 1.5
+// Fitted against a spread of Wikipedia articles per script rather than against
+// one document: subject matter moves the rate by more than the script does.
+// Hanzi ran from 0.98 on everyday prose to 1.42 on machine-learning vocabulary,
+// which o200k merges unusually well, so a single article sets it far too high
+const KANA_CHARS_PER_TOKEN = 1.4
+const HANGUL_CHARS_PER_TOKEN = 1.65
+const HANZI_CHARS_PER_TOKEN = 1.15
 
 const DEFAULT_LANGUAGE_CONFIGS: LanguageConfig[] = [
+  // An accent rule prices a whole language through the minority of its words
+  // that carry an accent, so each ratio is fitted against running text in that
+  // language rather than against the segments the pattern matches
   { pattern: /[äöüßẞ]/i, averageCharsPerToken: 3 },
-  { pattern: /[éèêëàâîïôûùüÿçœæáíóúñ]/i, averageCharsPerToken: 3.75 },
+  { pattern: /[éèêëàâîïôûùüÿçœæáíóúñ]/i, averageCharsPerToken: 4.5 },
   // Below the accented segments on purpose: unaccented Slavic words fall
   // through to the default ratio, and this compensates the shortfall
   { pattern: /[ąćęłńóśźżěščřžýůúďťň]/i, averageCharsPerToken: 2.5 },

@@ -300,16 +300,16 @@ describe('heuristic calibration', () => {
 
     it('prices French and Spanish text', () => {
       expect(measureBucket(BUCKETS.romance)).toMatchInlineSnapshot(`
-        "short   24 → 25    +4.2%  Les caféiers sont des arbustes des régions tr…
-        short   14 → 14     0.0%  La consommation de café s'étendit à l'Égypte.
+        "short   24 → 23    -4.2%  Les caféiers sont des arbustes des régions tr…
+        short   14 → 11   -21.4%  La consommation de café s'étendit à l'Égypte.
         short   13 → 15   +15.4%  Les pamphlets et libelles sont distribués dan…
         short   12 → 13    +8.3%  Dependiendo de la receta hay diversas formas …
         short   18 → 16   -11.1%  Tienen hojas persistentes y opuestas y bajo u…
-        short   14 → 17   +21.4%  Produce un café fino y aromático, y necesita …
-        medium  69 → 69     0.0%  Le café est une boisson énergisante psychotro…
-        medium  93 → 97    +4.3%  El café es una bebida que se obtiene mediante…
-        mean               +5.3%
-        mean |dev|          8.1%"
+        short   14 → 15    +7.1%  Produce un café fino y aromático, y necesita …
+        medium  69 → 65    -5.8%  Le café est une boisson énergisante psychotro…
+        medium  93 → 95    +2.2%  El café es una bebida que se obtiene mediante…
+        mean               -1.2%
+        mean |dev|          9.4%"
       `)
     })
 
@@ -328,14 +328,14 @@ describe('heuristic calibration', () => {
 
     it('prices Czech text, which the romance config shadows', () => {
       expect(measureBucket(BUCKETS.czechShadowed)).toMatchInlineSnapshot(`
-        "short    25 →  21   -16.0%  Označují se tak i samotná semena, případně se…
-        short    17 →  16    -5.9%  Především se káva pije pro své povzbuzující ú…
-        short    26 →  27    +3.8%  Je také velmi oblíbeným nápojem při setkávání…
-        short    22 →  15   -31.8%  Nejčastěji se pije káva ze zrnek druhu arabik…
-        short    22 →  18   -18.2%  Pravlastí kávovníku je africký kontinent, kon…
-        medium  101 →  92    -8.9%  Existují dva základní druhy kávovníků, které …
-        mean                -12.8%
-        mean |dev|           14.1%"
+        "short    25 →  18   -28.0%  Označují se tak i samotná semena, případně se…
+        short    17 →  13   -23.5%  Především se káva pije pro své povzbuzující ú…
+        short    26 →  22   -15.4%  Je také velmi oblíbeným nápojem při setkávání…
+        short    22 →  14   -36.4%  Nejčastěji se pije káva ze zrnek druhu arabik…
+        short    22 →  15   -31.8%  Pravlastí kávovníku je africký kontinent, kon…
+        medium  101 →  80   -20.8%  Existují dva základní druhy kávovníků, které …
+        mean                -26.0%
+        mean |dev|           26.0%"
       `)
     })
 
@@ -383,40 +383,40 @@ describe('heuristic calibration', () => {
   describe('CJK scripts', () => {
     it('prices Japanese text', () => {
       expect(measureBucket(BUCKETS.japanese)).toMatchInlineSnapshot(`
-        "short    33 →  25   -24.2%  コーヒー中のカフェインなどの興奮作用から労働者には最適な嗜好品とされている。
-        short    33 →  26   -21.2%  精製された生豆は生産国で集積され、選別・等級付けされてから消費国に輸出される。
-        short    32 →  22   -31.3%  生豆は消費地においてコーヒー独特の香味を生み出すために焙煎される。
-        short    37 →  29   -21.6%  だが、記録が残っていないだけでアラビアコーヒーの歴史はそれよりずっと古いと推測されている。
-        short    23 →  17   -26.1%  コーヒー文化が広まるにつれ、抽出法が工夫され始めた。
-        medium  186 → 136   -26.9%  伝播ルートはエチオピア→イエメン→メッカ（アラビアコーヒー）→オスマントルコ帝国（トルココ…
-        mean                -25.2%
-        mean |dev|           25.2%"
+        "short    33 →  30    -9.1%  コーヒー中のカフェインなどの興奮作用から労働者には最適な嗜好品とされている。
+        short    33 →  32    -3.0%  精製された生豆は生産国で集積され、選別・等級付けされてから消費国に輸出される。
+        short    32 →  26   -18.8%  生豆は消費地においてコーヒー独特の香味を生み出すために焙煎される。
+        short    37 →  34    -8.1%  だが、記録が残っていないだけでアラビアコーヒーの歴史はそれよりずっと古いと推測されている。
+        short    23 →  21    -8.7%  コーヒー文化が広まるにつれ、抽出法が工夫され始めた。
+        medium  186 → 162   -12.9%  伝播ルートはエチオピア→イエメン→メッカ（アラビアコーヒー）→オスマントルコ帝国（トルココ…
+        mean                -10.1%
+        mean |dev|           10.1%"
       `)
     })
 
     it('prices Chinese text', () => {
       expect(measureBucket(BUCKETS.chinese)).toMatchInlineSnapshot(`
-        "short    41 →  29   -29.3%  采收的成熟咖啡果会经过剥离果肉的初步加工，再经过烘焙的工序，而成为能制作咖啡的咖啡豆。
-        short    20 →  17   -15.0%  因此，公平贸易咖啡与有机咖啡是一个不断扩大的市场。
-        short    21 →  20    -4.8%  但此故事截至1671年并没有得到任何记载，因此可能是杜撰的。
-        short    24 →  20   -16.7%  研磨的方法产出的咖啡末比较均匀，在烹制的时候出味也比较一致。
-        short    29 →  20   -31.0%  研磨的速度越慢，摩擦产生的热量越少，因而咖啡的香气不易流失。
-        medium  147 → 111   -24.5%  16世纪初，咖啡从也门的摩卡港传播到埃及，随后咖啡馆还出现在叙利亚阿勒颇，并于1554年在…
-        mean                -20.2%
-        mean |dev|           20.2%"
+        "short    41 →  38    -7.3%  采收的成熟咖啡果会经过剥离果肉的初步加工，再经过烘焙的工序，而成为能制作咖啡的咖啡豆。
+        short    20 →  22   +10.0%  因此，公平贸易咖啡与有机咖啡是一个不断扩大的市场。
+        short    21 →  27   +28.6%  但此故事截至1671年并没有得到任何记载，因此可能是杜撰的。
+        short    24 →  27   +12.5%  研磨的方法产出的咖啡末比较均匀，在烹制的时候出味也比较一致。
+        short    29 →  27    -6.9%  研磨的速度越慢，摩擦产生的热量越少，因而咖啡的香气不易流失。
+        medium  147 → 145    -1.4%  16世纪初，咖啡从也门的摩卡港传播到埃及，随后咖啡馆还出现在叙利亚阿勒颇，并于1554年在…
+        mean                 +5.9%
+        mean |dev|           11.1%"
       `)
     })
 
     it('prices Korean text', () => {
       expect(measureBucket(BUCKETS.korean)).toMatchInlineSnapshot(`
-        "short    22 →  18   -18.2%  일반적으로 뜨겁게 제공되지만 차가운 아이스 커피가 일반적이다.
-        short    36 →  29   -19.4%  16세기에 이 음료는 중동과 북아프리카의 나머지 지역으로 퍼져나갔고 나중에 유럽으…
+        "short    22 →  21    -4.5%  일반적으로 뜨겁게 제공되지만 차가운 아이스 커피가 일반적이다.
+        short    36 →  30   -16.7%  16세기에 이 음료는 중동과 북아프리카의 나머지 지역으로 퍼져나갔고 나중에 유럽으…
         short    12 →  14   +16.7%  커피는 많은 사회에서 중요한 역할을 해왔다.
-        short    19 →  16   -15.8%  그곳에서부터 커피는 이집트와 예멘으로 전파되었다.
-        short    21 →  18   -14.3%  이집트와 예멘에서는 커피가 종교적 의식에 사용되기도 했다.
-        medium  180 → 172    -4.4%  커피는 이제 세계적인 상품이 되었지만 홍해 주변의 음식 전통과 밀접하게 연관되어 …
-        mean                 -9.2%
-        mean |dev|           14.8%"
+        short    19 →  17   -10.5%  그곳에서부터 커피는 이집트와 예멘으로 전파되었다.
+        short    21 →  20    -4.8%  이집트와 예멘에서는 커피가 종교적 의식에 사용되기도 했다.
+        medium  180 → 175    -2.8%  커피는 이제 세계적인 상품이 되었지만 홍해 주변의 음식 전통과 밀접하게 연관되어 …
+        mean                 -3.8%
+        mean |dev|            9.3%"
       `)
     })
   })
@@ -459,12 +459,12 @@ describe('heuristic calibration', () => {
 
     it('prices text mixing scripts within a line', () => {
       expect(measureBucket(BUCKETS.mixedScript)).toMatchInlineSnapshot(`
-        "short   7 →  9   +28.6%  GPT-4o를 사용하는 방법
-        short   5 →  5     0.0%  React と Vue の比較
-        short  10 →  8   -20.0%  AI 技术在 2026 年的应用
+        "short   7 → 10   +42.9%  GPT-4o를 사용하는 방법
+        short   5 →  6   +20.0%  React と Vue の比較
+        short  10 → 10     0.0%  AI 技术在 2026 年的应用
         short   8 →  9   +12.5%  Der Build-Prozess läuft über Vite
-        mean              +5.3%
-        mean |dev|        15.3%"
+        mean             +18.8%
+        mean |dev|        18.8%"
       `)
     })
   })

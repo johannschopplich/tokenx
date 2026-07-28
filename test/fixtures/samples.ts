@@ -10,17 +10,16 @@ export const MAX_MEAN_DEVIATION = 5
 
 export interface BenchmarkSample {
   description: string
-  /** Inline text, or repo-root-relative files to load and concatenate */
   input: string | { files: string[] }
 }
 
 export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
   {
-    description: 'Emoji-heavy chat messages',
-    input: 'Hey! 😀 Did you see the game last night?? 🏀🔥 Absolutely insane finish 😱😱 We should totally watch the next one together 🍕🎉 Let me know! 👍',
+    description: 'Team chat transcript (en)',
+    input: { files: ['test/fixtures/texts/chat-transcript-en.txt'] },
   },
   {
-    description: 'GitHub releases API response',
+    description: 'Vite releases API response',
     input: { files: ['test/fixtures/texts/github-releases-api.txt'] },
   },
   {
@@ -32,24 +31,24 @@ export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
     input: { files: ['test/fixtures/texts/vite-plugin-api-en.txt'] },
   },
   {
+    description: 'Football article (ja)',
+    input: { files: ['test/fixtures/texts/football-ja.txt'] },
+  },
+  {
+    description: 'Football article (ko)',
+    input: { files: ['test/fixtures/texts/football-ko.txt'] },
+  },
+  {
+    description: 'Football article (zh)',
+    input: { files: ['test/fixtures/texts/football-zh.txt'] },
+  },
+  {
     description: 'The Great Gatsby by Fitzgerald (en)',
     input: { files: ['test/fixtures/texts/great-gatsby-en.txt'] },
   },
   {
     description: 'Die Verwandlung by Kafka (de)',
     input: { files: ['test/fixtures/texts/die-verwandlung-de.txt'] },
-  },
-  {
-    description: 'Vite plugin API docs (ja)',
-    input: { files: ['test/fixtures/texts/vite-plugin-api-ja.txt'] },
-  },
-  {
-    description: 'Vite plugin API docs (ko)',
-    input: { files: ['test/fixtures/texts/vite-plugin-api-ko.txt'] },
-  },
-  {
-    description: 'Artificial intelligence article (zh)',
-    input: { files: ['test/fixtures/texts/artificial-intelligence-zh.txt'] },
   },
 ]
 

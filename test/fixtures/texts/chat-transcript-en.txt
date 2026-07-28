@@ -1,0 +1,36 @@
+morning! standup in 5? 👋
+yep, joining
+give me two minutes, kettle just boiled ☕
+did anyone look at the staging deploy yet
+it's been red since yesterday evening 😩
+I merged the hotfix at 9:40, should be green now
+confirmed green ✅ thanks!
+np 🙏
+quick one — is the search index rebuild still running?
+yeah, roughly 40 minutes left
+ok I'll hold off on the migration until it's done
+sounds good
+Hey! 😀 did you see the game last night?? 🏀🔥
+absolutely insane finish 😱😱
+I fell asleep at halftime, don't spoil it
+too late 😅
+we should totally watch the next one together 🍕🎉 let me know! 👍
+in for that
+can you send me the report by tomorrow morning?
+sure, EOD tomorrow works?
+perfect 👍
+one thing though, the numbers for week 12 look off
+which ones
+signups. it says 4,812 but the dashboard says 4,190
+huh. probably the timezone cutoff again
+that would explain it, I'll double check tonight
+thanks for the quick turnaround on this!
+🎉
+also lunch? 🍕
+in 10
+the build is red again btw
+looking at it now
+it was the lockfile, rerunning
+green ✅
+nice, thanks
+shipping it 🚀
