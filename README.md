@@ -33,7 +33,7 @@ Die Verwandlung by Kafka (de)        4,791 → 4,830             │            
 Ah Q Zhengzhuan by Lu Xun (zh)       5,421 → 5,640             │██            +4.04%
 Rashomon by Akutagawa (ja)           5,250 → 5,115            █│              -2.57%
                                                      ─────────────────────
-mean                                                                           3.45%
+                                                                      mean     3.45%
 ```
 
 <!-- /automd -->

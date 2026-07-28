@@ -6,6 +6,7 @@ import { BENCHMARK_SAMPLES, MAX_SAMPLE_DEVIATION, readSampleText } from '../test
 
 const benchPath = path.resolve(import.meta.dirname, '../docs/bench.md')
 const chartPath = path.resolve(import.meta.dirname, '../docs/bench.chart.txt')
+const packageJson = JSON.parse(await fsp.readFile(path.resolve(import.meta.dirname, '../package.json'), 'utf-8'))
 
 const BAR_CELLS_PER_SIDE = 10
 const PERCENT_PER_BAR_CELL = MAX_SAMPLE_DEVIATION / BAR_CELLS_PER_SIDE
@@ -55,9 +56,9 @@ ${renderDeviationChart(measurements, plainPaint)}
 console.log(benchMarkdown)
 
 await fsp.writeFile(benchPath, benchMarkdown, 'utf-8')
-await fsp.writeFile(chartPath, `${renderDeviationChart(measurements, markerPaint)}\n`, 'utf-8')
+await fsp.writeFile(chartPath, `${renderDeviationChart(measurements, markerPaint, repoSlug())}\n`, 'utf-8')
 
-function renderDeviationChart(measurements: SampleMeasurement[], paint: Paint): string {
+function renderDeviationChart(measurements: SampleMeasurement[], paint: Paint, footerLink = ''): string {
   const labelWidth = Math.max(...measurements.map(measurement => measurement.description.length))
   const countWidth = Math.max(...measurements.map(measurement => Math.max(
     formatCount(measurement.referenceTokenCount).length,
@@ -75,9 +76,16 @@ function renderDeviationChart(measurements: SampleMeasurement[], paint: Paint): 
   const axisHeader = paint(`${' '.repeat(barColumnOffset)}${'under ◂'.padStart(BAR_CELLS_PER_SIDE)}·▸ over`, '245')
   const barWidth = BAR_CELLS_PER_SIDE * 2 + 1
   const meanSeparator = paint(`${' '.repeat(barColumnOffset)}${'─'.repeat(barWidth)}`, 'black')
-  const meanRow = `${paint('mean', '245')}${' '.repeat(barColumnOffset + barWidth - 'mean'.length + 2)}${`${meanDeviation.toFixed(2)}%`.padStart(8)}`
 
-  return [axisHeader, ...rows, meanSeparator, meanRow].join('\n')
+  const meanValue = `${meanDeviation.toFixed(2)}%`.padStart(2 + 8)
+  const footerPadding = ' '.repeat(barColumnOffset + barWidth - 'mean'.length - footerLink.length)
+  const footerRow = `${footerLink ? paint(footerLink, 'gray') : ''}${footerPadding}${paint('mean', '245')}${meanValue}`
+
+  return [axisHeader, ...rows, meanSeparator, footerRow].join('\n')
+}
+
+function formatCount(tokenCount: number): string {
+  return tokenCount.toLocaleString('en-US')
 }
 
 function renderDeviationBar(signedDeviation: number, paint: Paint): string {
@@ -95,6 +103,7 @@ function formatSignedPercent(signedDeviation: number): string {
   return `${sign}${magnitude}%`.padStart(8)
 }
 
-function formatCount(tokenCount: number): string {
-  return tokenCount.toLocaleString('en-US')
+function repoSlug(): string {
+  const homepage = new URL(packageJson.homepage)
+  return `${homepage.host}${homepage.pathname}`
 }
