@@ -20,10 +20,18 @@ The relative difference between an estimated count and the reference tokenizer's
 _Avoid_: accuracy percentage, error rate
 
 **Sample corpus**:
-The fixed set of long-form texts whose Deviation is measured against the reference tokenizer – the single source for both the published benchmarks and the enforced accuracy bounds.
+The fixed set of texts whose Deviation is measured against the reference tokenizer – the single source for both the published benchmarks and the enforced accuracy bounds.
 
 **Heuristic bucket**:
-A group of short and medium-length inputs that all exercise one estimation rule, recording where that rule's calibration currently sits. Distinct from the Sample corpus, which measures published accuracy on long-form text.
+A group of sentence- and paragraph-length inputs sharing one script or Register, recording where a rule's calibration currently sits.
+
+**Holdout corpus**:
+Texts deliberately kept out of every calibration decision, measured only to check that accuracy on the Sample corpus generalizes. Tuning anything against them retires them.
+_Avoid_: validation set, test corpus
+
+**Register**:
+The variety of language a text is written in – everyday prose, technical documentation, machine-generated payload. Moves Deviation more than the script does.
+_Avoid_: genre, domain, tone
 
 **Language config**:
 A rule pairing a script-detection pattern with that script's average characters per token. Custom configs take precedence over all built-in heuristics.

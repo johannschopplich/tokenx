@@ -6,7 +6,7 @@ Estimates are calibrated against OpenAI's `o200k_base` encoding – the tokenize
 
 ## Features
 
-- ⚡ **Within 10% of the real count** on every sample in the benchmark below
+- ⚡ **95%+ average accuracy**, and no single sample below 90% – both bounds enforced in CI
 - 📦 **Just 2kB** bundle size with zero dependencies
 - 🌍 Multi-language support with configurable language rules
 - 🗣️ Built-in rules for accented scripts (German, French, Spanish, Slavic), Cyrillic, and Greek
@@ -23,29 +23,29 @@ The following chart shows how close the estimates come to actual GPT token count
 Bars grow left when tokenx underestimates and right when it overestimates; the axis spans the ±10% per-sample deviation bound enforced in CI.
 
 ```
-                                                           under ◂·▸ over
-Emoji-heavy chat messages                 39 →     40             │███           +2.56%
-GitHub releases API response          10,805 → 11,684             │████████      +8.14%
-tokenx source code                     2,970 →  2,870          ███│              -3.37%
-Vite plugin API docs (en)              6,901 →  7,291             │██████        +5.65%
-The Great Gatsby by Fitzgerald (en)    4,391 →  4,628             │█████         +5.40%
-Die Verwandlung by Kafka (de)          4,437 →  4,452             │              +0.34%
-Vite plugin API docs (ja)              9,240 →  9,138            █│              -1.10%
-Vite plugin API docs (ko)              8,224 →  8,676             │█████         +5.50%
-Artificial intelligence article (zh)  10,043 → 10,010             │              -0.33%
-                                                        ─────────────────────
-                                                                         mean     3.60%
+                                                          under ◂·▸ over
+Team chat transcript (en)               293 →    293             │               0.00%
+Vite releases API response            8,075 →  8,649             │███████       +7.11%
+tokenx source code                    3,127 →  3,053           ██│              -2.37%
+Vite plugin API docs (en)             6,901 →  7,329             │██████        +6.20%
+Football article (ja)                11,204 → 11,111            █│              -0.83%
+Football article (ko)                 8,937 →  9,070             │█             +1.49%
+Football article (zh)                 8,688 →  8,785             │█             +1.12%
+The Great Gatsby by Fitzgerald (en)   4,391 →  4,629             │█████         +5.42%
+Die Verwandlung by Kafka (de)         4,437 →  4,452             │              +0.34%
+                                                       ─────────────────────
+                                                                        mean     2.76%
 ```
 
 <!-- /automd -->
 
-Deviation tracks vocabulary rather than length: a 300-character excerpt deviates about as much as the whole book it came from. Read the figures above as a range across registers, not a bound on any single input.
+Deviation tracks vocabulary rather than length: a 300-character excerpt deviates about as much as the whole book it came from. Read the figures above as a range across registers, not a bound on any single input. Both bounds are checked a second time against a holdout corpus that no ratio was ever fitted against, so the numbers above measure accuracy rather than fit.
 
 Three cases are knowingly outside that range, all of them underestimates:
 
-- **High-entropy strings** – base64 payloads, hashes, and file digests. An npm registry document, dense with `sha512` integrity hashes, lands near -20%. Pricing them properly would cost every caller runtime for a case that ordinary traffic rarely carries, so it is left uncorrected.
-- **Traditional and classical Chinese.** The hanzi rate is calibrated on contemporary simplified Chinese, which `o200k_base` merges far more aggressively. Traditional text runs about -20%, classical text about -40%.
-- **Scripts without a built-in rule** – Arabic and Hindi fall through to the default ratio at roughly -27%, Hebrew at -53%, Thai at -59%. Supply a `languageConfig` if you measure them.
+- **High-entropy strings** – base64 payloads, hashes, and file digests. An npm registry document, dense with `sha512` integrity hashes, lands near -33%. Pricing them properly would cost every caller runtime for a case that ordinary traffic rarely carries, so it is left uncorrected.
+- **Traditional and classical Chinese.** The hanzi rate is calibrated on contemporary simplified Chinese, which `o200k_base` merges more aggressively than either. Traditional text runs about -10%, classical text about -16%.
+- **Scripts without a built-in rule** – Arabic and Hindi fall through to the default ratio at roughly -30%, Hebrew at -46%, Thai at -62%. Supply a `languageConfig` if you measure them.
 
 If you need a safety margin, add it yourself rather than assuming one is built in: the estimate is calibrated to sit on the real count, not above it.
 
