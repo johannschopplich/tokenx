@@ -1,11 +1,11 @@
 [245]                                                        under ◂·▸ over[/]
-Emoji-heavy chat messages            [245]   39 →    41[/]             [black]│[/]███           +5.13%
-JSON payload (formatted)             [245]   96 →    93[/]           ██[black]│[/]              -3.13%
-JSON payload (minified)              [245]   62 →    63[/]             [black]│[/]█             +1.61%
-tokenx source code                   [245]2,680 → 2,830[/]             [black]│[/]███           +5.60%
-The Great Gatsby by Fitzgerald (en)  [245]4,649 → 4,868[/]             [black]│[/]██            +4.71%
-Die Verwandlung by Kafka (de)        [245]4,791 → 4,830[/]             [black]│[/]              +0.81%
-Ah Q Zhengzhuan by Lu Xun (zh)       [245]5,421 → 5,640[/]             [black]│[/]██            +4.04%
-Rashomon by Akutagawa (ja)           [245]5,250 → 5,115[/]            █[black]│[/]              -2.57%
-[black]                                                     ─────────────────────[/]
-[gray]github.com/johannschopplich/tokenx[/]                                    [245]mean[/]     3.45%
+Emoji-heavy chat messages            [245]   39 →    41[/]             [240]│[/]███           +5.13%
+JSON payload (formatted)             [245]   96 →    93[/]           ██[240]│[/]              -3.13%
+JSON payload (minified)              [245]   62 →    63[/]             [240]│[/]█             +1.61%
+tokenx source code                   [245]2,680 → 2,830[/]             [240]│[/]███           +5.60%
+The Great Gatsby by Fitzgerald (en)  [245]4,649 → 4,868[/]             [240]│[/]██            +4.71%
+Die Verwandlung by Kafka (de)        [245]4,791 → 4,830[/]             [240]│[/]              +0.81%
+Ah Q Zhengzhuan by Lu Xun (zh)       [245]5,421 → 5,640[/]             [240]│[/]██            +4.04%
+Rashomon by Akutagawa (ja)           [245]5,250 → 5,115[/]            █[240]│[/]              -2.57%
+[240]                                                     ─────────────────────[/]
+[239]github.com/johannschopplich/tokenx[/]                                    [245]mean[/]     3.45%

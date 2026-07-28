@@ -1,5 +1,6 @@
 import * as fsp from 'node:fs/promises'
 import * as path from 'node:path'
+import { formatCount } from './utils.ts'
 
 const textsDir = path.resolve(import.meta.dirname, '../test/fixtures/texts')
 
@@ -73,7 +74,7 @@ for (const corpusText of CORPUS_TEXTS) {
 
   text = `${text.trim()}\n`
   await fsp.writeFile(path.join(textsDir, corpusText.file), text, 'utf-8')
-  console.log(`${corpusText.file}: ${text.length.toLocaleString('en-US')} chars`)
+  console.log(`${corpusText.file}: ${formatCount(text.length)} chars`)
 }
 
 function stripRenderedHtml(html: string): string {
