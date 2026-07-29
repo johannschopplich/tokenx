@@ -39,15 +39,15 @@ Die Verwandlung by Kafka (de)         4,437 →  4,452             │          
 
 <!-- /automd -->
 
-Deviation tracks vocabulary rather than length: a 300-character excerpt deviates about as much as the whole book it came from. Read the figures above as a range across registers, not a bound on any single input. Both bounds are checked a second time against a holdout corpus that no ratio was ever fitted against, so the numbers above measure accuracy rather than fit.
+Deviation tracks vocabulary rather than length: a 300-character excerpt deviates about as much as the whole book it came from. Read the figures above as a range across registers, not a bound on any single input. A holdout corpus that no ratio was ever fitted against is held to a looser ±15% bound, so a retune cannot silently overfit the chart.
 
-Three cases are knowingly outside that range, all of them underestimates:
+Three cases are knowingly outside that range, all underestimates:
 
-- **High-entropy strings** – base64 payloads, hashes, and file digests. An npm registry document, dense with `sha512` integrity hashes, lands near -33%. Pricing them properly would cost every caller runtime for a case that ordinary traffic rarely carries, so it is left uncorrected.
-- **Traditional and classical Chinese.** The hanzi rate is calibrated on contemporary simplified Chinese, which `o200k_base` merges more aggressively than either. Traditional text runs about -10%, classical text about -16%.
-- **Scripts without a built-in rule** – Arabic and Hindi fall through to the default ratio at roughly -30%, Hebrew at -46%, Thai at -62%. Supply a `languageConfig` if you measure them.
+- **High-entropy strings** – base64, hashes, digests: ≈-30%. Pricing them would cost every caller runtime for a case ordinary traffic rarely carries.
+- **Traditional and classical Chinese** – the hanzi rate is calibrated on contemporary simplified script: ≈-10% and ≈-15%.
+- **Scripts without a built-in rule** – Arabic and Hindi ≈-30%, Hebrew ≈-45%, Thai ≈-60%. Supply a `languageConfig` if you measure them.
 
-If you need a safety margin, add it yourself rather than assuming one is built in: the estimate is calibrated to sit on the real count, not above it.
+If you need a safety margin, add it yourself: the estimate is calibrated to sit on the real count, not above it.
 
 ## Installation
 
