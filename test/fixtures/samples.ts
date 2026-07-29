@@ -31,16 +31,16 @@ export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
     input: { files: ['test/fixtures/texts/vite-plugin-api-en.txt'] },
   },
   {
-    description: 'Football article (ja)',
-    input: { files: ['test/fixtures/texts/football-ja.txt'] },
+    description: 'Cat article (ja)',
+    input: { files: ['test/fixtures/texts/cat-ja.txt'] },
   },
   {
-    description: 'Football article (ko)',
-    input: { files: ['test/fixtures/texts/football-ko.txt'] },
+    description: 'Cat article (ko)',
+    input: { files: ['test/fixtures/texts/cat-ko.txt'] },
   },
   {
-    description: 'Football article (zh)',
-    input: { files: ['test/fixtures/texts/football-zh.txt'] },
+    description: 'Cat article (zh)',
+    input: { files: ['test/fixtures/texts/cat-zh.txt'] },
   },
   {
     description: 'The Great Gatsby by Fitzgerald (en)',

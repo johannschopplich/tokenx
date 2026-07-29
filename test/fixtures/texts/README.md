@@ -13,9 +13,9 @@ Each prose file was cleaned once: source boilerplate and markup removed, hard-wr
 | `chat-transcript-en.txt` | Written for this repository – a multi-turn team chat, one message per line | MIT, this repository |
 | `github-releases-api.txt` | `GET /repos/vitejs/vite/releases?per_page=10`, captured from the GitHub REST API | Release notes by Vite contributors, MIT |
 | `vite-plugin-api-en.txt` | [`docs/guide/api-plugin.md`](https://github.com/vitejs/vite/blob/main/docs/guide/api-plugin.md), `vitejs/vite` | MIT, VoidZero Inc. and Vite contributors |
-| `football-ja.txt` | [サッカー](https://ja.wikipedia.org/wiki/サッカー), Japanese Wikipedia – prose paragraphs of the article body | CC BY-SA 4.0, Wikipedia contributors |
-| `football-ko.txt` | [축구](https://ko.wikipedia.org/wiki/축구), Korean Wikipedia – prose paragraphs of the article body | CC BY-SA 4.0, Wikipedia contributors |
-| `football-zh.txt` | [足球](https://zh.wikipedia.org/wiki/足球), Chinese Wikipedia – prose paragraphs of the article body | CC BY-SA 4.0, Wikipedia contributors |
+| `cat-ja.txt` | [ネコ](https://ja.wikipedia.org/wiki/ネコ), Japanese Wikipedia – prose paragraphs of the article body | CC BY-SA 4.0, Wikipedia contributors |
+| `cat-ko.txt` | [고양이](https://ko.wikipedia.org/wiki/고양이), Korean Wikipedia – prose paragraphs of the article body | CC BY-SA 4.0, Wikipedia contributors |
+| `cat-zh.txt` | [猫](https://zh.wikipedia.org/wiki/猫), Chinese Wikipedia, `zh-cn` variant for simplified script – prose paragraphs of the article body | CC BY-SA 4.0, Wikipedia contributors |
 | `great-gatsby-en.txt` | F. Scott Fitzgerald, _The Great Gatsby_ (1925) – opening of chapter I, [Project Gutenberg 64317](https://www.gutenberg.org/ebooks/64317) | Public domain |
 | `die-verwandlung-de.txt` | Franz Kafka, _Die Verwandlung_ (1915) – opening of part I, [Project Gutenberg 22367](https://www.gutenberg.org/ebooks/22367) | Public domain |
 
