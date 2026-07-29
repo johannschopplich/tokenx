@@ -14,8 +14,8 @@ import { estimateTokenCount } from '../src/index'
 const HOLDOUT_SAMPLES = [
   // Romance prose at document scale, which the benchmark corpus has none of
   { description: 'Candide by Voltaire (fr)', file: 'candide-fr.txt' },
-  // Technical English in a house style the corpus never sees
-  { description: 'Node.js path API docs (en)', file: 'node-path-api-en.txt' },
+  // Everyday imperative English – a register the corpus never sees
+  { description: 'The Whitehouse Cookbook (en)', file: 'whitehouse-cookbook-en.txt' },
   // Cyrillic at document scale, where the sentence-level shortfall amortizes
   { description: 'Library article (ru)', file: 'library-ru.txt' },
 ]

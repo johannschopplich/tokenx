@@ -26,7 +26,7 @@ The benchmark also measures `src/index.ts`, `src/segments.ts` and `src/types.ts`
 | File | Source | Licence |
 | --- | --- | --- |
 | `candide-fr.txt` | Voltaire, _Candide, ou l'optimisme_ (1759) – opening chapters, [Project Gutenberg 4650](https://www.gutenberg.org/ebooks/4650) | Public domain |
-| `node-path-api-en.txt` | [`doc/api/path.md`](https://github.com/nodejs/node/blob/main/doc/api/path.md), `nodejs/node` | MIT, Node.js contributors |
+| `whitehouse-cookbook-en.txt` | Mrs. F. L. Gillette, _The Whitehouse Cookbook_ (1887) – carving and dinner-serving chapters, [Project Gutenberg 13923](https://www.gutenberg.org/ebooks/13923) | Public domain |
 | `library-ru.txt` | [Библиотека](https://ru.wikipedia.org/wiki/Библиотека), Russian Wikipedia – prose paragraphs of the article body | CC BY-SA 4.0, Wikipedia contributors |
 
 Each file stays under the licence of its source; the MIT licence of this repository covers the code, not these texts. The Wikipedia extracts are the share-alike texts: reusing them elsewhere carries the CC BY-SA 4.0 attribution and share-alike obligations listed above.
