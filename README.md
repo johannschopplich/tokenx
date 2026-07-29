@@ -19,7 +19,7 @@ The following chart shows how close the estimates come to actual GPT token count
 
 <!-- automd:file src="./docs/bench.md" -->
 
-Bars grow left when tokenx underestimates and right when it overestimates; the axis spans the ±10% per-sample deviation bound.
+Bars grow left when tokenx underestimates and right when it overestimates. The axis spans the ±10% per-sample deviation bound.
 
 ```
                                                           under ◂·▸ over
