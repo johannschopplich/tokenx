@@ -43,11 +43,9 @@ Deviation tracks vocabulary rather than length: a 300-character excerpt deviates
 
 Three cases are knowingly outside that range, all underestimates:
 
-- **High-entropy strings** – base64, hashes, digests: ≈-30%. Pricing them would cost every caller runtime for a case ordinary traffic rarely carries.
-- **Traditional and classical Chinese** – the hanzi rate is calibrated on contemporary simplified script: ≈-10% and ≈-15%.
-- **Scripts without a built-in rule** – Arabic and Hindi ≈-30%, Hebrew ≈-45%, Thai ≈-60%. Supply a `languageConfig` if you measure them.
-
-If you need a safety margin, add it yourself: the estimate is calibrated to sit on the real count, not above it.
+- **High-entropy strings** – base64, hashes, digests: ≈-70%. Pricing them would cost every caller runtime for a case ordinary traffic rarely carries.
+- **Traditional and classical Chinese** – the hanzi rate is calibrated on contemporary simplified script: ≈-10% and ≈-20%.
+- **Scripts without a built-in rule** – Arabic ≈-35%, Hindi ≈-30%, Hebrew ≈-45%, Thai ≈-60%. Supply a `languageConfig` if you measure them.
 
 ## Installation
 
