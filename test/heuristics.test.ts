@@ -16,7 +16,7 @@ interface HeuristicBucket {
    * Set where the bucket records a gap rather than a rule that was fitted to
    * it, so the deviation bound below does not apply.
    */
-  documentsGap?: boolean
+  hasDocumentedGap?: boolean
 }
 
 interface SampleMeasurement {
@@ -173,7 +173,7 @@ const BUCKETS = {
   // paragraph rather than running text: with no rule to misfit, holding the
   // content constant is what makes the four scripts comparable.
   unconfigured: {
-    documentsGap: true,
+    hasDocumentedGap: true,
     short: [
       'مرحبا، هل الاجتماع اليوم الساعة الثالثة؟',
       'नमस्ते, आज मीटिंग तीन बजे है क्या?',
@@ -203,7 +203,7 @@ const BUCKETS = {
   // against whole documents, where most punctuation merges into the word
   // token before it instead.
   punctuationRuns: {
-    documentsGap: true,
+    hasDocumentedGap: true,
     short: [
       '----',
       '--------------------------------',
@@ -520,8 +520,8 @@ describe('heuristic calibration', () => {
   })
 
   it('keeps every fitted bucket within the mean absolute deviation bound', () => {
-    const fittedBuckets: [string, HeuristicBucket][] = Object.entries(BUCKETS)
-      .filter(([, bucket]) => !('documentsGap' in bucket && bucket.documentsGap))
+    const bucketEntries: [string, HeuristicBucket][] = Object.entries(BUCKETS)
+    const fittedBuckets = bucketEntries.filter(([, bucket]) => !bucket.hasDocumentedGap)
 
     const runawayBuckets = fittedBuckets
       .filter(([, bucket]) => meanAbsoluteDeviation(measureSamples(bucket)) >= MAX_BUCKET_MEAN_ABSOLUTE_DEVIATION)
