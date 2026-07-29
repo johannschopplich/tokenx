@@ -7,6 +7,7 @@ const PATTERNS = {
   cjk: /[\u4E00-\u9FFF\u3400-\u4DBF\u3000-\u30FF\uFF00-\uFFEF\u2E80-\u2EFF\u31C0-\u31EF\u3200-\u32FF\u3300-\u33FF\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uD7B0-\uD7FF]/,
   numeric: /^\d+$/,
   punctuation: /[.,!?;(){}[\]<>:/\\|@#$%^&*+=`~_"-]/,
+  lowercaseWord: /^[a-z]+$/,
 } as const
 
 const TOKEN_SPLIT_PATTERN = new RegExp(`(\\s+|${PATTERNS.punctuation.source}+)`)
@@ -14,6 +15,7 @@ const TOKEN_SPLIT_PATTERN = new RegExp(`(\\s+|${PATTERNS.punctuation.source}+)`)
 // All ratios are calibrated against OpenAI's o200k_base encoding
 const DEFAULT_CHARS_PER_TOKEN = 7
 const SHORT_TOKEN_THRESHOLD = 3
+const LOWERCASE_WORD_SINGLE_TOKEN_LENGTH = 8
 const PUNCTUATION_CHARS_PER_TOKEN = 6
 const KANA_CHARS_PER_TOKEN = 1.4
 const HANGUL_CHARS_PER_TOKEN = 1.65
@@ -104,6 +106,13 @@ function estimateSegmentTokens(
   }
 
   if (segment.length <= SHORT_TOKEN_THRESHOLD) {
+    return 1
+  }
+
+  // o200k merges common lowercase words of up to eight characters into a
+  // single token. The lowercase gate keeps capitalized compounds and scripts
+  // without a built-in rule at the default ratio
+  if (segment.length <= LOWERCASE_WORD_SINGLE_TOKEN_LENGTH && PATTERNS.lowercaseWord.test(segment)) {
     return 1
   }
 
