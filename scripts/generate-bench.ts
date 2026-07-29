@@ -47,7 +47,7 @@ for (const sample of BENCHMARK_SAMPLES) {
 }
 
 const benchMarkdown = `
-Bars grow left when tokenx underestimates and right when it overestimates; the axis spans the ±${MAX_SAMPLE_DEVIATION}% per-sample deviation bound enforced in CI.
+Bars grow left when tokenx underestimates and right when it overestimates. The axis spans the ±${MAX_SAMPLE_DEVIATION}% per-sample deviation bound.
 
 \`\`\`
 ${renderDeviationChart(measurements, plainPaint)}

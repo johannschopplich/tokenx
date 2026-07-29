@@ -1,4 +1,4 @@
-Bars grow left when tokenx underestimates and right when it overestimates; the axis spans the ±10% per-sample deviation bound enforced in CI.
+Bars grow left when tokenx underestimates and right when it overestimates; the axis spans the ±10% per-sample deviation bound.
 
 ```
                                                           under ◂·▸ over

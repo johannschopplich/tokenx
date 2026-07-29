@@ -12,7 +12,6 @@ Estimates are calibrated against OpenAI's `o200k_base` encoding – the tokenize
 - 🗣️ Built-in rules for accented scripts (German, French, Spanish, Slavic), Cyrillic, and Greek
 - 🀄 CJK (Chinese, Japanese, Korean) character handling
 - 😀 Emoji-aware pricing (emoji cost more tokens than their character count suggests)
-- 🔧 Configurable and extensible
 
 ## Benchmarks
 
@@ -20,7 +19,7 @@ The following chart shows how close the estimates come to actual GPT token count
 
 <!-- automd:file src="./docs/bench.md" -->
 
-Bars grow left when tokenx underestimates and right when it overestimates; the axis spans the ±10% per-sample deviation bound enforced in CI.
+Bars grow left when tokenx underestimates and right when it overestimates; the axis spans the ±10% per-sample deviation bound.
 
 ```
                                                           under ◂·▸ over
@@ -39,13 +38,13 @@ Die Verwandlung by Kafka (de)         4,437 →  4,384            █│        
 
 <!-- /automd -->
 
-Deviation tracks vocabulary rather than length: a 300-character excerpt deviates about as much on average as the whole book it came from. Read the figures above as a range across registers, not a bound on any single input. A holdout corpus that no ratio was ever fitted against is held to a looser ±15% bound, so a retune cannot silently overfit the chart.
+Accuracy depends on the kind of text, not its length: a short excerpt deviates about as much as the full document it came from. A holdout corpus that no ratio was ever fitted against is held to a looser ±15% bound, so a retune cannot silently overfit the chart.
 
-Three cases are knowingly outside that range, all underestimates:
+Three cases are knowingly outside these bounds, all underestimates:
 
 - **High-entropy strings** – base64, hashes, digests: ≈-70%. Pricing them would cost every caller runtime for a case ordinary traffic rarely carries.
 - **Traditional and classical Chinese** – the hanzi rate is calibrated on contemporary simplified script: ≈-10% to -20%.
-- **Scripts without a built-in rule** – Arabic ≈-35%, Hindi ≈-30%, Hebrew ≈-45%, Thai ≈-60%. Supply a `languageConfig` if you measure them.
+- **Scripts without a built-in rule** – Arabic ≈-35%, Hindi ≈-30%, Hebrew ≈-45%, Thai ≈-60%; a custom language rule closes the gap.
 
 ## Installation
 
@@ -176,14 +175,6 @@ const firstThree = sliceByTokens(text, 0, 3)
 const fromSecond = sliceByTokens(text, 2)
 const lastTwo = sliceByTokens(text, -2)
 const middle = sliceByTokens(text, 1, -1)
-
-// With custom options
-const customSlice = sliceByTokens(text, 0, 5, {
-  defaultCharsPerToken: 4,
-  languageConfigs: [
-    { pattern: /[éèêëàâîï]/i, averageCharsPerToken: 3 }
-  ]
-})
 ```
 
 **Type Declaration:**
