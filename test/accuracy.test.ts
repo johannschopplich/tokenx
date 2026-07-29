@@ -3,13 +3,6 @@ import { describe, expect, it } from 'vitest'
 import { estimateTokenCount } from '../src/index'
 import { BENCHMARK_SAMPLES, MAX_MEAN_DEVIATION, MAX_SAMPLE_DEVIATION, readSampleText } from './fixtures/samples'
 
-async function measureDeviation(sample: (typeof BENCHMARK_SAMPLES)[number]): Promise<number> {
-  const text = await readSampleText(sample)
-  const referenceTokenCount = encode(text).length
-  const estimatedTokenCount = estimateTokenCount(text)
-  return (Math.abs(referenceTokenCount - estimatedTokenCount) / referenceTokenCount) * 100
-}
-
 describe('accuracy against the reference tokenizer', () => {
   for (const sample of BENCHMARK_SAMPLES) {
     it(`deviates less than ${MAX_SAMPLE_DEVIATION}% for ${sample.description}`, async () => {
@@ -24,3 +17,10 @@ describe('accuracy against the reference tokenizer', () => {
     expect(meanDeviation).toBeLessThan(MAX_MEAN_DEVIATION)
   })
 })
+
+async function measureDeviation(sample: (typeof BENCHMARK_SAMPLES)[number]): Promise<number> {
+  const text = await readSampleText(sample)
+  const referenceTokenCount = encode(text).length
+  const estimatedTokenCount = estimateTokenCount(text)
+  return (Math.abs(referenceTokenCount - estimatedTokenCount) / referenceTokenCount) * 100
+}

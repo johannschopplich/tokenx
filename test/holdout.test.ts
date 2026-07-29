@@ -23,15 +23,6 @@ const HOLDOUT_SAMPLES = [
 /** Deviation bound (%), per sample and across the holdout. */
 const MAX_HOLDOUT_DEVIATION = 15
 
-const holdoutDir = join(import.meta.dirname, 'fixtures/holdout')
-
-async function measureDeviation(file: string): Promise<number> {
-  const text = await readFile(join(holdoutDir, file), 'utf-8')
-  const referenceTokenCount = encode(text).length
-
-  return (Math.abs(referenceTokenCount - estimateTokenCount(text)) / referenceTokenCount) * 100
-}
-
 describe('accuracy against texts held out of calibration', () => {
   for (const sample of HOLDOUT_SAMPLES) {
     it(`deviates less than ${MAX_HOLDOUT_DEVIATION}% for ${sample.description}`, async () => {
@@ -46,3 +37,12 @@ describe('accuracy against texts held out of calibration', () => {
     expect(meanDeviation).toBeLessThan(MAX_HOLDOUT_DEVIATION)
   })
 })
+
+const holdoutDir = join(import.meta.dirname, 'fixtures/holdout')
+
+async function measureDeviation(file: string): Promise<number> {
+  const text = await readFile(join(holdoutDir, file), 'utf-8')
+  const referenceTokenCount = encode(text).length
+
+  return (Math.abs(referenceTokenCount - estimateTokenCount(text)) / referenceTokenCount) * 100
+}
