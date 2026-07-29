@@ -33,7 +33,7 @@ interface SampleMeasurement {
  * Absolute, not signed: a bucket of +40% and -40% samples averages to zero
  * while being useless, and a signed bound would wave it through.
  */
-const MAX_BUCKET_MEAN_ABSOLUTE_DEVIATION = 40
+const MAX_BUCKET_MEAN_ABSOLUTE_DEVIATION = 30
 
 const SAMPLE_LABEL_WIDTH = 46
 
