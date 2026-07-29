@@ -12,7 +12,7 @@ const PATTERNS = {
 
 const TOKEN_SPLIT_PATTERN = new RegExp(`(\\s+|${PATTERNS.punctuation.source}+)`)
 
-// All ratios are calibrated against OpenAI's o200k_base encoding
+// All ratios are calibrated against OpenAI's o200k_base encoding.
 const DEFAULT_CHARS_PER_TOKEN = 7
 const SHORT_TOKEN_THRESHOLD = 3
 const LOWERCASE_WORD_SINGLE_TOKEN_LENGTH = 8
@@ -24,16 +24,16 @@ const HANZI_CHARS_PER_TOKEN = 1.15
 const DEFAULT_LANGUAGE_CONFIGS: LanguageConfig[] = [
   // An accent rule prices a whole language through the minority of its words
   // that carry an accent, so each ratio is fitted against running text in that
-  // language rather than against the segments the pattern matches
+  // language rather than against the segments the pattern matches.
   { pattern: /[äöüßẞ]/i, averageCharsPerToken: 3 },
   { pattern: /[éèêëàâîïôûùüÿçœæáíóúñ]/i, averageCharsPerToken: 4.5 },
   // Set below what the accented segments alone would fit: unaccented Slavic
-  // words fall through to the default ratio, and this compensates the shortfall
+  // words fall through to the default ratio, and this compensates the shortfall.
   { pattern: /[ąćęłńóśźżěščřžýůúďťň]/i, averageCharsPerToken: 2.5 },
   { pattern: /[\u0430-\u044F\u0451]/i, averageCharsPerToken: 6 },
   { pattern: /[\u03AC-\u03CE]/i, averageCharsPerToken: 3 },
   // Anchored to pure emoji runs – symbols like ™ are Extended_Pictographic
-  // too, and an unanchored match would misprice the whole attached word
+  // too, and an unanchored match would misprice the whole attached word.
   { pattern: /^\p{Extended_Pictographic}[\p{Extended_Pictographic}\p{Emoji_Component}]*$/u, averageCharsPerToken: 0.9 },
 ]
 
@@ -81,16 +81,16 @@ function estimateSegmentTokens(
   previousSegment: string,
 ): number {
   if (PATTERNS.whitespace.test(segment)) {
-    // Indentation and blank lines cost a token in o200k
+    // Indentation and blank lines cost a token in o200k.
     if (PATTERNS.structuredWhitespace.test(segment))
       return 1
 
     // A line break merges into a preceding punctuation token but stands on
-    // its own after a word. Single spaces always merge
+    // its own after a word. Single spaces always merge.
     return segment.includes('\n') && !PATTERNS.punctuation.test(previousSegment.slice(-1)) ? 1 : 0
   }
 
-  // Checked before the built-in rules so custom configs can override them
+  // Checked before the built-in rules so custom configs can override them.
   const languageCharsPerToken = getLanguageSpecificCharsPerToken(segment, languageConfigs)
   if (languageCharsPerToken !== undefined) {
     return Math.ceil(getCharacterCount(segment) / languageCharsPerToken)
@@ -101,7 +101,7 @@ function estimateSegmentTokens(
   }
 
   if (PATTERNS.numeric.test(segment)) {
-    // o200k chunks digit runs into groups of up to three digits
+    // o200k chunks digit runs into groups of up to three digits.
     return Math.ceil(segment.length / 3)
   }
 
@@ -111,7 +111,7 @@ function estimateSegmentTokens(
 
   // o200k merges common lowercase words of up to eight characters into a
   // single token. The lowercase gate keeps capitalized compounds and scripts
-  // without a built-in rule at the default ratio
+  // without a built-in rule at the default ratio.
   if (segment.length <= LOWERCASE_WORD_SINGLE_TOKEN_LENGTH && PATTERNS.lowercaseWord.test(segment)) {
     return 1
   }
@@ -126,14 +126,14 @@ function estimateSegmentTokens(
 function getLanguageSpecificCharsPerToken(segment: string, languageConfigs: LanguageConfig[]): number | undefined {
   // Every built-in config needs a non-ASCII character to match, so ASCII-only
   // segments skip the loop – custom configs carry no such guarantee, which is
-  // why the shortcut checks for the defaults
+  // why the shortcut checks for the defaults.
   if (languageConfigs === DEFAULT_LANGUAGE_CONFIGS && !PATTERNS.nonAscii.test(segment)) {
     return
   }
 
   for (const config of languageConfigs) {
     // `search` instead of `test`: it ignores `lastIndex`, so stateful flags
-    // (`/g`, `/y`) on user-supplied patterns can't skew matching
+    // (`/g`, `/y`) on user-supplied patterns can't skew matching.
     if (segment.search(config.pattern) !== -1) {
       return config.averageCharsPerToken
     }
@@ -161,7 +161,7 @@ function estimateCjkTokens(segment: string): number {
   }
 
   // One rounding for the whole segment: rounding each script on its own would
-  // charge a token for every script boundary in mixed CJK text
+  // charge a token for every script boundary in mixed CJK text.
   return Math.ceil(
     hanziCount / HANZI_CHARS_PER_TOKEN
     + kanaCount / KANA_CHARS_PER_TOKEN

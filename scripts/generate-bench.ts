@@ -26,7 +26,7 @@ interface SampleMeasurement {
   description: string
   referenceTokenCount: number
   estimatedTokenCount: number
-  /** Positive when tokenx overestimates, negative when it underestimates */
+  /** Positive when tokenx overestimates, negative when it underestimates. */
   signedDeviation: number
 }
 

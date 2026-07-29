@@ -5,7 +5,7 @@ import { walkSegments } from './segments.ts'
 export * from './types.ts'
 
 /**
- * Checks if a text string is within a specified token limit
+ * Checks if a text string is within a specified token limit.
  */
 export function isWithinTokenLimit(
   text: string,
@@ -16,7 +16,7 @@ export function isWithinTokenLimit(
 }
 
 /**
- * Estimates the number of tokens in a text string using heuristic rules
+ * Estimates the number of tokens in a text string using heuristic rules.
  */
 export function estimateTokenCount(text?: string, options: TokenEstimationOptions = {}): number {
   if (!text)
@@ -31,7 +31,7 @@ export function estimateTokenCount(text?: string, options: TokenEstimationOption
 }
 
 /**
- * Extracts a portion of text based on token positions, similar to Array.prototype.slice()
+ * Extracts a portion of text based on token positions, similar to Array.prototype.slice().
  */
 export function sliceByTokens(
   text: string,
@@ -43,7 +43,7 @@ export function sliceByTokens(
     return ''
 
   // Negative indices resolve against the total count, which is only known
-  // after a full walk – buffer it instead of walking twice
+  // after a full walk – buffer it instead of walking twice.
   let segmentEstimates: Iterable<SegmentEstimate> = walkSegments(text, options)
   let totalTokens = 0
   if (start < 0 || (end !== undefined && end < 0)) {
@@ -81,7 +81,7 @@ export function sliceByTokens(
 }
 
 /**
- * Splits text into chunks based on token count
+ * Splits text into chunks based on token count.
  */
 export function splitByTokens(
   text: string,
@@ -92,14 +92,14 @@ export function splitByTokens(
     return []
 
   // An overlap of at least the chunk size would prevent chunks from ever
-  // draining, duplicating content without bound
+  // draining, duplicating content without bound.
   const overlap = Math.max(0, Math.min(options.overlap ?? 0, tokensPerChunk - 1))
 
   const chunks: string[] = []
   let currentChunk: SegmentEstimate[] = []
   let currentTokenCount = 0
   // Overlap segments alone don't justify a trailing chunk – it would only
-  // duplicate the end of the previous chunk
+  // duplicate the end of the previous chunk.
   let hasUnchunkedSegments = false
 
   for (const segmentEstimate of walkSegments(text, options)) {

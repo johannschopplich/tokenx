@@ -12,15 +12,15 @@ import { estimateTokenCount } from '../src/index'
  * measuring anything.
  */
 const HOLDOUT_SAMPLES = [
-  // Romance prose at document scale, which the benchmark corpus has none of
+  // Romance prose at document scale, which the benchmark corpus has none of.
   { description: 'Candide by Voltaire (fr)', file: 'candide-fr.txt' },
-  // Everyday imperative English – a register the corpus never sees
+  // Everyday imperative English – a register the corpus never sees.
   { description: 'The Whitehouse Cookbook (en)', file: 'whitehouse-cookbook-en.txt' },
-  // Cyrillic at document scale, where the sentence-level shortfall amortizes
+  // Cyrillic at document scale, where the sentence-level shortfall amortizes.
   { description: 'Library article (ru)', file: 'library-ru.txt' },
 ]
 
-/** Deviation bound (%), per sample and across the holdout */
+/** Deviation bound (%), per sample and across the holdout. */
 const MAX_HOLDOUT_DEVIATION = 15
 
 const holdoutDir = join(import.meta.dirname, 'fixtures/holdout')

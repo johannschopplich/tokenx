@@ -8,13 +8,13 @@ import { estimateTokenCount } from '../src/index'
  * diff rather than a pass or a fail.
  */
 interface HeuristicBucket {
-  /** Sentence-length inputs – the scale where per-segment rounding bias shows first */
+  /** Sentence-length inputs – the scale where per-segment rounding bias shows first. */
   short?: string[]
-  /** Paragraph-length inputs, where that same rounding bias amortizes away */
+  /** Paragraph-length inputs, where that same rounding bias amortizes away. */
   medium?: string[]
   /**
    * Set where the bucket records a gap rather than a rule that was fitted to
-   * it, so the deviation bound below does not apply
+   * it, so the deviation bound below does not apply.
    */
   documentsGap?: boolean
 }
@@ -24,7 +24,7 @@ interface SampleMeasurement {
   text: string
   referenceTokenCount: number
   estimatedTokenCount: number
-  /** Positive when tokenx overestimates, negative when it underestimates */
+  /** Positive when tokenx overestimates, negative when it underestimates. */
   signedDeviation: number
 }
 
@@ -40,7 +40,7 @@ const SAMPLE_LABEL_WIDTH = 46
 // Every language bucket is running text from an encyclopedia article on one
 // subject, not sentences written for the rule under test: a sentence built to
 // carry an accent in every word prices a language through a density its prose
-// never reaches
+// never reaches.
 const BUCKETS = {
   german: {
     short: [
@@ -70,7 +70,7 @@ const BUCKETS = {
   },
   // Polish only. Czech shares í, á, é and ú with the romance config, which is
   // checked first, so Czech words carrying no other accent price at 4.5 – see
-  // the `czechShadowed` bucket. Mixing the two would blur the 2.5 this measures
+  // the `czechShadowed` bucket. Mixing the two would blur the 2.5 this measures.
   slavicLatin: {
     short: [
       'Jedna z najpopularniejszych używek na świecie i główne źródło kofeiny.',
@@ -171,7 +171,7 @@ const BUCKETS = {
   // config and fall through to `defaultCharsPerToken`. One bucket, because
   // four would measure the same branch four times. Translations of one
   // paragraph rather than running text: with no rule to misfit, holding the
-  // content constant is what makes the four scripts comparable
+  // content constant is what makes the four scripts comparable.
   unconfigured: {
     documentsGap: true,
     short: [
@@ -189,8 +189,8 @@ const BUCKETS = {
   },
   // Vocabulary probes rather than prose: words drawn from the corpus itself,
   // spread across the frequency range, so the length band can be read on its
-  // own. `Math.ceil` charges a second token from eight characters on, while
-  // o200k merges most words of that length into one
+  // own. The lowercase rule stops at eight characters, while o200k merges
+  // most nine- and ten-character words into one as well.
   wordsSevenToTen: {
     short: [
       'plugins because started prepend Western impression returns exported politician promises Instead beginning',
@@ -201,7 +201,7 @@ const BUCKETS = {
   // of one character, so a 32-character rule costs one token, while `}]}},`
   // costs three. The shipped ratio is not fitted against this bucket but
   // against whole documents, where most punctuation merges into the word
-  // token before it instead
+  // token before it instead.
   punctuationRuns: {
     documentsGap: true,
     short: [
@@ -257,7 +257,7 @@ const BUCKETS = {
   },
   // Line-broken text against its wrapped equivalent: a break after a word
   // buys a token of its own, so lists and chat logs cost more than a
-  // paragraph carrying the same words
+  // paragraph carrying the same words.
   lineBreaks: {
     medium: [
       '- Install the package\n- Run the CLI\n- Inspect the output\n- Report a bug\n',
@@ -408,7 +408,7 @@ describe('heuristic calibration', () => {
 
   describe('scripts without a language config', () => {
     // No bucket mean – the four scripts drift in different directions and
-    // averaging them would hide exactly the spread worth seeing
+    // averaging them would hide exactly the spread worth seeing.
     it('prices Arabic, Hindi, Thai, and Hebrew text', () => {
       expect(measureBucket(BUCKETS.unconfigured, { hasMean: false })).toMatchInlineSnapshot(`
         "short    9 →  8   -11.1%  مرحبا، هل الاجتماع اليوم الساعة الثالثة؟
@@ -423,7 +423,7 @@ describe('heuristic calibration', () => {
     })
   })
 
-  describe('word length at the default ratio', () => {
+  describe('word length', () => {
     it('prices words of seven to ten characters', () => {
       expect(measureBucket(BUCKETS.wordsSevenToTen)).toMatchInlineSnapshot(`
         "short  12 → 15   +25.0%  plugins because started prepend Western impre…
@@ -436,7 +436,7 @@ describe('heuristic calibration', () => {
 
   describe('structural segments', () => {
     // No bucket mean – the runs pull in both directions by construction, and
-    // averaging them would hide the spread that makes the ratio unfittable
+    // averaging them would hide the spread that makes the ratio unfittable.
     it('prices punctuation runs', () => {
       expect(measureBucket(BUCKETS.punctuationRuns, { hasMean: false })).toMatchInlineSnapshot(`
         "short  1 → 1     0.0%  ----
@@ -552,7 +552,6 @@ function meanSignedDeviation(measurements: SampleMeasurement[]): number {
   return measurements.reduce((sum, measurement) => sum + measurement.signedDeviation, 0) / measurements.length
 }
 
-/** The statistic the bucket bound is enforced on */
 function meanAbsoluteDeviation(measurements: SampleMeasurement[]): number {
   return measurements.reduce((sum, measurement) => sum + Math.abs(measurement.signedDeviation), 0) / measurements.length
 }
@@ -569,8 +568,6 @@ function measureBucket(bucket: HeuristicBucket, { hasMean = true } = {}): string
     String(measurement.referenceTokenCount).length,
     String(measurement.estimatedTokenCount).length,
   )))
-  // Everything left of the percentage: the tier column, two spaces, and the
-  // `reference → estimate` pair. The summary rows span it in one piece
   const leadWidth = Math.max(tierWidth + 2 + countWidth * 2 + ' → '.length, 'mean |dev|'.length)
 
   const rows = measurements.map((measurement) => {
@@ -599,7 +596,7 @@ function formatSignedPercent(signedDeviation: number): string {
 
 function truncate(text: string): string {
   // Code points, not UTF-16 units – slicing by `length` would cut an emoji
-  // sample in half and leave a lone surrogate in the snapshot
+  // sample in half and leave a lone surrogate in the snapshot.
   const characters = Array.from(text.replace(/\n/g, '\\n'))
   if (characters.length <= SAMPLE_LABEL_WIDTH)
     return characters.join('')

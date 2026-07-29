@@ -8,13 +8,13 @@ import {
 
 /**
  * Pins the slice snapshots below to a ratio of the test's own choosing, so
- * recalibrating the shipped ratios moves the benchmark rather than these tests
+ * recalibrating the shipped ratios moves the benchmark rather than these tests.
  */
 const FIXED_OPTIONS = { defaultCharsPerToken: 4, languageConfigs: [] }
 
-/** Every word costs one token, so slice boundaries land between words */
+/** Every word costs one token, so slice boundaries land between words. */
 const SINGLE_TOKEN_WORDS = 'The old cat sat on a warm red mat.'
-/** Every word costs several, so slice boundaries land inside them */
+/** The long words cost several tokens each, so slice boundaries land inside them. */
 const MULTI_TOKEN_WORDS = 'Die pünktlich gewünschte Trüffelfüllung im übergestülpten Würzkümmel-Würfel ist kümmerlich und dürfte fürderhin zu Rüffeln in Hülle und Fülle führen.'
 
 describe('estimateTokenCount', () => {
@@ -190,12 +190,12 @@ describe('sliceByTokens', () => {
   })
 
   it('applies custom options to slice boundaries', () => {
-    // Long ASCII words, so the default ratio governs rather than a language rule
-    const text = 'Estimation heuristics without a tokenizer'
+    // Long ASCII words, so the default ratio governs rather than a language rule.
+    const text = 'Estimation heuristics approximate tokenizers'
     const defaultSlice = sliceByTokens(text, 0, 3)
     const customSlice = sliceByTokens(text, 0, 3, { defaultCharsPerToken: 2 })
 
-    // With more tokens per text, the same token range covers less of it
+    // With more tokens per text, the same token range covers less of it.
     expect(customSlice.length).toBeLessThan(defaultSlice.length)
   })
 })

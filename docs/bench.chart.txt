@@ -1,7 +1,7 @@
 [245]                                                          under ◂·▸ over[/]
 Team chat transcript (en)            [245]   293 →    285[/]          ███[240]│[/]              -2.73%
 Vite releases API response           [245] 8,075 →  8,551[/]             [240]│[/]██████        +5.89%
-tokenx source code                   [245] 3,142 →  3,022[/]         ████[240]│[/]              -3.82%
+tokenx source code                   [245] 3,151 →  3,050[/]          ███[240]│[/]              -3.21%
 Vite plugin API docs (en)            [245] 6,901 →  7,155[/]             [240]│[/]████          +3.68%
 Cat article (ja)                     [245]12,437 → 11,529[/]      ███████[240]│[/]              -7.30%
 Cat article (ko)                     [245] 7,117 →  6,841[/]         ████[240]│[/]              -3.88%
@@ -9,4 +9,4 @@ Cat article (zh)                     [245] 9,057 →  8,828[/]          ██�
 The Great Gatsby by Fitzgerald (en)  [245] 4,391 →  4,479[/]             [240]│[/]██            +2.00%
 Die Verwandlung by Kafka (de)        [245] 4,437 →  4,384[/]            █[240]│[/]              -1.19%
 [240]                                                       ─────────────────────[/]
-[239]github.com/johannschopplich/tokenx[/]                                      [245]mean[/]     3.67%
+[239]github.com/johannschopplich/tokenx[/]                                      [245]mean[/]     3.60%

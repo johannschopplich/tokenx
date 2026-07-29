@@ -11,7 +11,7 @@ const fontPath = path.join(import.meta.dirname, 'assets/iosevka-regular.woff2')
 
 const FOREGROUND = 'whiteBright'
 
-// The output is piped to freeze, so force truecolor past ansis' TTY detection
+// The output is piped to freeze, so force truecolor past ansis' TTY detection.
 const ansis = new Ansis(3)
 
 const chart = await fsp.readFile(chartPath, 'utf-8')
@@ -25,7 +25,7 @@ const freeze = spawnSync('freeze', [
   '--line-height',
   '1.6',
   // Asymmetric bottom padding – freeze stacks the line-height leading below
-  // each line, so the last row already carries most of the gap
+  // each line, so the last row already carries most of the gap.
   '--padding',
   '16,24,2,24',
   '--margin',
@@ -56,7 +56,7 @@ function toAnsi(markedText: string): string {
   const defaultForeground = styleFor(FOREGROUND).open
 
   // freeze resets the ANSI state at every line break, so the default
-  // foreground must reopen per line, not once per file
+  // foreground must reopen per line, not once per file.
   const lines = markedText.trimEnd().split('\n').map(line => defaultForeground + line.replace(
     /\[([^\]/][^\]]*)\](.*?)\[\/\]/g,
     (_, style: string, text: string) => `${styleFor(style)(text)}${defaultForeground}`,
