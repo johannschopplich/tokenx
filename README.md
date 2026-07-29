@@ -39,12 +39,12 @@ Die Verwandlung by Kafka (de)         4,437 →  4,384            █│        
 
 <!-- /automd -->
 
-Deviation tracks vocabulary rather than length: a 300-character excerpt deviates about as much as the whole book it came from. Read the figures above as a range across registers, not a bound on any single input. A holdout corpus that no ratio was ever fitted against is held to a looser ±15% bound, so a retune cannot silently overfit the chart.
+Deviation tracks vocabulary rather than length: a 300-character excerpt deviates about as much on average as the whole book it came from. Read the figures above as a range across registers, not a bound on any single input. A holdout corpus that no ratio was ever fitted against is held to a looser ±15% bound, so a retune cannot silently overfit the chart.
 
 Three cases are knowingly outside that range, all underestimates:
 
 - **High-entropy strings** – base64, hashes, digests: ≈-70%. Pricing them would cost every caller runtime for a case ordinary traffic rarely carries.
-- **Traditional and classical Chinese** – the hanzi rate is calibrated on contemporary simplified script: ≈-10% and ≈-20%.
+- **Traditional and classical Chinese** – the hanzi rate is calibrated on contemporary simplified script: ≈-10% to -20%.
 - **Scripts without a built-in rule** – Arabic ≈-35%, Hindi ≈-30%, Hebrew ≈-45%, Thai ≈-60%. Supply a `languageConfig` if you measure them.
 
 ## Installation
@@ -212,7 +212,7 @@ The sliced text portion corresponding to the specified token range.
 
 Splits text into chunks based on token count. Useful for chunking documents for RAG, batch processing, or staying within context windows.
 
-`tokensPerChunk` is a target, not a hard maximum: a chunk closes once it reaches the target, so a single long segment can push a chunk slightly beyond it. Chunks never break words apart.
+`tokensPerChunk` is a target, not a hard maximum: a chunk closes once it reaches the target, so a single long segment can push a chunk beyond it. Chunks never break words apart. Segments split on whitespace and punctuation, so for CJK text – where a whole clause between two punctuation marks is a single segment – chunks can far exceed the target.
 
 **Usage:**
 
