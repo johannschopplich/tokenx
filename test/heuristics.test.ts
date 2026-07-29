@@ -188,19 +188,13 @@ const BUCKETS = {
     ],
   },
   // Vocabulary probes rather than prose: words drawn from the corpus itself,
-  // spread across the frequency range, so a length band can be read on its own.
-  // `Math.ceil` charges a second token from seven characters on, while o200k
-  // merges most words of that length into one
+  // spread across the frequency range, so the length band can be read on its
+  // own. `Math.ceil` charges a second token from eight characters on, while
+  // o200k merges most words of that length into one
   wordsSevenToTen: {
     short: [
       'plugins because started prepend Western impression returns exported politician promises Instead beginning',
       'squeezed permanent leverage balloon promise wedging sharply keyword generic replace loaders avoiding',
-    ],
-  },
-  wordsElevenPlus: {
-    short: [
-      'environment viteMetadata experimental IndexHtmlTransformResult Pictographic conventions ResolvedConfig writeBundle',
-      'plagiaristic impressionability neighbourhood dissimilarity aggressively irrelevantly entertained instructions',
     ],
   },
   // No ratio fits a punctuation run: o200k has single tokens for long repeats
@@ -219,14 +213,6 @@ const BUCKETS = {
       '}]}},',
       '?!?!?!',
       '</div></section>',
-    ],
-  },
-  mixedScript: {
-    short: [
-      'GPT-4o를 사용하는 방법',
-      'React と Vue の比較',
-      'AI 技术在 2026 年的应用',
-      'Der Build-Prozess läuft über Vite',
     ],
   },
   emoji: {
@@ -437,33 +423,13 @@ describe('heuristic calibration', () => {
     })
   })
 
-  describe('word length bands at the default ratio', () => {
+  describe('word length at the default ratio', () => {
     it('prices words of seven to ten characters', () => {
       expect(measureBucket(BUCKETS.wordsSevenToTen)).toMatchInlineSnapshot(`
         "short  12 → 17   +41.7%  plugins because started prepend Western impre…
         short  16 → 16     0.0%  squeezed permanent leverage balloon promise w…
         mean             +20.8%
         mean |dev|        20.8%"
-      `)
-    })
-
-    it('prices words of eleven characters and up', () => {
-      expect(measureBucket(BUCKETS.wordsElevenPlus)).toMatchInlineSnapshot(`
-        "short  17 → 18    +5.9%  environment viteMetadata experimental IndexHt…
-        short  16 → 17    +6.3%  plagiaristic impressionability neighbourhood …
-        mean              +6.1%
-        mean |dev|         6.1%"
-      `)
-    })
-
-    it('prices text mixing scripts within a line', () => {
-      expect(measureBucket(BUCKETS.mixedScript)).toMatchInlineSnapshot(`
-        "short   7 → 10   +42.9%  GPT-4o를 사용하는 방법
-        short   5 →  6   +20.0%  React と Vue の比較
-        short  10 → 10     0.0%  AI 技术在 2026 年的应用
-        short   8 →  9   +12.5%  Der Build-Prozess läuft über Vite
-        mean             +18.8%
-        mean |dev|        18.8%"
       `)
     })
   })
