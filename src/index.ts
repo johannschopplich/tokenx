@@ -15,9 +15,6 @@ export function isWithinTokenLimit(
   return estimateTokenCount(text, options) <= tokenLimit
 }
 
-/** @deprecated Use `estimateTokenCount` instead */
-export const approximateTokenSize: typeof estimateTokenCount = estimateTokenCount
-
 /**
  * Estimates the number of tokens in a text string using heuristic rules
  */
