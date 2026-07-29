@@ -10,6 +10,7 @@ const chartPath = path.resolve(import.meta.dirname, '../docs/bench.chart.txt')
 
 const BAR_CELLS_PER_SIDE = 10
 const PERCENT_PER_BAR_CELL = MAX_SAMPLE_DEVIATION / BAR_CELLS_PER_SIDE
+const PERCENT_COLUMN_WIDTH = 8
 
 /**
  * Wraps an already laid-out span in a style marker, so padding never counts markers.
@@ -45,11 +46,6 @@ for (const sample of BENCHMARK_SAMPLES) {
   })
 }
 
-const meanDeviation = measurements.reduce(
-  (sum, measurement) => sum + Math.abs(measurement.signedDeviation),
-  0,
-) / measurements.length
-
 const benchMarkdown = `
 Bars grow left when tokenx underestimates and right when it overestimates; the axis spans the ±${MAX_SAMPLE_DEVIATION}% per-sample deviation bound enforced in CI.
 
@@ -64,6 +60,11 @@ await fsp.writeFile(benchPath, benchMarkdown, 'utf-8')
 await fsp.writeFile(chartPath, `${renderDeviationChart(measurements, markerPaint, await readRepoSlug())}\n`, 'utf-8')
 
 function renderDeviationChart(measurements: SampleMeasurement[], paint: Paint, footerLink = ''): string {
+  const meanDeviation = measurements.reduce(
+    (sum, measurement) => sum + Math.abs(measurement.signedDeviation),
+    0,
+  ) / measurements.length
+
   const labelWidth = Math.max(...measurements.map(measurement => measurement.description.length))
   const countWidth = Math.max(...measurements.map(measurement => Math.max(
     formatCount(measurement.referenceTokenCount).length,
@@ -82,7 +83,7 @@ function renderDeviationChart(measurements: SampleMeasurement[], paint: Paint, f
   const barWidth = BAR_CELLS_PER_SIDE * 2 + 1
   const meanSeparator = paint(`${' '.repeat(barColumnOffset)}${'─'.repeat(barWidth)}`, '240')
 
-  const meanValue = `${meanDeviation.toFixed(2)}%`.padStart(2 + 8)
+  const meanValue = `${meanDeviation.toFixed(2)}%`.padStart(2 + PERCENT_COLUMN_WIDTH)
   const footerPadding = ' '.repeat(barColumnOffset + barWidth - 'mean'.length - footerLink.length)
   const footerRow = `${footerLink ? paint(footerLink, '239') : ''}${footerPadding}${paint('mean', '245')}${meanValue}`
 
@@ -101,5 +102,5 @@ function formatSignedPercent(signedDeviation: number): string {
   const magnitude = Math.abs(signedDeviation).toFixed(2)
   const sign = Number(magnitude) === 0 ? ' ' : signedDeviation > 0 ? '+' : '-'
 
-  return `${sign}${magnitude}%`.padStart(8)
+  return `${sign}${magnitude}%`.padStart(PERCENT_COLUMN_WIDTH)
 }
