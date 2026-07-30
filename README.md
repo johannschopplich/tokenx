@@ -6,7 +6,7 @@ Estimates are calibrated against OpenAI's `o200k_base` encoding – the tokenize
 
 ## Features
 
-- ⚡ **95%+ average accuracy**, and no single sample below 90% – both bounds enforced in CI
+- ⚡ **95%+ average accuracy**, and no single sample below 90%
 - 📦 **Just 2kB** bundle size with zero dependencies
 - 🌍 Multi-language support with configurable language rules
 - 🗣️ Built-in rules for accented scripts (German, French, Spanish, Slavic), Cyrillic, and Greek
