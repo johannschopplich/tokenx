@@ -59,6 +59,26 @@ pnpm add tokenx
 yarn add tokenx
 ```
 
+## CLI
+
+The package ships a `tokenx` binary – try it with `npx tokenx README.md`, or install it for the commands below.
+
+```bash
+# Count tokens in a file, a pipe, or several files at once
+tokenx README.md
+cat article.md | tokenx
+tokenx count src/*.ts
+
+# Fail a script when a prompt outgrows its budget (exit code 2)
+tokenx prompt.txt --limit 8000
+
+# Extract a token range, or chunk a document for RAG
+tokenx slice article.md --end 500
+tokenx split article.md --size 500 --overlap 50
+```
+
+Only results go to stdout – counts as bare integers, chunks as a JSON array – so `$(tokenx count file.txt)` and `| jq` work unchanged. Notices and errors go to stderr. Run `tokenx --help` for every option.
+
 ## Usage
 
 ```ts

@@ -32,11 +32,16 @@
     }
   },
   "types": "./dist/index.d.mts",
+  "bin": {
+    "tokenx": "bin/tokenx.mjs"
+  },
   "files": [
+    "bin",
     "dist"
   ],
   "scripts": {
     "build": "tsdown",
+    "dev": "node ./src/cli/entry.ts --help",
     "bench": "node scripts/generate-bench.ts && automd",
     "bench:png": "node scripts/render-bench.ts",
     "lint": "eslint .",
@@ -51,6 +56,7 @@
     "ansis": "^4.3.1",
     "automd": "^0.4.3",
     "bumpp": "^12.0.0",
+    "citty": "^0.2.2",
     "eslint": "^10.8.0",
     "eslint-flat-config-utils": "^3.2.0",
     "gpt-tokenizer": "^3.4.0",

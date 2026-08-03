@@ -23,6 +23,9 @@ importers:
       bumpp:
         specifier: ^12.0.0
         version: 12.0.0
+      citty:
+        specifier: ^0.2.2
+        version: 0.2.2
       eslint:
         specifier: ^10.8.0
         version: 10.8.0(jiti@2.7.0)
