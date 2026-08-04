@@ -4,23 +4,20 @@ import process from 'node:process'
 import { defineCommand, runMain } from 'citty'
 import pkg from '../../package.json' with { type: 'json' }
 import { estimateTokenCount, sliceByTokens, splitByTokens } from '../index.ts'
+import { CliError, commonArgs, optionName, withCleanErrors } from './errors.ts'
 import { readInputs } from './input.ts'
 import * as log from './log.ts'
 
 const { name, version } = pkg
 
 /**
- * `1` matches citty's own exit code for usage errors, leaving `2` free to mean
- * "ran fine, but the input is over the limit".
+ * The boundary exits with `1`, matching citty's own code for usage errors, which
+ * leaves `2` free to mean "ran fine, but the input is over the limit".
  */
-const EXIT_ERROR = 1
 const EXIT_OVER_LIMIT = 2
 
 /** The one default the CLI owns – every other default belongs to the library. */
 const DEFAULT_CHUNK_SIZE = 1000
-
-/** citty resolves these itself, so no command declares them. */
-const BUILTIN_OPTIONS: ReadonlySet<string> = new Set(['help', 'h', 'version', 'v'])
 
 interface InputCount {
   label: string
@@ -47,6 +44,7 @@ const inputArg: ArgsDef = {
 const countArgs: ArgsDef = {
   ...inputArg,
   ...estimationArgs,
+  ...commonArgs,
   limit: {
     type: 'string',
     description: `Exit with code ${EXIT_OVER_LIMIT} when the total exceeds this many tokens`,
@@ -61,6 +59,7 @@ const countArgs: ArgsDef = {
 const sliceArgs: ArgsDef = {
   ...inputArg,
   ...estimationArgs,
+  ...commonArgs,
   start: {
     type: 'string',
     description: 'Start token index, inclusive (negative counts from the end)',
@@ -74,6 +73,7 @@ const sliceArgs: ArgsDef = {
 const splitArgs: ArgsDef = {
   ...inputArg,
   ...estimationArgs,
+  ...commonArgs,
   size: {
     type: 'string',
     description: `Target tokens per chunk (default: ${DEFAULT_CHUNK_SIZE})`,
@@ -87,13 +87,13 @@ const splitArgs: ArgsDef = {
 /** Which options carry a value has to be known before the subcommand is. */
 const EVERY_ARG: ArgsDef = { ...countArgs, ...sliceArgs, ...splitArgs }
 
-const countCommand: CommandDef<ArgsDef> = defineCommand({
+const countCommand: CommandDef<ArgsDef> = withCleanErrors(defineCommand({
   meta: {
     name: 'count',
     description: 'Estimate the token count of one or more inputs',
   },
   args: countArgs,
-  run: createCommandRun(countArgs, async ({ args }) => {
+  async run({ args }) {
     const options = resolveEstimationOptions(args)
     const limit = parseInteger('limit', args.limit, 0)
 
@@ -115,16 +115,16 @@ const countCommand: CommandDef<ArgsDef> = defineCommand({
       log.info(`${total} tokens exceeds the limit of ${limit}`)
       process.exitCode = EXIT_OVER_LIMIT
     }
-  }),
-})
+  },
+}), { allowExtraPositionals: true })
 
-const sliceCommand: CommandDef<ArgsDef> = defineCommand({
+const sliceCommand: CommandDef<ArgsDef> = withCleanErrors(defineCommand({
   meta: {
     name: 'slice',
     description: 'Extract a token range from an input, like Array.prototype.slice()',
   },
   args: sliceArgs,
-  run: createCommandRun(sliceArgs, async ({ args }) => {
+  async run({ args }) {
     const options = resolveEstimationOptions(args)
     const start = parseInteger('start', args.start)
     const end = parseInteger('end', args.end)
@@ -134,16 +134,16 @@ const sliceCommand: CommandDef<ArgsDef> = defineCommand({
     // A trailing newline keeps the shell prompt on a fresh line; command
     // substitution strips it again, so scripts see the slice verbatim.
     process.stdout.write(`${sliceByTokens(text, start, end, options)}\n`)
-  }),
-})
+  },
+}), { allowExtraPositionals: true })
 
-const splitCommand: CommandDef<ArgsDef> = defineCommand({
+const splitCommand: CommandDef<ArgsDef> = withCleanErrors(defineCommand({
   meta: {
     name: 'split',
     description: 'Split an input into token-sized chunks, printed as a JSON array',
   },
   args: splitArgs,
-  run: createCommandRun(splitArgs, async ({ args }) => {
+  async run({ args }) {
     const options = resolveEstimationOptions(args)
     const size = parseInteger('size', args.size, 1) ?? DEFAULT_CHUNK_SIZE
     const overlap = parseInteger('overlap', args.overlap, 0)
@@ -153,8 +153,8 @@ const splitCommand: CommandDef<ArgsDef> = defineCommand({
 
     // Arbitrary text has no honest raw framing – JSON is the only unambiguous one.
     process.stdout.write(`${JSON.stringify(chunks)}\n`)
-  }),
-})
+  },
+}), { allowExtraPositionals: true })
 
 const subCommands = {
   count: countCommand,
@@ -222,53 +222,9 @@ function findOperandIndex(rawArgs: readonly string[]): number {
   return -1
 }
 
-/**
- * citty keeps whatever it could not match, so `--jsonn` would otherwise be
- * swallowed and the command would run as if it had never been passed.
- */
-function assertKnownOptions(args: ParsedArgs<ArgsDef>, argsDef: ArgsDef): void {
-  for (const key of Object.keys(args)) {
-    const name = optionName(key)
-
-    if (key === '_' || BUILTIN_OPTIONS.has(name) || Object.hasOwn(argsDef, name))
-      continue
-
-    throw new Error(`Unknown option: ${name.length === 1 ? '-' : '--'}${name}`)
-  }
-}
-
-/** citty writes each option under both its camel and its kebab spelling. */
-function optionName(key: string): string {
-  return key.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
-}
-
-type CommandRun = NonNullable<CommandDef<ArgsDef>['run']>
-
-/**
- * Rejects unknown options up front and keeps every error away from citty, whose
- * own handler prints the raw error object.
- */
-function createCommandRun(argsDef: ArgsDef, run: CommandRun): CommandRun {
-  return async (context) => {
-    try {
-      assertKnownOptions(context.args, argsDef)
-      await run(context)
-    }
-    catch (caught) {
-      reportError(caught)
-    }
-  }
-}
-
-/** `process.exit` would drop whatever stdout has buffered, truncating a piped count table mid-row. */
-function reportError(caught: unknown): void {
-  log.error(caught instanceof Error ? caught.message : String(caught))
-  process.exitCode = EXIT_ERROR
-}
-
 async function readSingleInput(paths: string[]): Promise<string> {
   if (paths.length > 1)
-    throw new Error('Expected a single input')
+    throw new CliError('Expected a single input')
 
   const [document] = await readInputs(paths)
   return document!.text
@@ -287,13 +243,13 @@ function parseInteger(option: string, rawValue: unknown, minimum?: number): numb
   // citty hands over an empty string for an option given no value, which is what
   // `--limit "$BUDGET"` collapses to when the variable is unset.
   if (raw === '')
-    throw new Error(`Missing --${option} value`)
+    throw new CliError(`Missing --${option} value`)
 
   // `Number` would read `0x10` as 16 and `1e3` as 1000; only decimals are meant.
   const value = /^-?\d+$/.test(raw) ? Number(raw) : Number.NaN
 
   if (Number.isNaN(value) || (minimum !== undefined && value < minimum))
-    throw new Error(`Invalid --${option} value: ${raw}`)
+    throw new CliError(`Invalid --${option} value: ${raw}`)
 
   return value
 }

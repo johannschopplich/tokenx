@@ -1,6 +1,7 @@
 import * as fsp from 'node:fs/promises'
 import * as path from 'node:path'
 import process from 'node:process'
+import { CliError } from './errors.ts'
 
 export interface InputDocument {
   /** Path relative to the working directory, or `stdin`. */
@@ -14,7 +15,7 @@ export async function readInputs(paths: readonly string[]): Promise<InputDocumen
     return [{ label: 'stdin', text: await readStdin() }]
 
   if (paths.includes('-'))
-    throw new Error('Cannot read stdin alongside file paths')
+    throw new CliError('Cannot read stdin alongside file paths')
 
   return Promise.all(paths.map(readFileInput))
 }
@@ -26,8 +27,8 @@ async function readFileInput(inputPath: string): Promise<InputDocument> {
   try {
     return { label, text: await fsp.readFile(resolvedPath, 'utf-8') }
   }
-  catch (caught) {
-    throw new Error(`Cannot read \`${label}\`: ${caught instanceof Error ? caught.message : String(caught)}`)
+  catch (error) {
+    throw new CliError(`Cannot read \`${label}\`: ${Error.isError(error) ? error.message : String(error)}`)
   }
 }
 
