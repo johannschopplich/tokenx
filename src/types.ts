@@ -1,4 +1,3 @@
-/** Configuration options for token estimation. */
 export interface TokenEstimationOptions {
   /** Default average characters per token when no language-specific rule applies (default: 7). */
   defaultCharsPerToken?: number
