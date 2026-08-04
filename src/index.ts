@@ -4,9 +4,7 @@ import { walkSegments } from './segments.ts'
 
 export * from './types.ts'
 
-/**
- * Checks if a text string is within a specified token limit.
- */
+/** Checks if a text string is within a specified token limit. */
 export function isWithinTokenLimit(
   text: string,
   tokenLimit: number,
@@ -15,9 +13,7 @@ export function isWithinTokenLimit(
   return estimateTokenCount(text, options) <= tokenLimit
 }
 
-/**
- * Estimates the number of tokens in a text string using heuristic rules.
- */
+/** Estimates the number of tokens in a text string using heuristic rules. */
 export function estimateTokenCount(text?: string, options: TokenEstimationOptions = {}): number {
   if (!text)
     return 0
@@ -30,9 +26,7 @@ export function estimateTokenCount(text?: string, options: TokenEstimationOption
   return tokenCount
 }
 
-/**
- * Extracts a portion of text based on token positions, similar to Array.prototype.slice().
- */
+/** Extracts a portion of text based on token positions, similar to Array.prototype.slice(). */
 export function sliceByTokens(
   text: string,
   start: number = 0,
@@ -80,9 +74,7 @@ export function sliceByTokens(
   return parts.join('')
 }
 
-/**
- * Splits text into chunks based on token count.
- */
+/** Splits text into chunks based on token count. */
 export function splitByTokens(
   text: string,
   tokensPerChunk: number,

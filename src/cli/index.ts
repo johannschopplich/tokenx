@@ -260,10 +260,7 @@ function createCommandRun(argsDef: ArgsDef, run: CommandRun): CommandRun {
   }
 }
 
-/**
- * `process.exit` would drop whatever stdout has buffered, truncating a piped
- * count table mid-row.
- */
+/** `process.exit` would drop whatever stdout has buffered, truncating a piped count table mid-row. */
 function reportError(caught: unknown): void {
   log.error(caught instanceof Error ? caught.message : String(caught))
   process.exitCode = EXIT_ERROR

@@ -1,6 +1,4 @@
-/**
- * Configuration options for token estimation.
- */
+/** Configuration options for token estimation. */
 export interface TokenEstimationOptions {
   /** Default average characters per token when no language-specific rule applies (default: 7). */
   defaultCharsPerToken?: number
@@ -8,9 +6,7 @@ export interface TokenEstimationOptions {
   languageConfigs?: LanguageConfig[]
 }
 
-/**
- * Language-specific token estimation configuration.
- */
+/** Language-specific token estimation configuration. */
 export interface LanguageConfig {
   /** Regular expression to detect the language. */
   pattern: RegExp
@@ -18,9 +14,7 @@ export interface LanguageConfig {
   averageCharsPerToken: number
 }
 
-/**
- * Configuration options for splitting text by tokens.
- */
+/** Configuration options for splitting text by tokens. */
 export interface SplitByTokensOptions extends TokenEstimationOptions {
   /** Number of tokens to overlap between consecutive chunks (default: 0, clamped below the target chunk size). */
   overlap?: number
