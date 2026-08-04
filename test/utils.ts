@@ -146,7 +146,7 @@ export function runCliProcess(argv: readonly string[], options: RunOptions = {})
       [CLI_ENTRY, ...argv],
       { cwd: options.cwd, maxBuffer: 64 * 1024 * 1024 },
       (caught, stdout, stderr) => {
-        // A numeric `code` is the child's exit status; anything else failed to spawn
+        // A numeric `code` is the child's exit status; anything else failed to spawn.
         if (caught && typeof caught.code !== 'number')
           reject(caught)
         else
@@ -158,7 +158,7 @@ export function runCliProcess(argv: readonly string[], options: RunOptions = {})
 
 /** Returns a callback that puts the real `process.stdin` back. */
 export function mockStdin(input: string): () => void {
-  // Real stdin hands over bytes, and a strict UTF-8 check depends on getting them
+  // Real stdin hands over bytes, and a strict UTF-8 check depends on getting them.
   const stream = Readable.from([new TextEncoder().encode(input)])
   const originalStdin = process.stdin
 

@@ -1,6 +1,6 @@
 import * as ansis from 'ansis'
 
-// Every level writes to stderr, so stdout carries results only
+// Every level writes to stderr, so stdout carries results only.
 
 export function error(message: string): void {
   console.error(`${ansis.red('✖')} ${message}`)
