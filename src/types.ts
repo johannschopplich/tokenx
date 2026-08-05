@@ -5,15 +5,12 @@ export interface TokenEstimationOptions {
   languageConfigs?: LanguageConfig[]
 }
 
-/** Language-specific token estimation configuration. */
 export interface LanguageConfig {
   /** Regular expression to detect the language. */
   pattern: RegExp
-  /** Average number of characters per token for this language. */
   averageCharsPerToken: number
 }
 
-/** Configuration options for splitting text by tokens. */
 export interface SplitByTokensOptions extends TokenEstimationOptions {
   /** Number of tokens to overlap between consecutive chunks (default: 0, clamped below the target chunk size). */
   overlap?: number
