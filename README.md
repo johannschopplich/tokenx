@@ -8,6 +8,7 @@ Estimates are calibrated against OpenAI's `o200k_base` encoding – the tokenize
 
 - ⚡ **95%+ average accuracy**, and no single sample below 90%
 - 📦 **Just 2kB** bundle size with zero dependencies
+- 🖥️ **[Bundled CLI](#cli)** – count, slice and split from the shell
 - 🌍 Multi-language support with configurable language rules
 - 🗣️ Built-in rules for accented scripts (German, French, Spanish, Slavic), Cyrillic, and Greek
 - 🀄 CJK (Chinese, Japanese, Korean) character handling
@@ -61,7 +62,7 @@ yarn add tokenx
 
 ## CLI
 
-The package ships a `tokenx` binary – try it with `npx tokenx README.md`, or install it for the commands below.
+The package ships a `tokenx` binary – no install needed via `npx`, or install it for the commands below.
 
 ```bash
 # Count tokens in a file, a pipe, or several files at once
