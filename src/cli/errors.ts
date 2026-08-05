@@ -20,7 +20,7 @@ function describe(error: Error): string {
 type ExpectedErrorClass = abstract new (...args: never[]) => Error
 
 interface CleanErrorOptions {
-  /** Set where the command reads `args._` for more inputs than it declares positionals. */
+  /** Exemption for a command that reads `args._` for more inputs than it declares positionals. */
   allowExtraPositionals?: boolean
 }
 
@@ -30,7 +30,7 @@ interface CleanErrorOptions {
  */
 export class CliError extends Error {}
 
-/** Spread into every command's `args`, so `--verbose` appears in its own help. */
+/** Options spread into every command's `args`, so `--verbose` appears in its own help. */
 export const commonArgs: ArgsDef = {
   verbose: {
     type: 'boolean',
@@ -40,8 +40,9 @@ export const commonArgs: ArgsDef = {
 }
 
 /**
- * citty's `runMain` prints the raw error object and exits, with no formatting
- * hook, so the clean-message boundary has to wrap each command's run.
+ * Wraps a command's `run` in the clean-message boundary. citty's `runMain`
+ * prints the raw error object and exits, with no formatting hook, so the
+ * wrapping has to happen one command at a time.
  */
 export function withCleanErrors<T extends ArgsDef>(
   command: CommandDef<T>,
@@ -85,8 +86,9 @@ function report(error: unknown, isVerbose: boolean): void {
 }
 
 /**
- * A Node system error carries a string `code` and reaches the boundary as the
- * honest answer to what the user asked for, so it reads as deliberate too.
+ * Reports whether the CLI raised this error deliberately rather than tripping
+ * over it. A Node system error carries a string `code` and reaches the boundary
+ * as the honest answer to what the user asked for, so it reads as deliberate too.
  */
 function isExpected(error: unknown): boolean {
   if (error instanceof CliError)
@@ -110,14 +112,16 @@ function formatCauseChain(error: unknown): string {
   return causeLines.join('\n')
 }
 
-/** citty resolves these itself, so no command declares them. */
+/** Options citty resolves itself, so no command declares them. */
 const BUILTIN_OPTIONS: ReadonlySet<string> = new Set(['help', 'h', 'version', 'v'])
 
 /**
- * citty parses with `strict: false` and never rejects an unknown flag, so a typo
- * like `--jsonn` would otherwise be swallowed and the command would run as if it
- * had never been passed. Undeclared flags land as extra keys on the parsed args;
- * a flag that consumed a value shows up as a surplus positional instead.
+ * Throws when the parsed args carry a flag or positional the command never
+ * declared. citty parses with `strict: false` and never rejects an unknown
+ * flag, so a typo like `--jsonn` would otherwise be swallowed and the command
+ * would run as if it had never been passed. Undeclared flags land as extra keys
+ * on the parsed args; a flag that consumed a value shows up as a surplus
+ * positional instead.
  */
 function assertNoUnknownArgs(
   argsDef: ArgsDef,
@@ -156,7 +160,10 @@ function assertNoUnknownArgs(
     throw new CliError(`Unknown argument(s): ${unknown.join(', ')} – see --help`)
 }
 
-/** citty writes each option under both its camel and its kebab spelling. */
+/**
+ * Normalizes an option key to a single spelling, since citty writes each option
+ * under both its camel and its kebab spelling.
+ */
 export function optionName(key: string): string {
   return key.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
 }
