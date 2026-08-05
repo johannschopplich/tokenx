@@ -1,7 +1,7 @@
 {
   "name": "tokenx",
   "type": "module",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "packageManager": "pnpm@11.20.0",
   "description": "Fast token estimation with 95%+ average accuracy in a 2kB bundle",
   "author": "Johann Schopplich <hello@johannschopplich.com>",
