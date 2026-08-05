@@ -156,7 +156,6 @@ interface TokenEstimationOptions {
 interface LanguageConfig {
   /** Regular expression to detect the language. */
   pattern: RegExp
-  /** Average number of characters per token for this language. */
   averageCharsPerToken: number
 }
 ```
