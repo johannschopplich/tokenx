@@ -1,19 +1,14 @@
-import type { ArgsDef, CommandDef, ParsedArgs } from 'citty'
+import type { ArgsDef, CommandDef, ParsedArgs } from 'utilful/cli'
 import type { TokenEstimationOptions } from '../types.ts'
 import process from 'node:process'
-import { defineCommand } from 'citty'
+import { CliError, commonArgs, defineCommand, log } from 'utilful/cli'
 import pkg from '../../package.json' with { type: 'json' }
 import { estimateTokenCount, sliceByTokens, splitByTokens } from '../index.ts'
-import { CliError, commonArgs, optionName, runMain, withCleanErrors } from './errors.ts'
 import { readInputs } from './input.ts'
-import * as log from './log.ts'
 
 const { name, version } = pkg
 
-/**
- * The boundary exits with `1`, matching citty's own code for usage errors, which
- * leaves `2` free to mean "ran fine, but the input is over the limit".
- */
+/** The boundary exits with `1` for any failure, which leaves `2` free to mean "ran fine, but the input is over the limit". */
 const EXIT_OVER_LIMIT = 2
 
 /** The one default the CLI owns – every other default belongs to the library. */
@@ -24,8 +19,6 @@ interface InputCount {
   tokenCount: number
 }
 
-// Kebab-cased key so citty renders `--chars-per-token` in the usage block;
-// its argument proxy resolves either spelling on the way back in.
 const estimationArgs: ArgsDef = {
   'chars-per-token': {
     type: 'string',
@@ -52,7 +45,6 @@ const countArgs: ArgsDef = {
   json: {
     type: 'boolean',
     description: 'Print a JSON object instead of plain numbers',
-    default: false,
   },
 }
 
@@ -84,15 +76,13 @@ const splitArgs: ArgsDef = {
   },
 }
 
-/** Which options carry a value has to be known before the subcommand is. */
-const EVERY_ARG: ArgsDef = { ...countArgs, ...sliceArgs, ...splitArgs }
-
-const countCommand: CommandDef<ArgsDef> = withCleanErrors(defineCommand({
+const countCommand: CommandDef<ArgsDef> = defineCommand({
   meta: {
     name: 'count',
     description: 'Estimate the token count of one or more inputs',
   },
   args: countArgs,
+  allowExtraPositionals: true,
   async run({ args }) {
     const options = resolveEstimationOptions(args)
     const limit = parseInteger('limit', args.limit, 0)
@@ -116,14 +106,15 @@ const countCommand: CommandDef<ArgsDef> = withCleanErrors(defineCommand({
       process.exitCode = EXIT_OVER_LIMIT
     }
   },
-}), { allowExtraPositionals: true })
+})
 
-const sliceCommand: CommandDef<ArgsDef> = withCleanErrors(defineCommand({
+const sliceCommand: CommandDef<ArgsDef> = defineCommand({
   meta: {
     name: 'slice',
     description: 'Extract a token range from an input, like Array.prototype.slice()',
   },
   args: sliceArgs,
+  allowExtraPositionals: true,
   async run({ args }) {
     const options = resolveEstimationOptions(args)
     const start = parseInteger('start', args.start)
@@ -135,14 +126,15 @@ const sliceCommand: CommandDef<ArgsDef> = withCleanErrors(defineCommand({
     // substitution strips it again, so scripts see the slice verbatim.
     process.stdout.write(`${sliceByTokens(text, start, end, options)}\n`)
   },
-}), { allowExtraPositionals: true })
+})
 
-const splitCommand: CommandDef<ArgsDef> = withCleanErrors(defineCommand({
+const splitCommand: CommandDef<ArgsDef> = defineCommand({
   meta: {
     name: 'split',
     description: 'Split an input into token-sized chunks, printed as a JSON array',
   },
   args: splitArgs,
+  allowExtraPositionals: true,
   async run({ args }) {
     const options = resolveEstimationOptions(args)
     const size = parseInteger('size', args.size, 1) ?? DEFAULT_CHUNK_SIZE
@@ -154,73 +146,22 @@ const splitCommand: CommandDef<ArgsDef> = withCleanErrors(defineCommand({
     // Arbitrary text has no honest raw framing – JSON is the only unambiguous one.
     process.stdout.write(`${JSON.stringify(chunks)}\n`)
   },
-}), { allowExtraPositionals: true })
+})
 
-const subCommands = {
-  count: countCommand,
-  slice: sliceCommand,
-  split: splitCommand,
-}
-
+/** An input on its own is counted, so `count` doubles as the run of the tree itself. */
 export const mainCommand: CommandDef<ArgsDef> = defineCommand({
+  ...countCommand,
   meta: {
     name,
     description: 'Estimate, slice and split text by LLM token count',
     version,
   },
-  // Repeated from `count` so `tokenx --help` documents the options the default
-  // command accepts, rather than only listing the commands.
-  args: countArgs,
-  subCommands,
-  default: 'count',
+  subCommands: {
+    count: countCommand,
+    slice: sliceCommand,
+    split: splitCommand,
+  },
 })
-
-export async function runCli(rawArgs: readonly string[]): Promise<void> {
-  await runMain(mainCommand, normalizeArgs(rawArgs))
-}
-
-/**
- * Puts the subcommand first, so citty never has to guess at it. citty only falls
- * back to `default` when no operand is present at all, so `tokenx README.md` would
- * otherwise be rejected as an unknown command. Naming a file after a subcommand
- * shadows it – the same trade-off git and npm make.
- */
-export function normalizeArgs(rawArgs: readonly string[]): string[] {
-  const operandIndex = findOperandIndex(rawArgs)
-
-  // Prepending `count` here would defeat citty's `--version`, which only fires
-  // when it is the sole argument.
-  if (operandIndex === -1)
-    return [...rawArgs]
-
-  const operand = rawArgs[operandIndex]!
-
-  // citty discards everything ahead of the subcommand name, so the name moves to
-  // the front rather than the options moving behind it.
-  return Object.hasOwn(subCommands, operand)
-    ? [operand, ...rawArgs.slice(0, operandIndex), ...rawArgs.slice(operandIndex + 1)]
-    : ['count', ...rawArgs]
-}
-
-/**
- * Finds the operand citty would treat as the subcommand, stepping over the value
- * of an option rather than mistaking it for the operand.
- */
-function findOperandIndex(rawArgs: readonly string[]): number {
-  for (let index = 0; index < rawArgs.length; index++) {
-    const arg = rawArgs[index]!
-
-    if (arg === '--')
-      return -1
-    // `-` on its own is stdin, not an option.
-    if (!arg.startsWith('-') || arg === '-')
-      return index
-    if (!arg.includes('=') && EVERY_ARG[optionName(arg.replace(/^--?/, ''))]?.type === 'string')
-      index++
-  }
-
-  return -1
-}
 
 async function readSingleInput(paths: string[]): Promise<string> {
   if (paths.length > 1)
@@ -231,7 +172,7 @@ async function readSingleInput(paths: string[]): Promise<string> {
 }
 
 function resolveEstimationOptions(args: ParsedArgs<ArgsDef>): TokenEstimationOptions {
-  const defaultCharsPerToken = parseInteger('chars-per-token', args.charsPerToken, 1)
+  const defaultCharsPerToken = parseInteger('chars-per-token', args['chars-per-token'], 1)
   return defaultCharsPerToken === undefined ? {} : { defaultCharsPerToken }
 }
 
@@ -240,8 +181,7 @@ function parseInteger(option: string, rawValue: unknown, minimum?: number): numb
     return undefined
 
   const raw = String(rawValue)
-  // citty hands over an empty string for an option given no value, which is what
-  // `--limit "$BUDGET"` collapses to when the variable is unset.
+  // `--limit "$BUDGET"` collapses to an empty string when the variable is unset.
   if (raw === '')
     throw new CliError(`Missing --${option} value`)
 

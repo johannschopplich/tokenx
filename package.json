@@ -57,12 +57,12 @@
     "ansis": "^4.3.1",
     "automd": "^0.4.3",
     "bumpp": "^12.1.1",
-    "citty": "^0.2.2",
     "eslint": "^10.8.0",
     "eslint-flat-config-utils": "^3.2.0",
     "gpt-tokenizer": "^3.4.0",
     "tsdown": "^0.22.14",
     "typescript": "^6.0.3",
+    "utilful": "link:../utils",
     "vitest": "^4.1.10"
   }
 }

@@ -176,7 +176,7 @@ describe('tokenx CLI', () => {
       const { stdout, exitCode } = await runCli(['--chars-per-token', '4', 'slice', samplePath, '--end', '5'])
 
       expect(SAMPLE.startsWith(readSlice(stdout))).toBe(true)
-      expect(exitCode).toBeUndefined()
+      expect(exitCode).toBe(0)
     })
   })
 

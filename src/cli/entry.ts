@@ -1,4 +1,4 @@
-import process from 'node:process'
-import { runCli } from './index.ts'
+import { runMain } from 'utilful/cli'
+import { mainCommand } from './index.ts'
 
-await runCli(process.argv.slice(2))
+void runMain(mainCommand)

@@ -1,7 +1,7 @@
 import * as fsp from 'node:fs/promises'
 import * as path from 'node:path'
 import process from 'node:process'
-import { CliError } from './errors.ts'
+import { CliError } from 'utilful/cli'
 
 export interface InputDocument {
   /** Path relative to the working directory, or `stdin`. */
