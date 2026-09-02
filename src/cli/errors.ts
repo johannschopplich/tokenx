@@ -1,5 +1,6 @@
 import type { ArgsDef, CommandDef } from 'citty'
 import process from 'node:process'
+import { renderUsage, runCommand } from 'citty'
 import * as log from './log.ts'
 
 // #region Per-repo bindings
@@ -66,6 +67,74 @@ export function withCleanErrors<T extends ArgsDef>(
       }
     },
   }
+}
+
+const HELP_FLAGS: ReadonlySet<string> = new Set(['--help', '-h'])
+const VERSION_FLAGS: ReadonlySet<string> = new Set(['--version', '-v'])
+
+/**
+ * citty prints usage with `console.log` whether the user asked for it or it
+ * follows a bad argument, and ends on `process.exit`. All three matter: help
+ * someone asked for is the result of the run and belongs on stdout, usage after
+ * a bad argument is diagnostics and joins its message on stderr, and
+ * `process.exit` discards whatever stdout has still buffered.
+ */
+export async function runMain(command: CommandDef, rawArgs: readonly string[]): Promise<void> {
+  const argv = splitShortOptionValues(rawArgs)
+
+  try {
+    if (argv.some(argument => HELP_FLAGS.has(argument)))
+      process.stdout.write(`${await renderCommandUsage(command, argv)}\n`)
+    else if (argv.length === 1 && VERSION_FLAGS.has(argv[0]!))
+      process.stdout.write(`${(await resolveValue(command.meta))?.version ?? ''}\n`)
+    else
+      await runCommand(command, { rawArgs: argv })
+  }
+  catch (error) {
+    if (Error.isError(error) && error.name === 'CLIError')
+      process.stderr.write(`${await renderCommandUsage(command, argv)}\n\n`)
+
+    report(error, false)
+  }
+}
+
+/**
+ * Splits an inline value off a short option. Node's `parseArgs` splits
+ * `--name=value` but leaves `-n=value` whole, so `-o=report.json` would write to
+ * a file named `=report.json`. Past `--` every token is an operand and stays as
+ * it was written.
+ */
+export function splitShortOptionValues(argv: readonly string[]): string[] {
+  const split: string[] = []
+  let isTerminated = false
+
+  for (const argument of argv) {
+    const match = /^(-[^-])=(.*)$/.exec(argument)
+
+    if (isTerminated || match === null) {
+      split.push(argument)
+      isTerminated ||= argument === '--'
+      continue
+    }
+
+    split.push(match[1]!, match[2]!)
+  }
+
+  return split
+}
+
+async function renderCommandUsage(command: CommandDef, argv: readonly string[]): Promise<string> {
+  const subCommands = await resolveValue(command.subCommands)
+  const name = subCommands === undefined
+    ? undefined
+    : argv.find(argument => Object.hasOwn(subCommands, argument))
+  const subCommand = name === undefined ? undefined : await resolveValue(subCommands![name])
+
+  return subCommand === undefined ? renderUsage(command) : renderUsage(subCommand, command)
+}
+
+async function resolveValue<T>(value: T | (() => T | Promise<T>) | Promise<T> | undefined): Promise<T | undefined> {
+  return typeof value === 'function' ? await (value as () => T | Promise<T>)() : await value
 }
 
 function report(error: unknown, isVerbose: boolean): void {

@@ -1,7 +1,7 @@
 import type { ArgsDef, CommandDef } from 'citty'
 import process from 'node:process'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { CliError, commonArgs, withCleanErrors } from '../src/cli/errors.ts'
+import { CliError, commonArgs, runMain, splitShortOptionValues, withCleanErrors } from '../src/cli/errors.ts'
 
 // Byte-identical across the sibling CLI repos apart from the import above –
 // edit it in all of them or none.
@@ -88,6 +88,85 @@ describe('cli error boundary', () => {
     const output = await reportFor(undefined, { typo: true })
 
     expect(output).toContain('Unknown argument(s): --typo')
+    expect(process.exitCode).toBe(1)
+  })
+})
+
+/** Runs a command tree over `argv`, and returns what reached each stream. */
+async function streamsFor(command: CommandDef, argv: string[]): Promise<{ stdout: string, stderr: string }> {
+  const stdout: string[] = []
+  const stderr: string[] = []
+  const outSpy = vi.spyOn(process.stdout, 'write').mockImplementation((chunk: unknown) => {
+    stdout.push(String(chunk))
+    return true
+  })
+  const errSpy = vi.spyOn(process.stderr, 'write').mockImplementation((chunk: unknown) => {
+    stderr.push(String(chunk))
+    return true
+  })
+  const consoleError = vi.spyOn(console, 'error').mockImplementation((message: string) => {
+    stderr.push(String(message))
+  })
+
+  try {
+    await runMain(command, argv)
+  }
+  finally {
+    outSpy.mockRestore()
+    errSpy.mockRestore()
+    consoleError.mockRestore()
+  }
+
+  return { stdout: stdout.join(''), stderr: stderr.join('') }
+}
+
+const probeCommand: CommandDef<ArgsDef> = {
+  meta: { name: 'probe', version: '1.2.3', description: 'A command tree to drive the boundary with' },
+  args: { ...commonArgs, target: { type: 'positional', description: 'What to act on', required: true } },
+  run() {},
+}
+
+describe('splitShortOptionValues', () => {
+  it('splits an inline value off a short option', () => {
+    expect(splitShortOptionValues(['-o=report.json'])).toEqual(['-o', 'report.json'])
+  })
+
+  it('leaves a long option to `parseArgs`, which splits it already', () => {
+    expect(splitShortOptionValues(['--output=report.json'])).toEqual(['--output=report.json'])
+  })
+
+  it('leaves operands past `--` as they were written', () => {
+    expect(splitShortOptionValues(['--', '-o=literal'])).toEqual(['--', '-o=literal'])
+  })
+
+  it('changes nothing on a second pass', () => {
+    const once = splitShortOptionValues(['-o=report.json', 'input'])
+
+    expect(splitShortOptionValues(once)).toEqual(once)
+  })
+})
+
+describe('cli stream boundary', () => {
+  it('writes requested help to stdout', async () => {
+    const { stdout, stderr } = await streamsFor(probeCommand, ['--help'])
+
+    expect(stdout).toContain('USAGE')
+    expect(stderr).toBe('')
+    expect(process.exitCode).toBeUndefined()
+  })
+
+  it('writes the version to stdout', async () => {
+    const { stdout } = await streamsFor(probeCommand, ['--version'])
+
+    expect(stdout).toBe('1.2.3\n')
+  })
+
+  it('keeps usage off stdout when an argument was wrong', async () => {
+    const { stdout, stderr } = await streamsFor(probeCommand, [])
+
+    expect(stdout).toBe('')
+    expect(stderr).toContain('USAGE')
+    expect(stderr).toContain('Missing required positional argument')
     expect(process.exitCode).toBe(1)
   })
 })

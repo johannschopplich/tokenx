@@ -1,10 +1,10 @@
 import type { ArgsDef, CommandDef, ParsedArgs } from 'citty'
 import type { TokenEstimationOptions } from '../types.ts'
 import process from 'node:process'
-import { defineCommand, runMain } from 'citty'
+import { defineCommand } from 'citty'
 import pkg from '../../package.json' with { type: 'json' }
 import { estimateTokenCount, sliceByTokens, splitByTokens } from '../index.ts'
-import { CliError, commonArgs, optionName, withCleanErrors } from './errors.ts'
+import { CliError, commonArgs, optionName, runMain, withCleanErrors } from './errors.ts'
 import { readInputs } from './input.ts'
 import * as log from './log.ts'
 
@@ -176,7 +176,7 @@ export const mainCommand: CommandDef<ArgsDef> = defineCommand({
 })
 
 export async function runCli(rawArgs: readonly string[]): Promise<void> {
-  await runMain(mainCommand, { rawArgs: normalizeArgs(rawArgs) })
+  await runMain(mainCommand, normalizeArgs(rawArgs))
 }
 
 /**
