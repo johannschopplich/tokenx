@@ -17,16 +17,11 @@ describe('tokenx CLI', () => {
     })
 
     it('counts stdin when no input is given', async () => {
-      const restoreStdin = mockStdin(SAMPLE)
+      mockStdin(SAMPLE)
 
-      try {
-        const { stdout } = await runCli([])
+      const { stdout } = await runCli([])
 
-        expect(stdout).toMatch(/^\d+\n$/)
-      }
-      finally {
-        restoreStdin()
-      }
+      expect(stdout).toMatch(/^\d+\n$/)
     })
 
     it('counts more tokens for a lower --chars-per-token', async () => {
