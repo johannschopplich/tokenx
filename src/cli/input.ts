@@ -1,7 +1,7 @@
 import * as fsp from 'node:fs/promises'
 import * as path from 'node:path'
 import process from 'node:process'
-import { CliError } from 'utilful/cli'
+import { CliError, readStdin } from 'utilful/cli'
 
 export interface InputDocument {
   /** Path relative to the working directory, or `stdin`. */
@@ -30,41 +30,4 @@ async function readFileInput(inputPath: string): Promise<InputDocument> {
   catch (error) {
     throw new CliError(`Cannot read \`${label}\`: ${Error.isError(error) ? error.message : String(error)}`)
   }
-}
-
-function readStdin(): Promise<string> {
-  const { stdin } = process
-
-  if (stdin.readableEnded)
-    return Promise.resolve('')
-
-  return new Promise((resolve, reject) => {
-    let data = ''
-
-    const onData = (chunk: string) => {
-      data += chunk
-    }
-
-    function cleanup() {
-      stdin.off('data', onData)
-      stdin.off('error', onError)
-      stdin.off('end', onEnd)
-    }
-
-    function onError(caught: Error) {
-      cleanup()
-      reject(caught)
-    }
-
-    function onEnd() {
-      cleanup()
-      resolve(data)
-    }
-
-    stdin.setEncoding('utf-8')
-    stdin.on('data', onData)
-    stdin.once('error', onError)
-    stdin.once('end', onEnd)
-    stdin.resume()
-  })
 }
