@@ -62,7 +62,7 @@
     "gpt-tokenizer": "^3.4.0",
     "tsdown": "^0.22.14",
     "typescript": "^6.0.3",
-    "utilful": "^3.3.0",
+    "utilful": "^3.5.0",
     "vitest": "^4.1.10"
   }
 }
