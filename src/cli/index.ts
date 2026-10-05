@@ -1,7 +1,7 @@
-import type { ArgsDef, CommandDef, ParsedArgs } from 'utilful/cli'
+import type { CommandDef } from 'utilful/cli'
 import type { TokenEstimationOptions } from '../types.ts'
 import process from 'node:process'
-import { CliError, commonArgs, defineCommand, log } from 'utilful/cli'
+import { CliError, defineCommand, log } from 'utilful/cli'
 import pkg from '../../package.json' with { type: 'json' }
 import { estimateTokenCount, sliceByTokens, splitByTokens } from '../index.ts'
 import { readInputs } from './input.ts'
@@ -19,64 +19,54 @@ interface InputCount {
   tokenCount: number
 }
 
-const estimationArgs: ArgsDef = {
-  'chars-per-token': {
-    type: 'string',
-    description: 'Average characters per token when no language rule applies',
-  },
-}
-
-const inputArg: ArgsDef = {
-  input: {
+const countArgs = {
+  'input': {
     type: 'positional',
     description: 'File path (omit or use "-" to read from stdin)',
     required: false,
   },
-}
-
-const countArgs: ArgsDef = {
-  ...inputArg,
-  ...estimationArgs,
-  ...commonArgs,
-  limit: {
+  'chars-per-token': {
     type: 'string',
-    description: `Exit with code ${EXIT_OVER_LIMIT} when the total exceeds this many tokens`,
+    description: 'Average characters per token when no language rule applies',
   },
-  json: {
+  'limit': {
+    type: 'string',
+    // `mainCommand`'s exported type reaches these arguments, and `isolatedDeclarations` cannot infer an interpolated string's type.
+    description: `Exit with code ${EXIT_OVER_LIMIT} when the total exceeds this many tokens` as string,
+  },
+  'json': {
     type: 'boolean',
     description: 'Print a JSON object instead of plain numbers',
   },
-}
+} as const
 
-const sliceArgs: ArgsDef = {
-  ...inputArg,
-  ...estimationArgs,
-  ...commonArgs,
-  start: {
+const sliceArgs = {
+  'input': countArgs.input,
+  'chars-per-token': countArgs['chars-per-token'],
+  'start': {
     type: 'string',
     description: 'Start token index, inclusive (negative counts from the end)',
   },
-  end: {
+  'end': {
     type: 'string',
     description: 'End token index, exclusive (negative counts from the end)',
   },
-}
+} as const
 
-const splitArgs: ArgsDef = {
-  ...inputArg,
-  ...estimationArgs,
-  ...commonArgs,
-  size: {
+const splitArgs = {
+  'input': countArgs.input,
+  'chars-per-token': countArgs['chars-per-token'],
+  'size': {
     type: 'string',
     description: `Target tokens per chunk (default: ${DEFAULT_CHUNK_SIZE})`,
   },
-  overlap: {
+  'overlap': {
     type: 'string',
     description: 'Tokens repeated from the end of the previous chunk',
   },
-}
+} as const
 
-const countCommand: CommandDef<ArgsDef> = defineCommand({
+const countCommand: CommandDef<typeof countArgs> = defineCommand({
   meta: {
     name: 'count',
     description: 'Estimate the token count of one or more inputs',
@@ -84,7 +74,7 @@ const countCommand: CommandDef<ArgsDef> = defineCommand({
   args: countArgs,
   allowExtraPositionals: true,
   async run({ args }) {
-    const options = resolveEstimationOptions(args)
+    const options = resolveEstimationOptions(args['chars-per-token'])
     const limit = parseInteger('limit', args.limit, 0)
 
     const documents = await readInputs(args._)
@@ -94,7 +84,7 @@ const countCommand: CommandDef<ArgsDef> = defineCommand({
     }))
     const total = counts.reduce((sum, { tokenCount }) => sum + tokenCount, 0)
 
-    if (args.json === true)
+    if (args.json)
       process.stdout.write(`${JSON.stringify({ inputs: counts, total })}\n`)
     else if (counts.length === 1)
       process.stdout.write(`${total}\n`)
@@ -108,7 +98,7 @@ const countCommand: CommandDef<ArgsDef> = defineCommand({
   },
 })
 
-const sliceCommand: CommandDef<ArgsDef> = defineCommand({
+const sliceCommand: CommandDef<typeof sliceArgs> = defineCommand({
   meta: {
     name: 'slice',
     description: 'Extract a token range from an input, like Array.prototype.slice()',
@@ -116,7 +106,7 @@ const sliceCommand: CommandDef<ArgsDef> = defineCommand({
   args: sliceArgs,
   allowExtraPositionals: true,
   async run({ args }) {
-    const options = resolveEstimationOptions(args)
+    const options = resolveEstimationOptions(args['chars-per-token'])
     const start = parseInteger('start', args.start)
     const end = parseInteger('end', args.end)
 
@@ -128,7 +118,7 @@ const sliceCommand: CommandDef<ArgsDef> = defineCommand({
   },
 })
 
-const splitCommand: CommandDef<ArgsDef> = defineCommand({
+const splitCommand: CommandDef<typeof splitArgs> = defineCommand({
   meta: {
     name: 'split',
     description: 'Split an input into token-sized chunks, printed as a JSON array',
@@ -136,7 +126,7 @@ const splitCommand: CommandDef<ArgsDef> = defineCommand({
   args: splitArgs,
   allowExtraPositionals: true,
   async run({ args }) {
-    const options = resolveEstimationOptions(args)
+    const options = resolveEstimationOptions(args['chars-per-token'])
     const size = parseInteger('size', args.size, 1) ?? DEFAULT_CHUNK_SIZE
     const overlap = parseInteger('overlap', args.overlap, 0)
 
@@ -149,7 +139,7 @@ const splitCommand: CommandDef<ArgsDef> = defineCommand({
 })
 
 /** An input on its own is counted, so `count` doubles as the run of the tree itself. */
-export const mainCommand: CommandDef<ArgsDef> = defineCommand({
+export const mainCommand: CommandDef<typeof countArgs> = defineCommand({
   ...countCommand,
   meta: {
     name,
@@ -171,25 +161,24 @@ async function readSingleInput(paths: string[]): Promise<string> {
   return document!.text
 }
 
-function resolveEstimationOptions(args: ParsedArgs<ArgsDef>): TokenEstimationOptions {
-  const defaultCharsPerToken = parseInteger('chars-per-token', args['chars-per-token'], 1)
+function resolveEstimationOptions(charsPerToken: string | undefined): TokenEstimationOptions {
+  const defaultCharsPerToken = parseInteger('chars-per-token', charsPerToken, 1)
   return defaultCharsPerToken === undefined ? {} : { defaultCharsPerToken }
 }
 
-function parseInteger(option: string, rawValue: unknown, minimum?: number): number | undefined {
+function parseInteger(option: string, rawValue: string | undefined, minimum?: number): number | undefined {
   if (rawValue === undefined)
     return undefined
 
-  const raw = String(rawValue)
   // `--limit "$BUDGET"` collapses to an empty string when the variable is unset.
-  if (raw === '')
+  if (rawValue === '')
     throw new CliError(`Missing --${option} value`)
 
   // `Number` would read `0x10` as 16 and `1e3` as 1000; only decimals are meant.
-  const value = /^-?\d+$/.test(raw) ? Number(raw) : Number.NaN
+  const value = /^-?\d+$/.test(rawValue) ? Number(rawValue) : Number.NaN
 
   if (Number.isNaN(value) || (minimum !== undefined && value < minimum))
-    throw new CliError(`Invalid --${option} value: ${raw}`)
+    throw new CliError(`Invalid --${option} value: ${rawValue}`)
 
   return value
 }
