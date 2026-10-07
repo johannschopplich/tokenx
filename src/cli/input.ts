@@ -49,6 +49,10 @@ async function readFileInput(inputPath: string): Promise<InputDocument> {
     return { label, text: await fsp.readFile(resolvedPath, 'utf-8') }
   }
   catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'EISDIR')
+      // Quoted, so a shell passes the `*` on rather than expanding it.
+      throw new CliError(`\`${inputPath}\` is a directory – pass a pattern like "${path.join(inputPath, '*')}"`)
+
     throw new CliError(`Cannot read \`${label}\`: ${Error.isError(error) ? error.message : String(error)}`)
   }
 }

@@ -224,6 +224,16 @@ describe('tokenx CLI', () => {
       expect(exitCode).toBe(1)
     })
 
+    it('points a directory input to a glob pattern', async () => {
+      const directory = createDirectory({ 'notes/a.md': SAMPLE })
+
+      const { stderr, exitCode } = await runCli(['count', 'notes'], { cwd: directory })
+
+      expect(stderr).toContain('`notes` is a directory')
+      expect(stderr).toContain(`"${path.join('notes', '*')}"`)
+      expect(exitCode).toBe(1)
+    })
+
     it('rejects stdin alongside file paths', async () => {
       const directory = createDirectory({ 'sample.txt': SAMPLE })
 
