@@ -22,7 +22,7 @@ interface InputCount {
 const countArgs = {
   'input': {
     type: 'positional',
-    description: 'File path (omit or use "-" to read from stdin)',
+    description: 'File path or glob pattern (omit or use "-" to read from stdin)',
     required: false,
   },
   'chars-per-token': {
@@ -154,11 +154,12 @@ export const mainCommand: CommandDef<typeof countArgs> = defineCommand({
 })
 
 async function readSingleInput(paths: string[]): Promise<string> {
-  if (paths.length > 1)
+  // One pattern can expand to several files.
+  const documents = await readInputs(paths)
+  if (documents.length > 1)
     throw new CliError('Expected a single input')
 
-  const [document] = await readInputs(paths)
-  return document!.text
+  return documents[0]!.text
 }
 
 function resolveEstimationOptions(charsPerToken: string | undefined): TokenEstimationOptions {

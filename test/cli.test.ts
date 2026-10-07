@@ -60,6 +60,26 @@ describe('tokenx CLI', () => {
       expect(report.total).toBe(report.inputs[0]!.tokenCount + report.inputs[1]!.tokenCount)
     })
 
+    it('expands a glob pattern into the matching files in path order', async () => {
+      const directory = createDirectory({ 'notes/b.md': SAMPLE, 'notes/a.md': SAMPLE, 'notes/nested/c.md': SAMPLE })
+
+      const { stdout, exitCode } = await runCli(['count', 'notes/*', '--json'], { cwd: directory })
+
+      expect(exitCode).toBe(0)
+      const report = JSON.parse(stdout) as { inputs: { label: string }[] }
+      expect(report.inputs.map(input => input.label)).toEqual([path.join('notes', 'a.md'), path.join('notes', 'b.md')])
+    })
+
+    it('counts notes[1].md as a literal path rather than a pattern', async () => {
+      const directory = createDirectory({ 'notes[1].md': SAMPLE })
+
+      const { stdout, exitCode } = await runCli(['count', 'notes[1].md', '--json'], { cwd: directory })
+
+      expect(exitCode).toBe(0)
+      const report = JSON.parse(stdout) as { inputs: { label: string }[] }
+      expect(report.inputs.map(input => input.label)).toEqual(['notes[1].md'])
+    })
+
     it('prints the count before failing the run over --limit', async () => {
       const directory = createDirectory({ 'sample.txt': SAMPLE })
 
@@ -181,7 +201,26 @@ describe('tokenx CLI', () => {
 
       const { stderr, exitCode } = await runCli([path.join(directory, 'missing.txt')])
 
+      expect(stderr).toContain('Cannot read `')
       expect(stderr).toContain('missing.txt')
+      expect(exitCode).toBe(1)
+    })
+
+    it('rejects a glob pattern matching several files for slice', async () => {
+      const directory = createDirectory({ 'notes/a.md': SAMPLE, 'notes/b.md': SAMPLE })
+
+      const { stderr, exitCode } = await runCli(['slice', 'notes/*.md', '--end', '5'], { cwd: directory })
+
+      expect(stderr).toContain('Expected a single input')
+      expect(exitCode).toBe(1)
+    })
+
+    it('reports a glob pattern without matches', async () => {
+      const directory = createDirectory()
+
+      const { stderr, exitCode } = await runCli(['count', '*.md'], { cwd: directory })
+
+      expect(stderr).toContain('No files match `*.md`')
       expect(exitCode).toBe(1)
     })
 
