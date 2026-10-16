@@ -149,7 +149,7 @@ function estimateTokenCount(
 interface TokenEstimationOptions {
   /** Default average characters per token when no language-specific rule applies (default: 7). */
   defaultCharsPerToken?: number
-  /** Custom language configurations to override defaults. */
+  /** Language configs checked before the built-in ones, so the first matching custom config wins. */
   languageConfigs?: LanguageConfig[]
 }
 

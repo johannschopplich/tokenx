@@ -71,7 +71,9 @@ interface ResolvedTokenEstimationOptions {
 function resolveOptions(options: TokenEstimationOptions): ResolvedTokenEstimationOptions {
   return {
     defaultCharsPerToken: options.defaultCharsPerToken ?? DEFAULT_CHARS_PER_TOKEN,
-    languageConfigs: options.languageConfigs ?? DEFAULT_LANGUAGE_CONFIGS,
+    languageConfigs: options.languageConfigs?.length
+      ? [...options.languageConfigs, ...DEFAULT_LANGUAGE_CONFIGS]
+      : DEFAULT_LANGUAGE_CONFIGS,
   }
 }
 

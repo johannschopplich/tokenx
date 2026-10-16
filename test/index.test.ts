@@ -7,10 +7,12 @@ import {
 } from '../src/index'
 
 /**
- * Pins the slice snapshots below to a ratio of the test's own choosing, so
- * recalibrating the shipped ratios moves the benchmark rather than these tests.
+ * Pins the slice snapshots below to a ratio of the test's own choosing: the
+ * catch-all config prices every non-whitespace segment ahead of the built-in
+ * rules, so recalibrating the shipped ratios moves the benchmark rather than
+ * these tests.
  */
-const FIXED_OPTIONS = { defaultCharsPerToken: 4, languageConfigs: [] }
+const FIXED_OPTIONS = { languageConfigs: [{ pattern: /\S/, averageCharsPerToken: 4 }] }
 
 /** Every word costs one token, so slice boundaries land between words. */
 const SINGLE_TOKEN_WORDS = 'The old cat sat on a warm red mat.'
@@ -89,6 +91,15 @@ describe('estimateTokenCount', () => {
 
       expect(estimateTokenCount(input, customOptions)).toBe(4)
       expect(estimateTokenCount(input, customOptions)).not.toBe(estimateTokenCount(input))
+    })
+
+    it('keeps the built-in language configs alongside custom ones', () => {
+      const input = 'Gregor erwachte aus unruhigen Träumen über seinem Bett.'
+      const arabicOptions = {
+        languageConfigs: [{ pattern: /\p{Script=Arabic}/u, averageCharsPerToken: 2 }],
+      }
+
+      expect(estimateTokenCount(input, arabicOptions)).toBe(estimateTokenCount(input))
     })
 
     it('ignores stateful regex flags in language configs', () => {
