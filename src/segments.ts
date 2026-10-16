@@ -7,19 +7,22 @@ const PATTERNS = {
   cjk: /[\u4E00-\u9FFF\u3400-\u4DBF\u3000-\u30FF\uFF00-\uFFEF\u2E80-\u2EFF\u31C0-\u31EF\u3200-\u32FF\u3300-\u33FF\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uD7B0-\uD7FF]/,
   numeric: /^\d+$/,
   punctuation: /[.,!?;(){}[\]<>:/\\|@#$%^&*+=`~_"-]/,
+  // Ideographic and fullwidth punctuation – Chinese and Japanese put no spaces
+  // between words, so without it a whole paragraph would form a single segment.
+  cjkPunctuation: /[\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u30FB\uFF01-\uFF0F\uFF1A-\uFF20\uFF3B-\uFF40\uFF5B-\uFF65]/,
   lowercaseWord: /^[a-z]+$/,
 } as const
 
-const TOKEN_SPLIT_PATTERN = new RegExp(`(\\s+|${PATTERNS.punctuation.source}+)`)
+const TOKEN_SPLIT_PATTERN = new RegExp(`(\\s+|${PATTERNS.punctuation.source}+|${PATTERNS.cjkPunctuation.source}+)`)
 
 // All ratios are calibrated against OpenAI's o200k_base encoding.
 const DEFAULT_CHARS_PER_TOKEN = 7
 const SHORT_TOKEN_THRESHOLD = 3
 const LOWERCASE_WORD_SINGLE_TOKEN_LENGTH = 8
 const PUNCTUATION_CHARS_PER_TOKEN = 6
-const KANA_CHARS_PER_TOKEN = 1.4
+const KANA_CHARS_PER_TOKEN = 1.35
 const HANGUL_CHARS_PER_TOKEN = 1.65
-const HANZI_CHARS_PER_TOKEN = 1.15
+const HANZI_CHARS_PER_TOKEN = 1.2
 
 const DEFAULT_LANGUAGE_CONFIGS: LanguageConfig[] = [
   // An accent rule prices a whole language through the minority of its words

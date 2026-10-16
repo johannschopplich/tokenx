@@ -264,6 +264,12 @@ describe('splitByTokens', () => {
     expect(splitByTokens(longWord, 2)).toEqual([longWord])
   })
 
+  it('splits Chinese text at its own punctuation', () => {
+    const chinese = '采收的成熟咖啡果会经过剥离果肉的初步加工，再经过烘焙的工序，而成为能制作咖啡的咖啡豆。'
+
+    expect(splitByTokens(chinese, 10)[0]).toBe('采收的成熟咖啡果会经过剥离果肉的初步加工')
+  })
+
   it('does not emit a trailing chunk containing only overlap content', () => {
     const chunks = splitByTokens('aaaa bbbb cccc dddd', 2, { overlap: 1 })
     expect(chunks).toEqual(['aaaa bbbb', 'bbbb cccc', 'cccc dddd'])
