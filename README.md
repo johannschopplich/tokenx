@@ -6,15 +6,12 @@ Estimates are calibrated against OpenAI's `o200k_base` encoding – the tokenize
 
 ## Features
 
-- ⚡ **95%+ average accuracy**, and no single sample below 90%
+- 🎯 **95%+ average accuracy**, and no single sample below 90%
 - 📦 **Just 2kB** bundle size with zero dependencies
 - 🖥️ **[Bundled CLI](#cli)** – count, slice and split from the shell
-- 🌍 Multi-language support with configurable language rules
-- 🗣️ Built-in rules for accented scripts (German, French, Spanish, Slavic), Cyrillic, and Greek
-- 🀄 CJK (Chinese, Japanese, Korean) character handling
-- 😀 Emoji-aware pricing (emoji cost more tokens than their character count suggests)
+- 🌍 Built-in rules for CJK, Cyrillic, Greek, accented Latin scripts and emoji – extend them with your own
 
-## Benchmarks
+## Accuracy
 
 The following chart shows how close the estimates come to actual GPT token counts for different input texts:
 
@@ -26,7 +23,7 @@ Bars grow left when tokenx underestimates and right when it overestimates. The a
                                                           under ◂·▸ over
 Team chat transcript (en)               293 →    285          ███│              -2.73%
 Vite releases API response            8,075 →  8,551             │██████        +5.89%
-tokenx source code                    3,271 →  3,125         ████│              -4.46%
+tokenx source code                    3,311 →  3,166         ████│              -4.38%
 Vite plugin API docs (en)             6,901 →  7,155             │████          +3.68%
 Cat article (ja)                     12,437 → 12,037          ███│              -3.22%
 Cat article (ko)                      7,117 →  6,814         ████│              -4.26%
@@ -34,7 +31,7 @@ Cat article (zh)                      9,057 →  9,092             │          
 The Great Gatsby by Fitzgerald (en)   4,391 →  4,479             │██            +2.00%
 Die Verwandlung by Kafka (de)         4,437 →  4,384            █│              -1.19%
                                                        ─────────────────────
-                                                                        mean     3.09%
+                                                                        mean     3.08%
 ```
 
 <!-- /automd -->
@@ -60,9 +57,22 @@ pnpm add tokenx
 yarn add tokenx
 ```
 
+## Quick Start
+
+```ts
+import { estimateTokenCount, isWithinTokenLimit, sliceByTokens, splitByTokens } from 'tokenx'
+
+const text = 'Your text goes here.'
+
+estimateTokenCount(text) // Estimated token count
+isWithinTokenLimit(text, 1024) // true
+sliceByTokens(text, 0, 5) // Roughly the first five tokens
+splitByTokens(text, 100) // Chunks of about 100 tokens each
+```
+
 ## CLI
 
-The package ships a `tokenx` binary – no install needed via `npx`, or install it for the commands below.
+The package ships a `tokenx` binary. Run it with `npx tokenx`, or install the package to call `tokenx` directly. The CLI requires Node.js 24 or later.
 
 ```bash
 # Count tokens in a file, a pipe, or several files at once
@@ -78,51 +88,15 @@ tokenx slice article.md --end 500
 tokenx split article.md --size 500 --overlap 50
 ```
 
-Only results go to stdout – counts as bare integers, chunks as a JSON array – so `$(tokenx count file.txt)` and `| jq` work unchanged. Notices and errors go to stderr. Run `tokenx --help` for every option.
-
-## Usage
-
-```ts
-import { estimateTokenCount, isWithinTokenLimit, sliceByTokens, splitByTokens } from 'tokenx'
-
-const text = 'Your text goes here.'
-
-// Estimate the number of tokens in the text
-const estimatedTokens = estimateTokenCount(text)
-console.log(`Estimated token count: ${estimatedTokens}`)
-
-// Check if text is within a specific token limit
-const tokenLimit = 1024
-const withinLimit = isWithinTokenLimit(text, tokenLimit)
-console.log(`Is within token limit: ${withinLimit}`)
-
-// Slice text by token positions (like Array.slice)
-const firstTokens = sliceByTokens(text, 0, 5)
-console.log(`First ~5 tokens: ${firstTokens}`)
-
-// Split text into token-based chunks
-const chunks = splitByTokens(text, 100)
-console.log(`Split into ${chunks.length} chunks`)
-
-// Use custom options for different languages or models.
-// Custom language rules are checked before all built-in heuristics,
-// so they can also override the built-in CJK handling.
-const customOptions = {
-  defaultCharsPerToken: 4, // More conservative estimation
-  languageConfigs: [
-    { pattern: /[\u4E00-\u9FFF]/, averageCharsPerToken: 2 }, // Custom Chinese rule
-  ]
-}
-
-const customEstimate = estimateTokenCount(text, customOptions)
-console.log(`Custom estimate: ${customEstimate}`)
-```
+Only results go to stdout – a bare integer for one input, a table for several, chunks as a JSON array – so `$(tokenx count file.txt)` and `| jq` work unchanged. Notices and errors go to stderr. Run `tokenx --help` for every option.
 
 ## API
 
 ### `estimateTokenCount`
 
 Estimates the number of tokens in a given input string using heuristic rules that work across multiple languages and text types.
+
+Custom `languageConfigs` take precedence over the built-in rules for every segment except whitespace, so they can also override the built-in CJK handling. The built-in configs still apply to text no custom config matches.
 
 **Usage:**
 
@@ -217,7 +191,7 @@ function sliceByTokens(
 
 **Returns:**
 
-The sliced text portion corresponding to the specified token range.
+The sliced text portion corresponding to the specified token range. A boundary inside a multi-token word cuts the word proportionally, so a slice can start or end mid-word – adjacent slices still rejoin into the original text.
 
 ### `splitByTokens`
 
