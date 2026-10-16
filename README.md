@@ -197,7 +197,7 @@ The sliced text portion corresponding to the specified token range. A boundary i
 
 Splits text into chunks based on token count. Useful for chunking documents for RAG, batch processing, or staying within context windows.
 
-`tokensPerChunk` is a target, not a hard maximum: a chunk closes once it reaches the target, so a single long segment can push a chunk beyond it. Chunks never break words apart. Chinese and Japanese text has no spaces, so a whole clause between two punctuation marks forms one segment, and a long clause can push a chunk well past the target.
+`tokensPerChunk` is a target, not a hard maximum: a chunk closes once it reaches the target, so a single long segment can push a chunk beyond it. Chunks never break words apart. Chinese and Japanese text has no spaces, so a whole clause up to its punctuation mark forms one segment, and a long clause can push a chunk well past the target.
 
 **Usage:**
 

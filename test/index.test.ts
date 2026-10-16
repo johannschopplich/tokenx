@@ -73,6 +73,10 @@ describe('estimateTokenCount', () => {
     it('merges a line break into a preceding punctuation token', () => {
       expect(estimateTokenCount('Hello,\nworld')).toBe(estimateTokenCount('Hello, world'))
     })
+
+    it('prices a Latin word before fullwidth punctuation like before ASCII punctuation', () => {
+      expect(estimateTokenCount('Hello，world')).toBe(estimateTokenCount('Hello,world'))
+    })
   })
 
   describe('options', () => {
@@ -279,10 +283,13 @@ describe('splitByTokens', () => {
     expect(splitByTokens(longWord, 2)).toEqual([longWord])
   })
 
-  it('splits Chinese text at a fullwidth comma', () => {
+  it('splits Chinese text after a fullwidth comma', () => {
     const chinese = '采收的成熟咖啡果会经过剥离果肉的初步加工，再经过烘焙的工序，而成为能制作咖啡的咖啡豆。'
 
-    expect(splitByTokens(chinese, 10)[0]).toBe('采收的成熟咖啡果会经过剥离果肉的初步加工')
+    expect(splitByTokens(chinese, 10)).toEqual([
+      '采收的成熟咖啡果会经过剥离果肉的初步加工，',
+      '再经过烘焙的工序，而成为能制作咖啡的咖啡豆。',
+    ])
   })
 
   it('does not emit a trailing chunk containing only overlap content', () => {

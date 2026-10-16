@@ -57,8 +57,17 @@ export function* walkSegments(text: string, options: TokenEstimationOptions = {}
   const resolvedOptions = resolveOptions(options)
 
   let previousSegment = ''
+  const parts = text.split(TOKEN_SPLIT_PATTERN)
 
-  for (const segment of text.split(TOKEN_SPLIT_PATTERN)) {
+  for (let i = 0; i < parts.length; i++) {
+    let segment = parts[i]!
+
+    // A CJK punctuation run joins the clause before it, so a chunk doesn't open
+    // on a comma or a full stop. Only a clause with CJK in it takes the run, so a
+    // Latin word before fullwidth punctuation keeps its own pricing.
+    if (PATTERNS.cjkPunctuation.test(parts[i + 1] ?? '') && PATTERNS.cjk.test(segment))
+      segment += parts[++i]
+
     if (segment) {
       yield { segment, tokenCount: estimateSegmentTokens(segment, resolvedOptions, previousSegment) }
       previousSegment = segment
