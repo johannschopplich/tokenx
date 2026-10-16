@@ -190,7 +190,8 @@ function parseNumber(
   // `Number` would read `0x10` as 16 and `1e3` as 1000; only plain decimal notation is meant.
   const value = pattern.test(rawValue) ? Number(rawValue) : Number.NaN
 
-  if (Number.isNaN(value) || !isValid(value))
+  // A long enough digit run parses to `Infinity`.
+  if (!Number.isFinite(value) || !isValid(value))
     throw new CliError(`Invalid --${option} value: ${rawValue}`)
 
   return value
