@@ -298,6 +298,13 @@ describe('splitByTokens', () => {
     expect(chunks).toEqual(['aaaa bbbb', 'bbbb cccc', 'cccc dddd'])
   })
 
+  it('never repeats a segment that fills a chunk on its own as overlap', () => {
+    const longWord = 'a'.repeat(70)
+    const chunks = splitByTokens(`one two three four five six ${longWord} seven eight nine ten eleven`, 10, { overlap: 2 })
+
+    expect(chunks.filter(chunk => chunk.includes(longWord))).toHaveLength(1)
+  })
+
   it('clamps overlap below the target chunk size', () => {
     const text = 'aaaa bbbb cccc dddd eeee'
     const oversizedOverlapChunks = splitByTokens(text, 2, { overlap: 5 })

@@ -88,9 +88,9 @@ export function splitByTokens(
   if (!text || tokensPerChunk <= 0)
     return []
 
-  // An overlap of at least the chunk size would prevent chunks from ever
-  // draining, duplicating content without bound.
-  const overlap = Math.max(0, Math.min(options.overlap ?? 0, tokensPerChunk - 1))
+  // The break below caps the overlap's tokens; the clamp also ends the walk at
+  // that cap, before it collects zero-token whitespace.
+  const overlap = Math.min(options.overlap ?? 0, tokensPerChunk - 1)
 
   const chunks: string[] = []
   let currentChunk: SegmentEstimate[] = []
@@ -114,6 +114,11 @@ export function splitByTokens(
 
         for (let i = currentChunk.length - 1; i >= 0 && overlapTokenCount < overlap; i--) {
           const overlapCandidate = currentChunk[i]!
+          // Overlap that reaches the target would close the next chunk at once,
+          // repeating a long segment chunk after chunk.
+          if (overlapTokenCount + overlapCandidate.tokenCount >= tokensPerChunk)
+            break
+
           overlapSegments.unshift(overlapCandidate)
           overlapTokenCount += overlapCandidate.tokenCount
         }
