@@ -24,7 +24,7 @@ const KANA_CHARS_PER_TOKEN = 1.35
 const HANGUL_CHARS_PER_TOKEN = 1.65
 const HANZI_CHARS_PER_TOKEN = 1.2
 
-const DEFAULT_LANGUAGE_CONFIGS: LanguageConfig[] = [
+export const DEFAULT_LANGUAGE_CONFIGS: LanguageConfig[] = [
   // An accent rule prices a whole language through the minority of its words
   // that carry an accent, so each ratio is fitted against running text in that
   // language rather than against the segments the pattern matches.

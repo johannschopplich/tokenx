@@ -5,6 +5,7 @@ import {
   sliceByTokens,
   splitByTokens,
 } from '../src/index'
+import { DEFAULT_LANGUAGE_CONFIGS } from '../src/segments'
 
 /**
  * Pins the slice snapshots below to a ratio of the test's own choosing: the
@@ -102,6 +103,20 @@ describe('estimateTokenCount', () => {
       expect(estimateTokenCount(input, arabicOptions)).toBe(estimateTokenCount(input))
     })
 
+    it('matches no ASCII character with a built-in language config', () => {
+      const asciiCharacters = Array.from({ length: 0x80 }, (_, codePoint) => String.fromCharCode(codePoint))
+      const matchingCharacters = asciiCharacters.filter(character =>
+        DEFAULT_LANGUAGE_CONFIGS.some(config => character.search(config.pattern) !== -1))
+
+      expect(matchingCharacters).toEqual([])
+    })
+
+    it('keeps the built-in language configs for an empty languageConfigs', () => {
+      const input = 'Gregor erwachte aus unruhigen Träumen über seinem Bett.'
+
+      expect(estimateTokenCount(input, { languageConfigs: [] })).toBe(estimateTokenCount(input))
+    })
+
     it('ignores stateful regex flags in language configs', () => {
       const input = 'éléphant éléphant éléphant éléphant'
       const statefulOptions = {
@@ -183,14 +198,14 @@ describe('sliceByTokens', () => {
     }
   })
 
-  it('never cuts an emoji in half', () => {
+  it('never splits an emoji\'s surrogate pair', () => {
     const emoji = '😀😀😀'
-    // More tokens than emoji, so every one-token slice cuts inside the segment.
+    // More tokens than emoji, so token boundaries fall inside an emoji rather
+    // than between two – a one-token slice may come out empty, never as half.
     const emojiOptions = { languageConfigs: [{ pattern: /\p{Extended_Pictographic}/u, averageCharsPerToken: 0.75 }] }
-    const totalTokens = estimateTokenCount(emoji, emojiOptions)
+    const oneTokenSlices = [0, 1, 2, 3].map(start => sliceByTokens(emoji, start, start + 1, emojiOptions))
 
-    for (let start = 0; start < totalTokens; start++)
-      expect(sliceByTokens(emoji, start, start + 1, emojiOptions).isWellFormed()).toBe(true)
+    expect(oneTokenSlices).toEqual(['😀', '😀', '', '😀'])
   })
 
   it('cuts inside a segment when the boundary falls mid-word', () => {
@@ -264,7 +279,7 @@ describe('splitByTokens', () => {
     expect(splitByTokens(longWord, 2)).toEqual([longWord])
   })
 
-  it('splits Chinese text at its own punctuation', () => {
+  it('splits Chinese text at a fullwidth comma', () => {
     const chinese = '采收的成熟咖啡果会经过剥离果肉的初步加工，再经过烘焙的工序，而成为能制作咖啡的咖啡豆。'
 
     expect(splitByTokens(chinese, 10)[0]).toBe('采收的成熟咖啡果会经过剥离果肉的初步加工')

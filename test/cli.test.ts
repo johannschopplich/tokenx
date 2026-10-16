@@ -41,7 +41,7 @@ describe('tokenx CLI', () => {
 
       const { stdout } = await runCli([path.join(directory, 'sample.txt'), '--chars-per-token', '3.5'])
 
-      // 15, 11 and 13 characters at 3.5 per token round up to 5, 4 and 4.
+      // A ratio of 3 or 4 would count 14 or 11, so 13 shows the fraction survived parsing.
       expect(stdout).toBe('13\n')
     })
 
@@ -170,6 +170,15 @@ describe('tokenx CLI', () => {
       const { stderr, exitCode } = await runCli([path.join(directory, 'sample.txt'), '--limit'])
 
       expect(stderr).toContain('--limit')
+      expect(exitCode).toBe(1)
+    })
+
+    it('rejects a --chars-per-token of 0', async () => {
+      const directory = createDirectory({ 'sample.txt': SAMPLE })
+
+      const { stderr, exitCode } = await runCli([path.join(directory, 'sample.txt'), '--chars-per-token', '0'])
+
+      expect(stderr).toContain('--chars-per-token')
       expect(exitCode).toBe(1)
     })
 
