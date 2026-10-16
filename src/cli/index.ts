@@ -30,7 +30,7 @@ const countArgs = {
   },
   'chars-per-token': {
     type: 'string',
-    description: 'Average characters per token when no language rule applies',
+    description: 'Average characters per token for text no other rule prices',
   },
   'limit': {
     type: 'string',
