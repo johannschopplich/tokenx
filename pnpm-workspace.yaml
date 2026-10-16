@@ -1,8 +1,6 @@
-minimumReleaseAgeExclude:
-  - utilful@3.5.1
-
-shellEmulator: true
+minimumReleaseAgeExcludePrune: true
 trustPolicy: no-downgrade
+shellEmulator: true
 
 allowBuilds:
   '@parcel/watcher': true
