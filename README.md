@@ -97,7 +97,7 @@ Only results go to stdout – a bare integer for one input, a table for several,
 
 Estimates the number of tokens in a given input string using heuristic rules that work across multiple languages and text types.
 
-Custom `languageConfigs` take precedence over the built-in rules for every segment except whitespace, so they can also override the built-in CJK handling. The built-in configs still apply to text no custom config matches.
+Custom `languageConfigs` take precedence over the built-in rules for every segment except whitespace, the CJK script rates included. The built-in configs still apply to text no custom config matches.
 
 **Usage:**
 

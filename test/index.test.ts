@@ -89,7 +89,7 @@ describe('estimateTokenCount', () => {
       expect(customCount).toBeGreaterThan(defaultCount)
     })
 
-    it('lets custom language configs override built-in CJK handling', () => {
+    it('lets custom language configs take precedence over the CJK script rates', () => {
       const input = '你好世界你好世界'
       const customOptions = {
         languageConfigs: [{ pattern: /[\u4E00-\u9FFF]/, averageCharsPerToken: 2 }],
@@ -241,7 +241,7 @@ describe('sliceByTokens', () => {
   })
 
   it('applies custom options to slice boundaries', () => {
-    // Long ASCII words, so the default ratio governs rather than a language rule.
+    // Long ASCII words, so the default ratio governs rather than a language config.
     const text = 'Estimation heuristics approximate tokenizers'
     const defaultSlice = sliceByTokens(text, 0, 3)
     const customSlice = sliceByTokens(text, 0, 3, { defaultCharsPerToken: 2 })

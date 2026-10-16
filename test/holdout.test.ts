@@ -5,14 +5,14 @@ import { describe, expect, it } from 'vitest'
 import { estimateTokenCount } from '../src/index'
 
 /**
- * Texts no ratio was ever fitted against. The benchmark corpus and the
+ * Texts no ratio was ever fitted against. The sample corpus and the
  * heuristic buckets both feed back into the shipped ratios, so neither can
  * tell overfitting from accuracy – these can, and only for as long as nobody
  * tunes against them. Widen a ratio to make this file pass and it stops
  * measuring anything.
  */
 const HOLDOUT_SAMPLES = [
-  // Romance prose at document scale, which the benchmark corpus has none of.
+  // Romance prose at document scale, which the sample corpus has none of.
   { description: 'Candide by Voltaire (fr)', file: 'candide-fr.txt' },
   // Everyday imperative English – a register the corpus never sees.
   { description: 'The Whitehouse Cookbook (en)', file: 'whitehouse-cookbook-en.txt' },
