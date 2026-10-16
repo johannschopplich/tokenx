@@ -9,6 +9,7 @@ const config: UserConfig[] = [
   defineConfig({
     entry: { cli: 'src/cli/entry.ts' },
     dts: false,
+    deps: { onlyBundle: ['utilful'] },
   }),
 ]
 
