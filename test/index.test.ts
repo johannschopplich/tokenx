@@ -173,6 +173,26 @@ describe('sliceByTokens', () => {
     expect(firstTwoTokens + fromThirdToken).toBe(SINGLE_TOKEN_WORDS)
   })
 
+  it('reconstructs the input from adjacent slices at every token boundary', () => {
+    const totalTokens = estimateTokenCount(MULTI_TOKEN_WORDS, FIXED_OPTIONS)
+
+    for (let boundary = 0; boundary <= totalTokens; boundary++) {
+      const head = sliceByTokens(MULTI_TOKEN_WORDS, 0, boundary, FIXED_OPTIONS)
+      const tail = sliceByTokens(MULTI_TOKEN_WORDS, boundary, undefined, FIXED_OPTIONS)
+      expect(head + tail).toBe(MULTI_TOKEN_WORDS)
+    }
+  })
+
+  it('never cuts an emoji in half', () => {
+    const emoji = '😀😀😀'
+    // More tokens than emoji, so every one-token slice cuts inside the segment.
+    const emojiOptions = { languageConfigs: [{ pattern: /\p{Extended_Pictographic}/u, averageCharsPerToken: 0.75 }] }
+    const totalTokens = estimateTokenCount(emoji, emojiOptions)
+
+    for (let start = 0; start < totalTokens; start++)
+      expect(sliceByTokens(emoji, start, start + 1, emojiOptions).isWellFormed()).toBe(true)
+  })
+
   it('cuts inside a segment when the boundary falls mid-word', () => {
     expect(sliceByTokens(MULTI_TOKEN_WORDS, 0, 3, FIXED_OPTIONS)).toMatchInlineSnapshot(`"Die pünktl"`)
     expect(sliceByTokens(MULTI_TOKEN_WORDS, 5, 10, FIXED_OPTIONS)).toMatchInlineSnapshot(`"ünschte Trüffelfüll"`)

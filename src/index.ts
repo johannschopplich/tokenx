@@ -156,7 +156,10 @@ function extractSegmentPart(
   if (overlapStart === 0 && overlapEnd === segmentTokenCount)
     return segment
 
-  const charStart = Math.floor((overlapStart / segmentTokenCount) * segment.length)
-  const charEnd = Math.ceil((overlapEnd / segmentTokenCount) * segment.length)
-  return segment.slice(charStart, charEnd)
+  // Code points rather than UTF-16 units, so a cut never splits a surrogate
+  // pair. Both ends round the same way, so adjacent slices meet without a gap
+  // or a repeated character.
+  const characters = Array.from(segment)
+  const toCharacterIndex = (tokenOffset: number) => Math.round((tokenOffset / segmentTokenCount) * characters.length)
+  return characters.slice(toCharacterIndex(overlapStart), toCharacterIndex(overlapEnd)).join('')
 }
