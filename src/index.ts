@@ -9,7 +9,14 @@ export function isWithinTokenLimit(
   tokenLimit: number,
   options?: TokenEstimationOptions,
 ): boolean {
-  return estimateTokenCount(text, options) <= tokenLimit
+  let tokenCount = 0
+  for (const segmentEstimate of walkSegments(text, options)) {
+    tokenCount += segmentEstimate.tokenCount
+    if (tokenCount > tokenLimit)
+      return false
+  }
+
+  return tokenCount <= tokenLimit
 }
 
 /** Estimates the number of tokens in a text string using heuristic rules. */
