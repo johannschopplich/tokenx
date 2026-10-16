@@ -20,21 +20,24 @@ const HOLDOUT_SAMPLES = [
   { description: 'Library article (ru)', file: 'library-ru.txt' },
 ]
 
-/** Deviation bound (%), per sample and across the holdout. */
+/** Deviation bound (%) for each text. */
 const MAX_HOLDOUT_DEVIATION = 15
 
 describe('accuracy against texts held out of calibration', () => {
-  for (const sample of HOLDOUT_SAMPLES) {
-    it(`deviates less than ${MAX_HOLDOUT_DEVIATION}% for ${sample.description}`, async () => {
-      expect(await measureDeviation(sample.file)).toBeLessThan(MAX_HOLDOUT_DEVIATION)
-    })
-  }
+  it(`deviates less than ${MAX_HOLDOUT_DEVIATION}% for each text`, async () => {
+    const deviations = Object.fromEntries(await Promise.all(
+      HOLDOUT_SAMPLES.map(async sample => [sample.description, await measureDeviation(sample.file)] as const),
+    ))
 
-  it(`deviates less than ${MAX_HOLDOUT_DEVIATION}% on average across the holdout`, async () => {
-    const deviations = await Promise.all(HOLDOUT_SAMPLES.map(sample => measureDeviation(sample.file)))
-    const meanDeviation = deviations.reduce((sum, deviation) => sum + deviation, 0) / deviations.length
-
-    expect(meanDeviation).toBeLessThan(MAX_HOLDOUT_DEVIATION)
+    expect(Object.values(deviations).filter(deviation => Math.abs(deviation) >= MAX_HOLDOUT_DEVIATION)).toEqual([])
+    // A retune that moves the holdout shows up in the same diff, even within the bound.
+    expect(deviations).toMatchInlineSnapshot(`
+      {
+        "Candide by Voltaire (fr)": -8.8,
+        "Library article (ru)": -10.5,
+        "The Whitehouse Cookbook (en)": -1.8,
+      }
+    `)
   })
 })
 
@@ -44,5 +47,6 @@ async function measureDeviation(file: string): Promise<number> {
   const text = await readFile(join(holdoutDir, file), 'utf-8')
   const referenceTokenCount = encode(text).length
 
-  return (Math.abs(referenceTokenCount - estimateTokenCount(text)) / referenceTokenCount) * 100
+  const deviation = ((estimateTokenCount(text) - referenceTokenCount) / referenceTokenCount) * 100
+  return Math.round(deviation * 10) / 10
 }

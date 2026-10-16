@@ -36,7 +36,7 @@ Die Verwandlung by Kafka (de)         4,437 →  4,384            █│        
 
 <!-- /automd -->
 
-Accuracy depends on the kind of text, not its length: a short excerpt deviates about as much as the full document it came from. A holdout corpus of French, English, and Russian text that no ratio was ever fitted against is held to a looser ±15% bound, so a retune cannot silently overfit the chart for those languages.
+Accuracy depends on the kind of text, not its length: a short excerpt deviates about as much as the full document it came from. A holdout corpus of French, English, and Russian documents that no ratio was ever fitted against is held to a looser ±15% bound per document, so a retune that only fits the calibration texts fails the test run.
 
 These cases are knowingly left outside the bounds:
 
