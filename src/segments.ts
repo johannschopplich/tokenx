@@ -102,14 +102,23 @@ function estimateSegmentTokens(
     return segment.includes('\n') && !PATTERNS.punctuation.test(previousSegment.slice(-1)) ? 1 : 0
   }
 
-  // Checked before the built-in rules so custom configs can override them.
-  const languageCharsPerToken = getLanguageSpecificCharsPerToken(segment, customLanguageConfigs)
-  if (languageCharsPerToken !== undefined) {
-    return Math.ceil(getCharacterCount(segment) / languageCharsPerToken)
+  // Custom configs take precedence over every rule but whitespace.
+  const customCharsPerToken = findLanguageCharsPerToken(segment, customLanguageConfigs)
+  if (customCharsPerToken !== undefined) {
+    return Math.ceil(getCharacterCount(segment) / customCharsPerToken)
   }
 
   if (PATTERNS.cjk.test(segment)) {
     return estimateCjkTokens(segment)
+  }
+
+  // Every built-in config needs a non-ASCII character to match, so ASCII-only
+  // segments skip them.
+  const builtInCharsPerToken = PATTERNS.nonAscii.test(segment)
+    ? findLanguageCharsPerToken(segment, DEFAULT_LANGUAGE_CONFIGS)
+    : undefined
+  if (builtInCharsPerToken !== undefined) {
+    return Math.ceil(getCharacterCount(segment) / builtInCharsPerToken)
   }
 
   if (PATTERNS.numeric.test(segment)) {
@@ -133,17 +142,6 @@ function estimateSegmentTokens(
   }
 
   return Math.ceil(segment.length / defaultCharsPerToken)
-}
-
-function getLanguageSpecificCharsPerToken(segment: string, customLanguageConfigs: LanguageConfig[]): number | undefined {
-  const customCharsPerToken = findLanguageCharsPerToken(segment, customLanguageConfigs)
-  if (customCharsPerToken !== undefined)
-    return customCharsPerToken
-
-  // Every built-in config needs a non-ASCII character to match, so ASCII-only
-  // segments skip them – custom configs carry no such guarantee.
-  if (PATTERNS.nonAscii.test(segment))
-    return findLanguageCharsPerToken(segment, DEFAULT_LANGUAGE_CONFIGS)
 }
 
 function findLanguageCharsPerToken(segment: string, languageConfigs: LanguageConfig[]): number | undefined {
