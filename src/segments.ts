@@ -68,21 +68,19 @@ export function* walkSegments(text: string, options: TokenEstimationOptions = {}
 
 interface ResolvedTokenEstimationOptions {
   defaultCharsPerToken: number
-  languageConfigs: LanguageConfig[]
+  customLanguageConfigs: LanguageConfig[]
 }
 
 function resolveOptions(options: TokenEstimationOptions): ResolvedTokenEstimationOptions {
   return {
     defaultCharsPerToken: options.defaultCharsPerToken ?? DEFAULT_CHARS_PER_TOKEN,
-    languageConfigs: options.languageConfigs?.length
-      ? [...options.languageConfigs, ...DEFAULT_LANGUAGE_CONFIGS]
-      : DEFAULT_LANGUAGE_CONFIGS,
+    customLanguageConfigs: options.languageConfigs ?? [],
   }
 }
 
 function estimateSegmentTokens(
   segment: string,
-  { languageConfigs, defaultCharsPerToken }: ResolvedTokenEstimationOptions,
+  { customLanguageConfigs, defaultCharsPerToken }: ResolvedTokenEstimationOptions,
   previousSegment: string,
 ): number {
   if (PATTERNS.whitespace.test(segment)) {
@@ -96,7 +94,7 @@ function estimateSegmentTokens(
   }
 
   // Checked before the built-in rules so custom configs can override them.
-  const languageCharsPerToken = getLanguageSpecificCharsPerToken(segment, languageConfigs)
+  const languageCharsPerToken = getLanguageSpecificCharsPerToken(segment, customLanguageConfigs)
   if (languageCharsPerToken !== undefined) {
     return Math.ceil(getCharacterCount(segment) / languageCharsPerToken)
   }
@@ -128,14 +126,18 @@ function estimateSegmentTokens(
   return Math.ceil(segment.length / defaultCharsPerToken)
 }
 
-function getLanguageSpecificCharsPerToken(segment: string, languageConfigs: LanguageConfig[]): number | undefined {
-  // Every built-in config needs a non-ASCII character to match, so ASCII-only
-  // segments skip the loop – custom configs carry no such guarantee, which is
-  // why the shortcut checks for the defaults.
-  if (languageConfigs === DEFAULT_LANGUAGE_CONFIGS && !PATTERNS.nonAscii.test(segment)) {
-    return
-  }
+function getLanguageSpecificCharsPerToken(segment: string, customLanguageConfigs: LanguageConfig[]): number | undefined {
+  const customCharsPerToken = findLanguageCharsPerToken(segment, customLanguageConfigs)
+  if (customCharsPerToken !== undefined)
+    return customCharsPerToken
 
+  // Every built-in config needs a non-ASCII character to match, so ASCII-only
+  // segments skip them – custom configs carry no such guarantee.
+  if (PATTERNS.nonAscii.test(segment))
+    return findLanguageCharsPerToken(segment, DEFAULT_LANGUAGE_CONFIGS)
+}
+
+function findLanguageCharsPerToken(segment: string, languageConfigs: LanguageConfig[]): number | undefined {
   for (const config of languageConfigs) {
     // `search` instead of `test`: it ignores `lastIndex`, so stateful flags
     // (`/g`, `/y`) on user-supplied patterns can't skew matching.
