@@ -23,26 +23,27 @@ Bars grow left when tokenx underestimates and right when it overestimates. The a
                                                           under ◂·▸ over
 Team chat transcript (en)               293 →    285          ███│              -2.73%
 Vite releases API response            8,075 →  8,551             │██████        +5.89%
-tokenx source code                    3,311 →  3,166         ████│              -4.38%
+tokenx source code                    3,470 →  3,315         ████│              -4.47%
 Vite plugin API docs (en)             6,901 →  7,155             │████          +3.68%
-Cat article (ja)                     12,437 → 12,037          ███│              -3.22%
-Cat article (ko)                      7,117 →  6,814         ████│              -4.26%
-Cat article (zh)                      9,057 →  9,092             │              +0.39%
+Cat article (ja)                     12,437 → 11,914         ████│              -4.21%
+Cat article (ko)                      7,117 →  6,815         ████│              -4.24%
+Cat article (zh)                      9,057 →  8,953            █│              -1.15%
 The Great Gatsby by Fitzgerald (en)   4,391 →  4,479             │██            +2.00%
 Die Verwandlung by Kafka (de)         4,437 →  4,384            █│              -1.19%
                                                        ─────────────────────
-                                                                        mean     3.08%
+                                                                        mean     3.29%
 ```
 
 <!-- /automd -->
 
-Accuracy depends on the kind of text, not its length: a short excerpt deviates about as much as the full document it came from. A holdout corpus that no ratio was ever fitted against is held to a looser ±15% bound, so a retune cannot silently overfit the chart.
+Accuracy depends on the kind of text, not its length: a short excerpt deviates about as much as the full document it came from. A holdout corpus of French, English, and Russian text that no ratio was ever fitted against is held to a looser ±15% bound, so a retune cannot silently overfit the chart for those languages.
 
-Three cases are knowingly outside these bounds, all underestimates:
+These cases are knowingly left outside the bounds:
 
 - **High-entropy strings** – base64, hashes, digests: ≈-70%. Pricing them would cost every caller runtime for a case ordinary traffic rarely carries.
 - **Traditional and classical Chinese** – the hanzi rate is calibrated on contemporary simplified script: ≈-5% to -20%.
-- **Scripts without a built-in rule** – Arabic ≈-35%, Hindi ≈-30%, Hebrew ≈-45%, Thai ≈-60%; a custom language rule closes the gap.
+- **Scripts without a built-in rule** – Arabic ≈-35%, Hindi ≈-30%, Hebrew ≈-45%, Thai ≈-60%; a custom language config closes the gap.
+- **Chinese or Japanese mixed with Latin words or code** – Latin letters that share a segment with CJK text are priced like hanzi: ≈+30% to +80% for technical prose, up to ≈+200% for a sentence built around code identifiers.
 
 ## Installation
 
