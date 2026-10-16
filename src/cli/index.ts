@@ -14,6 +14,9 @@ const EXIT_OVER_LIMIT = 2
 /** The one default the CLI owns – every other default belongs to the library. */
 const DEFAULT_CHUNK_SIZE = 1000
 
+const INTEGER_PATTERN = /^-?\d+$/
+const DECIMAL_PATTERN = /^\d+(?:\.\d+)?$/
+
 interface InputCount {
   label: string
   tokenCount: number
@@ -163,11 +166,20 @@ async function readSingleInput(paths: string[]): Promise<string> {
 }
 
 function resolveEstimationOptions(charsPerToken: string | undefined): TokenEstimationOptions {
-  const defaultCharsPerToken = parseInteger('chars-per-token', charsPerToken, 1)
+  const defaultCharsPerToken = parseNumber('chars-per-token', charsPerToken, DECIMAL_PATTERN, value => value > 0)
   return defaultCharsPerToken === undefined ? {} : { defaultCharsPerToken }
 }
 
 function parseInteger(option: string, rawValue: string | undefined, minimum?: number): number | undefined {
+  return parseNumber(option, rawValue, INTEGER_PATTERN, value => minimum === undefined || value >= minimum)
+}
+
+function parseNumber(
+  option: string,
+  rawValue: string | undefined,
+  pattern: RegExp,
+  isValid: (value: number) => boolean,
+): number | undefined {
   if (rawValue === undefined)
     return undefined
 
@@ -175,10 +187,10 @@ function parseInteger(option: string, rawValue: string | undefined, minimum?: nu
   if (rawValue === '')
     throw new CliError(`Missing --${option} value`)
 
-  // `Number` would read `0x10` as 16 and `1e3` as 1000; only decimals are meant.
-  const value = /^-?\d+$/.test(rawValue) ? Number(rawValue) : Number.NaN
+  // `Number` would read `0x10` as 16 and `1e3` as 1000; only plain decimal notation is meant.
+  const value = pattern.test(rawValue) ? Number(rawValue) : Number.NaN
 
-  if (Number.isNaN(value) || (minimum !== undefined && value < minimum))
+  if (Number.isNaN(value) || !isValid(value))
     throw new CliError(`Invalid --${option} value: ${rawValue}`)
 
   return value

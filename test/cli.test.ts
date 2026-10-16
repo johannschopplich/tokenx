@@ -36,6 +36,15 @@ describe('tokenx CLI', () => {
       expect(readCount(fineResult.stdout)).toBeGreaterThan(readCount(coarseResult.stdout))
     })
 
+    it('accepts a decimal --chars-per-token', async () => {
+      const directory = createDirectory({ 'sample.txt': 'Extraordinarily Complicated Documentation' })
+
+      const { stdout } = await runCli([path.join(directory, 'sample.txt'), '--chars-per-token', '3.5'])
+
+      // 15, 11 and 13 characters at 3.5 per token round up to 5, 4 and 4.
+      expect(stdout).toBe('13\n')
+    })
+
     it('sums the per-input counts into a total for several files', async () => {
       const directory = createDirectory({ 'a.txt': SAMPLE, 'b.txt': SAMPLE.repeat(2) })
 
