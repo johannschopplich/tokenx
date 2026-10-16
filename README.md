@@ -93,156 +93,58 @@ Only results go to stdout – a bare integer for one input, a table for several,
 
 ## API
 
-### `estimateTokenCount`
+### Options
 
-Estimates the number of tokens in a given input string using heuristic rules that work across multiple languages and text types.
+Every function takes an optional `options` object last:
 
-Custom `languageConfigs` take precedence over the built-in rules for every segment except whitespace, the CJK script rates included. The built-in configs still apply to text no custom config matches.
+- `defaultCharsPerToken` – average characters per token for segments no other rule prices (default: 7)
+- `languageConfigs` – `{ pattern, averageCharsPerToken }` entries checked before the built-in language configs; the first matching config prices a segment. They take precedence over every built-in rule except whitespace, the CJK script rates included, and the built-in configs still price whatever no custom config matches.
 
-**Usage:**
+### `estimateTokenCount(text, options?)`
+
+Returns the estimated token count of `text`.
 
 ```ts
-const estimatedTokens = estimateTokenCount('Hello, world!')
+estimateTokenCount('Hello, world!')
 
-// With custom options
-const customEstimate = estimateTokenCount('Bonjour le monde!', {
+estimateTokenCount('Bonjour le monde!', {
   defaultCharsPerToken: 4,
-  languageConfigs: [
-    { pattern: /[éèêëàâîï]/i, averageCharsPerToken: 3 }
-  ]
+  languageConfigs: [{ pattern: /[éèêëàâîï]/i, averageCharsPerToken: 3 }],
 })
 ```
 
-**Type Declaration:**
+### `isWithinTokenLimit(text, tokenLimit, options?)`
+
+Returns whether the estimated token count stays within `tokenLimit`, the limit included. Stops counting as soon as the limit is exceeded.
 
 ```ts
-function estimateTokenCount(
-  text?: string,
-  options?: TokenEstimationOptions
-): number
-
-interface TokenEstimationOptions {
-  /** Average characters per token for segments no other rule prices (default: 7). */
-  defaultCharsPerToken?: number
-  /** Language configs checked before the built-in ones, so the first matching custom config wins. */
-  languageConfigs?: LanguageConfig[]
-}
-
-interface LanguageConfig {
-  /** Regular expression to detect the language. */
-  pattern: RegExp
-  averageCharsPerToken: number
-}
+isWithinTokenLimit('Check this text against a limit', 100) // true
 ```
 
-### `isWithinTokenLimit`
+### `sliceByTokens(text, start?, end?, options?)`
 
-Checks if the estimated token count of the input is within a specified token limit.
-
-**Usage:**
-
-```ts
-const withinLimit = isWithinTokenLimit('Check this text against a limit', 100)
-// With custom options
-const customCheck = isWithinTokenLimit('Text', 50, { defaultCharsPerToken: 3 })
-```
-
-**Type Declaration:**
-
-```ts
-function isWithinTokenLimit(
-  text: string,
-  tokenLimit: number,
-  options?: TokenEstimationOptions
-): boolean
-```
-
-### `sliceByTokens`
-
-Extracts a portion of text based on token positions, similar to `Array.prototype.slice()`. Supports both positive and negative indices.
-
-**Usage:**
+Extracts a token range like `Array.prototype.slice()`: `start` is inclusive, `end` exclusive, and negative indices count back from the end. A boundary inside a multi-token word cuts the word proportionally, so a slice can start or end mid-word – adjacent slices still rejoin into the original text.
 
 ```ts
 const text = 'Hello, world! This is a test sentence.'
 
-const firstThree = sliceByTokens(text, 0, 3)
-const fromSecond = sliceByTokens(text, 2)
-const lastTwo = sliceByTokens(text, -2)
-const middle = sliceByTokens(text, 1, -1)
+sliceByTokens(text, 0, 3) // First three tokens
+sliceByTokens(text, -2) // Last two tokens
+sliceByTokens(text, 1, -1) // All but the first and last token
 ```
 
-**Type Declaration:**
+### `splitByTokens(text, tokensPerChunk, options?)`
 
-```ts
-function sliceByTokens(
-  text: string,
-  start?: number,
-  end?: number,
-  options?: TokenEstimationOptions
-): string
-```
-
-**Parameters:**
-
-- `text` - The input text to slice
-- `start` - The start token index (inclusive). If negative, treated as offset from end. Default: `0`
-- `end` - The end token index (exclusive). If negative, treated as offset from end. If omitted, slices to the end
-- `options` - Token estimation options (same as `estimateTokenCount`)
-
-**Returns:**
-
-The sliced text portion corresponding to the specified token range. A boundary inside a multi-token word cuts the word proportionally, so a slice can start or end mid-word – adjacent slices still rejoin into the original text.
-
-### `splitByTokens`
-
-Splits text into chunks based on token count. Useful for chunking documents for RAG, batch processing, or staying within context windows.
+Splits text into chunks of about `tokensPerChunk` tokens – for RAG, batch processing, or staying within a context window.
 
 `tokensPerChunk` is a target, not a hard maximum: a chunk closes once it reaches the target, so a single long segment can push a chunk beyond it. Chunks never break words apart. Chinese and Japanese text has no spaces, so a whole clause up to its punctuation mark forms one segment, and a long clause can push a chunk well past the target.
 
-**Usage:**
+The `overlap` option (default: 0, clamped below `tokensPerChunk`) repeats the trailing tokens of each chunk at the start of the next; a final chunk consisting only of overlap content is never emitted.
 
 ```ts
-const text = 'Long text that needs to be split into smaller chunks...'
-
-// Basic splitting
-const chunks = splitByTokens(text, 100)
-console.log(`Split into ${chunks.length} chunks`)
-
-// With overlap for semantic continuity
-const overlappedChunks = splitByTokens(text, 100, { overlap: 10 })
-
-// With custom options
-const customChunks = splitByTokens(text, 50, {
-  defaultCharsPerToken: 4,
-  overlap: 5
-})
+splitByTokens(text, 100)
+splitByTokens(text, 100, { overlap: 10 })
 ```
-
-**Type Declaration:**
-
-```ts
-interface SplitByTokensOptions extends TokenEstimationOptions {
-  /** Number of tokens to overlap between consecutive chunks (default: 0, clamped below `tokensPerChunk`). */
-  overlap?: number
-}
-
-function splitByTokens(
-  text: string,
-  tokensPerChunk: number,
-  options?: SplitByTokensOptions
-): string[]
-```
-
-**Parameters:**
-
-- `text` - The input text to split
-- `tokensPerChunk` - Target number of tokens per chunk
-- `options` - Token estimation options with optional overlap
-
-**Returns:**
-
-An array of text chunks, each containing approximately `tokensPerChunk` tokens. With `overlap`, each chunk repeats the trailing tokens of the previous one; a final chunk consisting only of overlap content is never emitted.
 
 ## License
 
