@@ -173,28 +173,14 @@ describe('tokenx CLI', () => {
       expect(exitCode).toBe(1)
     })
 
-    it('rejects a --chars-per-token of 0', async () => {
+    it.each([
+      { kind: 'zero', value: '0' },
+      { kind: 'too large to represent', value: '9'.repeat(400) },
+      { kind: 'not a number', value: 'many' },
+    ])('rejects a --chars-per-token that is $kind', async ({ value }) => {
       const directory = createDirectory({ 'sample.txt': SAMPLE })
 
-      const { stderr, exitCode } = await runCli([path.join(directory, 'sample.txt'), '--chars-per-token', '0'])
-
-      expect(stderr).toContain('--chars-per-token')
-      expect(exitCode).toBe(1)
-    })
-
-    it('rejects a --chars-per-token too large to represent', async () => {
-      const directory = createDirectory({ 'sample.txt': SAMPLE })
-
-      const { stderr, exitCode } = await runCli([path.join(directory, 'sample.txt'), '--chars-per-token', '9'.repeat(400)])
-
-      expect(stderr).toContain('--chars-per-token')
-      expect(exitCode).toBe(1)
-    })
-
-    it('rejects a non-numeric --chars-per-token', async () => {
-      const directory = createDirectory({ 'sample.txt': SAMPLE })
-
-      const { stderr, exitCode } = await runCli([path.join(directory, 'sample.txt'), '--chars-per-token', 'many'])
+      const { stderr, exitCode } = await runCli([path.join(directory, 'sample.txt'), '--chars-per-token', value])
 
       expect(stderr).toContain('--chars-per-token')
       expect(exitCode).toBe(1)

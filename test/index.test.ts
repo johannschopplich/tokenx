@@ -106,6 +106,7 @@ describe('estimateTokenCount', () => {
       }
 
       expect(estimateTokenCount(input, arabicOptions)).toBe(estimateTokenCount(input))
+      expect(estimateTokenCount(input, { languageConfigs: [] })).toBe(estimateTokenCount(input))
     })
 
     it('matches no ASCII character with a built-in language config', () => {
@@ -114,12 +115,6 @@ describe('estimateTokenCount', () => {
         DEFAULT_LANGUAGE_CONFIGS.some(config => character.search(config.pattern) !== -1))
 
       expect(matchingCharacters).toEqual([])
-    })
-
-    it('keeps the built-in language configs for an empty languageConfigs', () => {
-      const input = 'Gregor erwachte aus unruhigen Träumen über seinem Bett.'
-
-      expect(estimateTokenCount(input, { languageConfigs: [] })).toBe(estimateTokenCount(input))
     })
 
     it('ignores stateful regex flags in language configs', () => {
