@@ -97,9 +97,13 @@ function estimateSegmentTokens(
     if (PATTERNS.structuredWhitespace.test(segment))
       return 1
 
-    // A line break merges into a preceding punctuation token but stands on
-    // its own after a word. Single spaces always merge.
-    return segment.includes('\n') && !PATTERNS.punctuation.test(previousSegment.slice(-1)) ? 1 : 0
+    // Whitespace without a line break always merges. A line break merges into
+    // a preceding punctuation token but stands on its own after a word.
+    if (!segment.includes('\n'))
+      return 0
+
+    const previousCharacter = previousSegment.slice(-1)
+    return PATTERNS.punctuation.test(previousCharacter) || PATTERNS.cjkPunctuation.test(previousCharacter) ? 0 : 1
   }
 
   // Custom configs take precedence over every rule but whitespace.

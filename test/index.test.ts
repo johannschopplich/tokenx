@@ -72,6 +72,7 @@ describe('estimateTokenCount', () => {
 
     it('merges a line break into a preceding punctuation token', () => {
       expect(estimateTokenCount('Hello,\nworld')).toBe(estimateTokenCount('Hello, world'))
+      expect(estimateTokenCount('終わった。\n次の日')).toBe(estimateTokenCount('終わった。次の日'))
     })
 
     it('prices a Latin word before fullwidth punctuation like before ASCII punctuation', () => {
