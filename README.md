@@ -2,7 +2,7 @@
 
 Fast and lightweight token count estimation without requiring a full tokenizer.
 
-Estimates are calibrated against OpenAI's `o200k_base` encoding – the tokenizer of all current GPT models. Counts for other LLM families will differ somewhat; the `defaultCharsPerToken` and `languageConfigs` options let you tune the heuristics for your model. For precise counts, use a full tokenizer like [`gpt-tokenizer`](https://github.com/niieani/gpt-tokenizer).
+Estimates are calibrated against OpenAI's `o200k_base` encoding – the tokenizer of all current GPT models. Counts for other LLM families differ somewhat; the `defaultCharsPerToken` and `languageConfigs` options let you tune the heuristics for your model. For precise counts, use a full tokenizer like [`gpt-tokenizer`](https://github.com/niieani/gpt-tokenizer).
 
 ## Features
 
@@ -13,7 +13,7 @@ Estimates are calibrated against OpenAI's `o200k_base` encoding – the tokenize
 
 ## Accuracy
 
-The following chart shows how close the estimates come to actual GPT token counts for different input texts:
+Each row of the chart shows a sample text's `o200k_base` token count, the tokenx estimate, and the deviation between them:
 
 <!-- automd:file src="./docs/bench.md" -->
 
@@ -36,13 +36,13 @@ Die Verwandlung by Kafka (de)         4,437 →  4,384            █│        
 
 <!-- /automd -->
 
-Accuracy depends on the kind of text, not its length: a short excerpt deviates about as much as the full document it came from. A holdout corpus of French, English, and Russian documents that no ratio was ever fitted against is held to a looser ±15% bound per document, so a retune that only fits the calibration texts fails the test run.
+Accuracy depends on the kind of text. A holdout corpus of French, English, and Russian documents that no ratio was ever fitted against is held to a looser ±15% bound per document, so a retune that only fits the calibration texts fails the test run.
 
 These cases are knowingly left outside the bounds:
 
 - **High-entropy strings** – base64, hashes, digests: ≈-70%. Pricing them would cost every caller runtime for a case ordinary traffic rarely carries.
 - **Traditional and classical Chinese** – the hanzi rate is calibrated on contemporary simplified script: ≈-5% to -20%.
-- **Scripts without a built-in rule** – Arabic ≈-35%, Hindi ≈-30%, Hebrew ≈-45%, Thai ≈-60%; a custom language config closes the gap.
+- **Scripts without a built-in rule** – Arabic ≈-10% to -30%, Hindi ≈-30%, Hebrew ≈-45%, Thai ≈-60%; a custom language config closes the gap.
 - **Chinese or Japanese mixed with Latin words or code** – Latin letters that share a segment with CJK text are priced like hanzi: ≈+30% to +80% for technical prose, up to ≈+200% for a sentence built around code identifiers.
 
 ## Installation
@@ -100,14 +100,14 @@ Every function takes an optional `options` object last:
 - `defaultCharsPerToken` – average characters per token for segments no other rule prices (default: 7)
 - `languageConfigs` – `{ pattern, averageCharsPerToken }` entries checked before the built-in language configs; the first matching config prices a segment. They take precedence over every built-in rule except whitespace, the CJK script rates included, and the built-in configs still price whatever no custom config matches.
 
-### `estimateTokenCount(text, options?)`
+### `estimateTokenCount(text?, options?)`
 
 Returns the estimated token count of `text`.
 
 ```ts
 estimateTokenCount('Hello, world!')
 
-estimateTokenCount('Bonjour le monde!', {
+estimateTokenCount('Bonjour, ça va très bien ?', {
   defaultCharsPerToken: 4,
   languageConfigs: [{ pattern: /[éèêëàâîï]/i, averageCharsPerToken: 3 }],
 })
@@ -137,7 +137,7 @@ sliceByTokens(text, 1, -1) // All but the first and last token
 
 Splits text into chunks of about `tokensPerChunk` tokens – for RAG, batch processing, or staying within a context window.
 
-`tokensPerChunk` is a target, not a hard maximum: a chunk closes once it reaches the target, so a single long segment can push a chunk beyond it. Chunks never break words apart. Chinese and Japanese text has no spaces, so a whole clause up to its punctuation mark forms one segment, and a long clause can push a chunk well past the target.
+`tokensPerChunk` is a target, not a hard maximum: a chunk closes once it reaches the target, so a single long segment can push a chunk beyond it. Chinese and Japanese text has no spaces, so a whole clause up to its punctuation mark forms one segment, and a long clause can push a chunk well past the target.
 
 The `overlap` option (default: 0, clamped below `tokensPerChunk`) repeats the trailing tokens of each chunk at the start of the next; a final chunk consisting only of overlap content is never emitted.
 
