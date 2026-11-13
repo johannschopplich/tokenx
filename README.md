@@ -36,11 +36,11 @@ Die Verwandlung by Kafka (de)         4,437 →  4,384            █│        
 
 <!-- /automd -->
 
-Accuracy depends on the kind of text. A holdout corpus of French, English, and Russian documents that no ratio was ever fitted against is held to a looser ±15% bound per document, so a retune that only fits the calibration texts fails the test run.
+Accuracy depends on the kind of text: a holdout corpus of French, English, and Russian documents the heuristics were never calibrated on stays within ±15% per document.
 
 These cases are knowingly left outside the bounds:
 
-- **High-entropy strings** – base64, hashes, digests: ≈-70%. Pricing them would cost every caller runtime for a case ordinary traffic rarely carries.
+- **High-entropy strings** – base64, hashes, digests: ≈-70%.
 - **Traditional and classical Chinese** – the hanzi rate is calibrated on contemporary simplified script: ≈-5% to -20%.
 - **Scripts without a built-in rule** – Arabic ≈-10% to -30%, Hindi ≈-30%, Hebrew ≈-45%, Thai ≈-60%; a custom language config closes the gap.
 - **Chinese or Japanese mixed with Latin words or code** – Latin letters that share a segment with CJK text are priced like hanzi: ≈+30% to +80% for technical prose, up to ≈+200% for a sentence built around code identifiers.
@@ -123,7 +123,7 @@ isWithinTokenLimit('Check this text against a limit', 100) // true
 
 ### `sliceByTokens(text, start?, end?, options?)`
 
-Extracts a token range like `Array.prototype.slice()`: `start` is inclusive, `end` exclusive, and negative indices count back from the end. A boundary inside a multi-token word cuts the word proportionally, so a slice can start or end mid-word – adjacent slices still rejoin into the original text.
+Extracts a token range like `Array.prototype.slice()`: `start` is inclusive, `end` exclusive, and negative indices count back from the end. A slice can start or end mid-word; adjacent slices still rejoin into the original text.
 
 ```ts
 const text = 'Hello, world! This is a test sentence.'
