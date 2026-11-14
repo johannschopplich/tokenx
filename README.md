@@ -7,7 +7,7 @@ Estimates are calibrated against OpenAI's `o200k_base` encoding – the tokenize
 ## Features
 
 - 🎯 **95%+ average accuracy**, and no single sample below 90%
-- 📦 **Just 2kB** bundle size with zero dependencies
+- 📦 **Just 2kB** minified and gzipped, with zero dependencies
 - 🖥️ **[Bundled CLI](#cli)** – count, slice and split from the shell
 - 🌍 Built-in rules for CJK, Cyrillic, Greek, accented Latin scripts and emoji – extend them with your own
 
