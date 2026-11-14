@@ -58,6 +58,8 @@ pnpm add tokenx
 yarn add tokenx
 ```
 
+On Node.js, tokenx requires version 24 or later.
+
 ## Quick Start
 
 ```ts
@@ -73,7 +75,7 @@ splitByTokens(text, 100) // Chunks of about 100 tokens each
 
 ## CLI
 
-The package ships a `tokenx` binary. Run it with `npx tokenx`, or install the package to call `tokenx` directly. The CLI requires Node.js 24 or later.
+The package ships a `tokenx` binary. Run it with `npx tokenx`, or install the package to call `tokenx` directly.
 
 ```bash
 # Count tokens in a file, a pipe, or several files at once
