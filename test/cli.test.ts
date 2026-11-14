@@ -79,6 +79,15 @@ describe('tokenx CLI', () => {
       expect(report.inputs.map(input => input.label)).toEqual([path.join('notes', 'a.md'), path.join('notes', 'b.md')])
     })
 
+    it('counts a file matched by two arguments once', async () => {
+      const directory = createDirectory({ 'a.txt': SAMPLE })
+
+      const { stdout } = await runCli(['count', './a.txt', '*.txt', '--json'], { cwd: directory })
+
+      const report = JSON.parse(stdout) as { inputs: { label: string }[] }
+      expect(report.inputs.map(input => input.label)).toEqual(['a.txt'])
+    })
+
     it('counts notes[1].md as a literal path rather than a pattern', async () => {
       const directory = createDirectory({ 'notes[1].md': SAMPLE })
 

@@ -21,7 +21,16 @@ export async function readInputs(paths: readonly string[]): Promise<InputDocumen
     throw new CliError('Cannot read stdin alongside file paths')
 
   const filePaths = (await Promise.all(paths.map(expandPattern))).flat()
-  return Promise.all(filePaths.map(readFileInput))
+  // Keyed by the resolved path, so `a.txt` and `./a.txt` count once.
+  const resolvedPaths = new Set<string>()
+  const uniqueFilePaths = filePaths.filter((filePath) => {
+    const resolvedPath = path.resolve(filePath)
+    if (resolvedPaths.has(resolvedPath))
+      return false
+    resolvedPaths.add(resolvedPath)
+    return true
+  })
+  return Promise.all(uniqueFilePaths.map(filePath => readFileInput(filePath)))
 }
 
 /** Expands a pattern the shell passed through verbatim, as Windows shells do with `*.md`. */
