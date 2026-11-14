@@ -197,8 +197,8 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
       utilful:
-        specifier: ^3.5.1
-        version: 3.5.1(vitest@5.1.0(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(jiti@2.7.0)(yaml@2.9.1)))
+        specifier: ^3.6.0
+        version: 3.6.0(vitest@5.1.0(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(jiti@2.7.0)(yaml@2.9.1)))
       vitest:
         specifier: ^5.1.0
         version: 5.1.0(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(jiti@2.7.0)(yaml@2.9.1))
@@ -2224,8 +2224,9 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  utilful@3.5.1:
-    resolution: {integrity: sha512-Jt8fPaeFzu+7KHpxwu074csRsJhZ2f//aNFC1Almp0vLSpEXYUc06+CYFxEpv+WENvANxuqA/70FGGCBxtcBXQ==}
+  utilful@3.6.0:
+    resolution: {integrity: sha512-60sBKcknA1942NkmoCROum45EYd474gQEPWLKAa00+xc3x5A8V3p3ojtGeCUZAATdqxq0jsBlE7ntgk0XEWSwQ==}
+    engines: {node: '>=24'}
     peerDependencies:
       vitest: '>=4'
     peerDependenciesMeta:
@@ -4491,7 +4492,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  utilful@3.5.1(vitest@5.1.0(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(jiti@2.7.0)(yaml@2.9.1))):
+  utilful@3.6.0(vitest@5.1.0(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(jiti@2.7.0)(yaml@2.9.1))):
     optionalDependencies:
       vitest: 5.1.0(@types/node@26.6.6)(vite@8.3.8(@types/node@26.6.6)(jiti@2.7.0)(yaml@2.9.1))
 
