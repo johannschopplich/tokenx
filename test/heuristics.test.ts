@@ -532,7 +532,10 @@ describe('heuristic calibration', () => {
 })
 
 function measureSamples(bucket: HeuristicBucket): SampleMeasurement[] {
-  const tiers = [['short', bucket.short], ['medium', bucket.medium]] as const
+  const tiers = [
+    ['short', bucket.short],
+    ['medium', bucket.medium],
+  ] as const
 
   return tiers.flatMap(([tier, texts]) => (texts ?? []).map((text) => {
     const referenceTokenCount = encode(text).length
@@ -589,7 +592,11 @@ function measureBucket(bucket: HeuristicBucket, { hasMean = true } = {}): string
 
 function formatSignedPercent(signedDeviation: number): string {
   const magnitude = Math.abs(signedDeviation).toFixed(1)
-  const sign = Number(magnitude) === 0 ? ' ' : signedDeviation > 0 ? '+' : '-'
+  const sign = Number(magnitude) === 0
+    ? ' '
+    : signedDeviation > 0
+      ? '+'
+      : '-'
 
   return `${sign}${magnitude}%`.padStart(7)
 }

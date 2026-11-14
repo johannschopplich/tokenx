@@ -54,7 +54,9 @@ export function sliceByTokens(
     segmentEstimates = bufferedEstimates
   }
 
-  const normalizedStart = start < 0 ? Math.max(0, totalTokens + start) : Math.max(0, start)
+  const normalizedStart = start < 0
+    ? Math.max(0, totalTokens + start)
+    : Math.max(0, start)
   const normalizedEnd = end === undefined
     ? Infinity
     : end < 0
@@ -155,7 +157,9 @@ function extractSegmentPart(
   targetEnd: number,
 ): string {
   if (segmentTokenCount === 0) {
-    return segmentTokenStart >= targetStart && segmentTokenStart < targetEnd ? segment : ''
+    return segmentTokenStart >= targetStart && segmentTokenStart < targetEnd
+      ? segment
+      : ''
   }
 
   const segmentTokenEnd = segmentTokenStart + segmentTokenCount

@@ -40,7 +40,10 @@ const freeze = spawnSync('freeze', [
   '10',
   '--output',
   outputPath,
-], { input: toAnsi(chart), stdio: ['pipe', 'inherit', 'inherit'] })
+], {
+  input: toAnsi(chart),
+  stdio: ['pipe', 'inherit', 'inherit'],
+})
 
 if (freeze.error) {
   if ((freeze.error as NodeJS.ErrnoException).code === 'ENOENT') {

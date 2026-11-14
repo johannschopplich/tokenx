@@ -13,7 +13,11 @@ import { DEFAULT_LANGUAGE_CONFIGS } from '../src/segments'
  * rules, so recalibrating the shipped ratios moves the benchmark rather than
  * these tests.
  */
-const FIXED_OPTIONS = { languageConfigs: [{ pattern: /\S/, averageCharsPerToken: 4 }] }
+const FIXED_OPTIONS = {
+  languageConfigs: [
+    { pattern: /\S/, averageCharsPerToken: 4 },
+  ],
+}
 
 /** Every word costs one token, so slice boundaries land between words. */
 const SINGLE_TOKEN_WORDS = 'The old cat sat on a warm red mat.'
@@ -92,7 +96,9 @@ describe('estimateTokenCount', () => {
     it('lets custom language configs take precedence over the CJK script rates', () => {
       const input = '你好世界你好世界'
       const customOptions = {
-        languageConfigs: [{ pattern: /[\u4E00-\u9FFF]/, averageCharsPerToken: 2 }],
+        languageConfigs: [
+          { pattern: /[\u4E00-\u9FFF]/, averageCharsPerToken: 2 },
+        ],
       }
 
       expect(estimateTokenCount(input, customOptions)).toBe(4)
@@ -102,7 +108,9 @@ describe('estimateTokenCount', () => {
     it('keeps the built-in language configs alongside custom ones', () => {
       const input = 'Gregor erwachte aus unruhigen Träumen über seinem Bett.'
       const arabicOptions = {
-        languageConfigs: [{ pattern: /\p{Script=Arabic}/u, averageCharsPerToken: 2 }],
+        languageConfigs: [
+          { pattern: /\p{Script=Arabic}/u, averageCharsPerToken: 2 },
+        ],
       }
 
       expect(estimateTokenCount(input, arabicOptions)).toBe(estimateTokenCount(input))
@@ -120,10 +128,14 @@ describe('estimateTokenCount', () => {
     it('ignores stateful regex flags in language configs', () => {
       const input = 'éléphant éléphant éléphant éléphant'
       const statefulOptions = {
-        languageConfigs: [{ pattern: /[éè]/g, averageCharsPerToken: 3 }],
+        languageConfigs: [
+          { pattern: /[éè]/g, averageCharsPerToken: 3 },
+        ],
       }
       const statelessOptions = {
-        languageConfigs: [{ pattern: /[éè]/, averageCharsPerToken: 3 }],
+        languageConfigs: [
+          { pattern: /[éè]/, averageCharsPerToken: 3 },
+        ],
       }
 
       expect(estimateTokenCount(input, statefulOptions)).toBe(estimateTokenCount(input, statelessOptions))
@@ -132,7 +144,9 @@ describe('estimateTokenCount', () => {
     it('applies custom language configs that only match ASCII', () => {
       const input = 'hello world hello world'
       const asciiOptions = {
-        languageConfigs: [{ pattern: /[aeiou]/, averageCharsPerToken: 2 }],
+        languageConfigs: [
+          { pattern: /[aeiou]/, averageCharsPerToken: 2 },
+        ],
       }
 
       expect(estimateTokenCount(input, asciiOptions)).toBeGreaterThan(estimateTokenCount(input))
@@ -202,7 +216,11 @@ describe('sliceByTokens', () => {
     const emoji = '😀😀😀'
     // More tokens than emoji, so token boundaries fall inside an emoji rather
     // than between two – a one-token slice may come out empty, never as half.
-    const emojiOptions = { languageConfigs: [{ pattern: /\p{Extended_Pictographic}/u, averageCharsPerToken: 0.75 }] }
+    const emojiOptions = {
+      languageConfigs: [
+        { pattern: /\p{Extended_Pictographic}/u, averageCharsPerToken: 0.75 },
+      ],
+    }
     const oneTokenSlices = [0, 1, 2, 3].map(start => sliceByTokens(emoji, start, start + 1, emojiOptions))
 
     expect(oneTokenSlices).toEqual(['😀', '😀', '', '😀'])
@@ -255,7 +273,12 @@ describe('splitByTokens', () => {
 
   it('repeats about overlap tokens from the end of a chunk at the start of the next', () => {
     const chunks = splitByTokens('aaaa bbbb cccc dddd eeee', 2, { overlap: 1 })
-    expect(chunks).toEqual(['aaaa bbbb', 'bbbb cccc', 'cccc dddd', 'dddd eeee'])
+    expect(chunks).toEqual([
+      'aaaa bbbb',
+      'bbbb cccc',
+      'cccc dddd',
+      'dddd eeee',
+    ])
   })
 
   it('returns an empty array for empty input', () => {

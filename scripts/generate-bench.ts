@@ -85,22 +85,37 @@ function renderDeviationChart(measurements: SampleMeasurement[], paint: Paint, f
 
   const meanValue = `${meanDeviation.toFixed(2)}%`.padStart(2 + PERCENT_COLUMN_WIDTH)
   const footerPadding = ' '.repeat(barColumnOffset + barWidth - 'mean'.length - footerLink.length)
-  const footerRow = `${footerLink ? paint(footerLink, '239') : ''}${footerPadding}${paint('mean', '245')}${meanValue}`
+  const footerRow = `${footerLink
+    ? paint(footerLink, '239')
+    : ''}${footerPadding}${paint('mean', '245')}${meanValue}`
 
-  return [axisHeader, ...rows, meanSeparator, footerRow].join('\n')
+  return [
+    axisHeader,
+    ...rows,
+    meanSeparator,
+    footerRow,
+  ].join('\n')
 }
 
 function renderDeviationBar(signedDeviation: number, paint: Paint): string {
   const cellCount = Math.min(BAR_CELLS_PER_SIDE, Math.round(Math.abs(signedDeviation) / PERCENT_PER_BAR_CELL))
-  const leftCells = signedDeviation < 0 ? cellCount : 0
-  const rightCells = signedDeviation > 0 ? cellCount : 0
+  const leftCells = signedDeviation < 0
+    ? cellCount
+    : 0
+  const rightCells = signedDeviation > 0
+    ? cellCount
+    : 0
 
   return `${'█'.repeat(leftCells).padStart(BAR_CELLS_PER_SIDE)}${paint('│', '240')}${'█'.repeat(rightCells).padEnd(BAR_CELLS_PER_SIDE)}`
 }
 
 function formatSignedPercent(signedDeviation: number): string {
   const magnitude = Math.abs(signedDeviation).toFixed(2)
-  const sign = Number(magnitude) === 0 ? ' ' : signedDeviation > 0 ? '+' : '-'
+  const sign = Number(magnitude) === 0
+    ? ' '
+    : signedDeviation > 0
+      ? '+'
+      : '-'
 
   return `${sign}${magnitude}%`.padStart(PERCENT_COLUMN_WIDTH)
 }

@@ -16,39 +16,57 @@ export interface BenchmarkSample {
 export const BENCHMARK_SAMPLES: BenchmarkSample[] = [
   {
     description: 'Team chat transcript (en)',
-    input: { files: ['test/fixtures/texts/chat-transcript-en.txt'] },
+    input: {
+      files: ['test/fixtures/texts/chat-transcript-en.txt'],
+    },
   },
   {
     description: 'Vite releases API response',
-    input: { files: ['test/fixtures/texts/github-releases-api.txt'] },
+    input: {
+      files: ['test/fixtures/texts/github-releases-api.txt'],
+    },
   },
   {
     description: 'tokenx source code',
-    input: { files: ['src/index.ts', 'src/segments.ts', 'src/types.ts'] },
+    input: {
+      files: ['src/index.ts', 'src/segments.ts', 'src/types.ts'],
+    },
   },
   {
     description: 'Vite plugin API docs (en)',
-    input: { files: ['test/fixtures/texts/vite-plugin-api-en.txt'] },
+    input: {
+      files: ['test/fixtures/texts/vite-plugin-api-en.txt'],
+    },
   },
   {
     description: 'Cat article (ja)',
-    input: { files: ['test/fixtures/texts/cat-ja.txt'] },
+    input: {
+      files: ['test/fixtures/texts/cat-ja.txt'],
+    },
   },
   {
     description: 'Cat article (ko)',
-    input: { files: ['test/fixtures/texts/cat-ko.txt'] },
+    input: {
+      files: ['test/fixtures/texts/cat-ko.txt'],
+    },
   },
   {
     description: 'Cat article (zh)',
-    input: { files: ['test/fixtures/texts/cat-zh.txt'] },
+    input: {
+      files: ['test/fixtures/texts/cat-zh.txt'],
+    },
   },
   {
     description: 'The Great Gatsby by Fitzgerald (en)',
-    input: { files: ['test/fixtures/texts/great-gatsby-en.txt'] },
+    input: {
+      files: ['test/fixtures/texts/great-gatsby-en.txt'],
+    },
   },
   {
     description: 'Die Verwandlung by Kafka (de)',
-    input: { files: ['test/fixtures/texts/die-verwandlung-de.txt'] },
+    input: {
+      files: ['test/fixtures/texts/die-verwandlung-de.txt'],
+    },
   },
 ]
 

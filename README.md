@@ -111,7 +111,9 @@ estimateTokenCount('Hello, world!')
 
 estimateTokenCount('Bonjour, ça va très bien ?', {
   defaultCharsPerToken: 4,
-  languageConfigs: [{ pattern: /[éèêëàâîï]/i, averageCharsPerToken: 3 }],
+  languageConfigs: [
+    { pattern: /[éèêëàâîï]/i, averageCharsPerToken: 3 }
+  ],
 })
 ```
 

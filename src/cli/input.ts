@@ -14,8 +14,11 @@ const GLOB_PATTERN_RE = /[*?[{]/
 
 /** Reads each path, treating no paths – or a lone `-` – as stdin. */
 export async function readInputs(paths: readonly string[]): Promise<InputDocument[]> {
-  if (paths.length === 0 || (paths.length === 1 && paths[0] === '-'))
-    return [{ label: 'stdin', text: await readStdin() }]
+  if (paths.length === 0 || (paths.length === 1 && paths[0] === '-')) {
+    return [
+      { label: 'stdin', text: await readStdin() },
+    ]
+  }
 
   if (paths.includes('-'))
     throw new CliError('Cannot read stdin alongside file paths')
@@ -62,6 +65,8 @@ async function readFileInput(inputPath: string): Promise<InputDocument> {
       // Quoted, so a shell passes the `*` on rather than expanding it.
       throw new CliError(`\`${inputPath}\` is a directory – pass a pattern like "${path.join(inputPath, '*')}"`)
 
-    throw new CliError(`Cannot read \`${label}\`: ${Error.isError(error) ? error.message : String(error)}`)
+    throw new CliError(`Cannot read \`${label}\`: ${Error.isError(error)
+      ? error.message
+      : String(error)}`)
   }
 }

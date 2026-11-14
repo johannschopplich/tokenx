@@ -4,10 +4,13 @@ import antfu from '@antfu/eslint-config'
 
 const config: FlatConfigComposer<TypedFlatConfigItem, ConfigNames> = antfu({
   rules: {
-    'jsdoc/multiline-blocks': ['error', {
-      noMultilineBlocks: true,
-      minimumLengthForMultiline: 100,
-    }],
+    'jsdoc/multiline-blocks': [
+      'error',
+      {
+        noMultilineBlocks: true,
+        minimumLengthForMultiline: 100,
+      },
+    ],
   },
 })
 

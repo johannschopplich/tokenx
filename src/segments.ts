@@ -69,7 +69,10 @@ export function* walkSegments(text: string, options: TokenEstimationOptions = {}
       segment += parts[++i]
 
     if (segment) {
-      yield { segment, tokenCount: estimateSegmentTokens(segment, resolvedOptions, previousSegment) }
+      yield {
+        segment,
+        tokenCount: estimateSegmentTokens(segment, resolvedOptions, previousSegment),
+      }
       previousSegment = segment
     }
   }
@@ -103,7 +106,9 @@ function estimateSegmentTokens(
       return 0
 
     const previousCharacter = previousSegment.slice(-1)
-    return PATTERNS.punctuation.test(previousCharacter) || PATTERNS.cjkPunctuation.test(previousCharacter) ? 0 : 1
+    return PATTERNS.punctuation.test(previousCharacter) || PATTERNS.cjkPunctuation.test(previousCharacter)
+      ? 0
+      : 1
   }
 
   // Custom configs take precedence over every rule but whitespace.

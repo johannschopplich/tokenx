@@ -167,7 +167,9 @@ async function readSingleInput(paths: string[]): Promise<string> {
 
 function resolveEstimationOptions(charsPerToken: string | undefined): TokenEstimationOptions {
   const defaultCharsPerToken = parseNumber('chars-per-token', charsPerToken, DECIMAL_PATTERN, value => value > 0)
-  return defaultCharsPerToken === undefined ? {} : { defaultCharsPerToken }
+  return defaultCharsPerToken === undefined
+    ? {}
+    : { defaultCharsPerToken }
 }
 
 function parseInteger(option: string, rawValue: string | undefined, minimum?: number): number | undefined {
@@ -188,7 +190,9 @@ function parseNumber(
     throw new CliError(`Missing --${option} value`)
 
   // `Number` would read `0x10` as 16 and `1e3` as 1000; only plain decimal notation is meant.
-  const value = pattern.test(rawValue) ? Number(rawValue) : Number.NaN
+  const value = pattern.test(rawValue)
+    ? Number(rawValue)
+    : Number.NaN
 
   // A long enough digit run parses to `Infinity`.
   if (!Number.isFinite(value) || !isValid(value))
@@ -198,7 +202,10 @@ function parseNumber(
 }
 
 function formatCountTable(counts: readonly InputCount[], total: number): string {
-  const rows = [...counts, { label: 'total', tokenCount: total }]
+  const rows = [
+    ...counts,
+    { label: 'total', tokenCount: total },
+  ]
   const labelWidth = Math.max(...rows.map(({ label }) => label.length))
   const countWidth = Math.max(...rows.map(({ tokenCount }) => String(tokenCount).length))
 

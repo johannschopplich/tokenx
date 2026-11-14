@@ -11,7 +11,9 @@ describe('tokenx CLI', () => {
     it('counts a file given without a subcommand', async () => {
       const directory = createDirectory({ 'sample.txt': SAMPLE })
 
-      const { stdout } = await runCli([path.join(directory, 'sample.txt')])
+      const { stdout } = await runCli([
+        path.join(directory, 'sample.txt'),
+      ])
 
       expect(stdout).toMatch(/^\d+\n$/)
     })
@@ -39,14 +41,21 @@ describe('tokenx CLI', () => {
     it('accepts a decimal --chars-per-token', async () => {
       const directory = createDirectory({ 'sample.txt': 'Extraordinarily Complicated Documentation' })
 
-      const { stdout } = await runCli([path.join(directory, 'sample.txt'), '--chars-per-token', '3.5'])
+      const { stdout } = await runCli([
+        path.join(directory, 'sample.txt'),
+        '--chars-per-token',
+        '3.5',
+      ])
 
       // A ratio of 3 or 4 would count 14 or 11, so 13 shows the fraction survived parsing.
       expect(stdout).toBe('13\n')
     })
 
     it('sums the per-input counts into a total for several files', async () => {
-      const directory = createDirectory({ 'a.txt': SAMPLE, 'b.txt': SAMPLE.repeat(2) })
+      const directory = createDirectory({
+        'a.txt': SAMPLE,
+        'b.txt': SAMPLE.repeat(2),
+      })
 
       const { stdout } = await runCli(['count', 'a.txt', 'b.txt'], { cwd: directory })
 
@@ -59,7 +68,10 @@ describe('tokenx CLI', () => {
     })
 
     it('reports each input and the total as JSON with --json', async () => {
-      const directory = createDirectory({ 'a.txt': SAMPLE, 'b.txt': SAMPLE.repeat(2) })
+      const directory = createDirectory({
+        'a.txt': SAMPLE,
+        'b.txt': SAMPLE.repeat(2),
+      })
 
       const { stdout } = await runCli(['count', 'a.txt', 'b.txt', '--json'], { cwd: directory })
 
@@ -76,7 +88,10 @@ describe('tokenx CLI', () => {
 
       expect(exitCode).toBe(0)
       const report = JSON.parse(stdout) as { inputs: { label: string }[] }
-      expect(report.inputs.map(input => input.label)).toEqual([path.join('notes', 'a.md'), path.join('notes', 'b.md')])
+      expect(report.inputs.map(input => input.label)).toEqual([
+        path.join('notes', 'a.md'),
+        path.join('notes', 'b.md'),
+      ])
     })
 
     it('counts a file matched by two arguments once', async () => {
@@ -101,7 +116,11 @@ describe('tokenx CLI', () => {
     it('prints the count before failing the run over --limit', async () => {
       const directory = createDirectory({ 'sample.txt': SAMPLE })
 
-      const { stdout, exitCode } = await runCli([path.join(directory, 'sample.txt'), '--limit', '0'])
+      const { stdout, exitCode } = await runCli([
+        path.join(directory, 'sample.txt'),
+        '--limit',
+        '0',
+      ])
 
       expect(readCount(stdout)).toBeGreaterThan(0)
       expect(exitCode).toBe(2)
@@ -112,7 +131,12 @@ describe('tokenx CLI', () => {
     it('prints a prefix of the input for a leading token range', async () => {
       const directory = createDirectory({ 'sample.txt': SAMPLE })
 
-      const { stdout } = await runCli(['slice', path.join(directory, 'sample.txt'), '--end', '5'])
+      const { stdout } = await runCli([
+        'slice',
+        path.join(directory, 'sample.txt'),
+        '--end',
+        '5',
+      ])
       const sliced = readSlice(stdout)
 
       expect(sliced.length).toBeGreaterThan(0)
@@ -123,7 +147,12 @@ describe('tokenx CLI', () => {
     it('prints a suffix of the input for a trailing token range', async () => {
       const directory = createDirectory({ 'sample.txt': SAMPLE })
 
-      const { stdout } = await runCli(['slice', path.join(directory, 'sample.txt'), '--start', '-3'])
+      const { stdout } = await runCli([
+        'slice',
+        path.join(directory, 'sample.txt'),
+        '--start',
+        '-3',
+      ])
       const sliced = readSlice(stdout)
 
       expect(sliced.length).toBeGreaterThan(0)
@@ -136,7 +165,12 @@ describe('tokenx CLI', () => {
     it('splits an input into chunks that rejoin into the original', async () => {
       const directory = createDirectory({ 'sample.txt': SAMPLE })
 
-      const { stdout } = await runCli(['split', path.join(directory, 'sample.txt'), '--size', '5'])
+      const { stdout } = await runCli([
+        'split',
+        path.join(directory, 'sample.txt'),
+        '--size',
+        '5',
+      ])
       const chunks = JSON.parse(stdout) as string[]
 
       expect(chunks.length).toBeGreaterThan(1)
@@ -146,7 +180,14 @@ describe('tokenx CLI', () => {
     it('repeats content across chunk boundaries with --overlap', async () => {
       const directory = createDirectory({ 'sample.txt': SAMPLE })
 
-      const { stdout } = await runCli(['split', path.join(directory, 'sample.txt'), '--size', '5', '--overlap', '2'])
+      const { stdout } = await runCli([
+        'split',
+        path.join(directory, 'sample.txt'),
+        '--size',
+        '5',
+        '--overlap',
+        '2',
+      ])
       const chunks = JSON.parse(stdout) as string[]
 
       expect(chunks.length).toBeGreaterThan(1)
@@ -158,7 +199,11 @@ describe('tokenx CLI', () => {
     it('rejects a misspelled option instead of reading it as a path', async () => {
       const directory = createDirectory({ 'sample.txt': SAMPLE })
 
-      const { stderr, exitCode } = await runCli([path.join(directory, 'sample.txt'), '--limitt', '5'])
+      const { stderr, exitCode } = await runCli([
+        path.join(directory, 'sample.txt'),
+        '--limitt',
+        '5',
+      ])
 
       expect(stderr).toContain('--limitt')
       expect(exitCode).toBe(1)
@@ -167,7 +212,12 @@ describe('tokenx CLI', () => {
     it('rejects an option belonging to another command', async () => {
       const directory = createDirectory({ 'sample.txt': SAMPLE })
 
-      const { stderr, exitCode } = await runCli(['count', path.join(directory, 'sample.txt'), '--overlap', '50'])
+      const { stderr, exitCode } = await runCli([
+        'count',
+        path.join(directory, 'sample.txt'),
+        '--overlap',
+        '50',
+      ])
 
       expect(stderr).toContain('--overlap')
       expect(exitCode).toBe(1)
@@ -176,7 +226,10 @@ describe('tokenx CLI', () => {
     it('rejects a --limit left without a value rather than ignoring it', async () => {
       const directory = createDirectory({ 'sample.txt': SAMPLE })
 
-      const { stderr, exitCode } = await runCli([path.join(directory, 'sample.txt'), '--limit'])
+      const { stderr, exitCode } = await runCli([
+        path.join(directory, 'sample.txt'),
+        '--limit',
+      ])
 
       expect(stderr).toContain('--limit')
       expect(exitCode).toBe(1)
@@ -184,12 +237,19 @@ describe('tokenx CLI', () => {
 
     it.each([
       { kind: 'zero', value: '0' },
-      { kind: 'too large to represent', value: '9'.repeat(400) },
+      {
+        kind: 'too large to represent',
+        value: '9'.repeat(400),
+      },
       { kind: 'not a number', value: 'many' },
     ])('rejects a --chars-per-token that is $kind', async ({ value }) => {
       const directory = createDirectory({ 'sample.txt': SAMPLE })
 
-      const { stderr, exitCode } = await runCli([path.join(directory, 'sample.txt'), '--chars-per-token', value])
+      const { stderr, exitCode } = await runCli([
+        path.join(directory, 'sample.txt'),
+        '--chars-per-token',
+        value,
+      ])
 
       expect(stderr).toContain('--chars-per-token')
       expect(exitCode).toBe(1)
@@ -198,7 +258,12 @@ describe('tokenx CLI', () => {
     it('rejects a --size below one', async () => {
       const directory = createDirectory({ 'sample.txt': SAMPLE })
 
-      const { stderr, exitCode } = await runCli(['split', path.join(directory, 'sample.txt'), '--size', '0'])
+      const { stderr, exitCode } = await runCli([
+        'split',
+        path.join(directory, 'sample.txt'),
+        '--size',
+        '0',
+      ])
 
       expect(stderr).toContain('--size')
       expect(exitCode).toBe(1)
@@ -210,7 +275,14 @@ describe('tokenx CLI', () => {
       const directory = createDirectory({ 'sample.txt': SAMPLE })
       const samplePath = path.join(directory, 'sample.txt')
 
-      const { stdout, exitCode } = await runCli(['--chars-per-token', '4', 'slice', samplePath, '--end', '5'])
+      const { stdout, exitCode } = await runCli([
+        '--chars-per-token',
+        '4',
+        'slice',
+        samplePath,
+        '--end',
+        '5',
+      ])
 
       expect(SAMPLE.startsWith(readSlice(stdout))).toBe(true)
       expect(exitCode).toBe(0)
@@ -221,7 +293,9 @@ describe('tokenx CLI', () => {
     it('reports a missing input file', async () => {
       const directory = createDirectory()
 
-      const { stderr, exitCode } = await runCli([path.join(directory, 'missing.txt')])
+      const { stderr, exitCode } = await runCli([
+        path.join(directory, 'missing.txt'),
+      ])
 
       expect(stderr).toContain('Cannot read `')
       expect(stderr).toContain('missing.txt')
@@ -259,7 +333,11 @@ describe('tokenx CLI', () => {
     it('rejects stdin alongside file paths', async () => {
       const directory = createDirectory({ 'sample.txt': SAMPLE })
 
-      const { stderr, exitCode } = await runCli(['count', '-', path.join(directory, 'sample.txt')])
+      const { stderr, exitCode } = await runCli([
+        'count',
+        '-',
+        path.join(directory, 'sample.txt'),
+      ])
 
       expect(stderr).toContain('stdin')
       expect(exitCode).toBe(1)
