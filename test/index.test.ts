@@ -253,7 +253,7 @@ describe('splitByTokens', () => {
     expect(chunks.join('')).toBe(SINGLE_TOKEN_WORDS)
   })
 
-  it('repeats trailing tokens of a chunk at the start of the next when overlap is set', () => {
+  it('repeats about overlap tokens from the end of a chunk at the start of the next', () => {
     const chunks = splitByTokens('aaaa bbbb cccc dddd eeee', 2, { overlap: 1 })
     expect(chunks).toEqual(['aaaa bbbb', 'bbbb cccc', 'cccc dddd', 'dddd eeee'])
   })

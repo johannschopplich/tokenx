@@ -141,7 +141,7 @@ Splits text into chunks of about `tokensPerChunk` tokens – for RAG, batch proc
 
 `tokensPerChunk` is a target, not a hard maximum: a chunk closes once it reaches the target, so a single long segment can push a chunk beyond it. Chinese and Japanese text has no spaces, so a whole clause up to its punctuation mark forms one segment, and a long clause can push a chunk well past the target.
 
-The `overlap` option (default: 0, clamped below `tokensPerChunk`) repeats the trailing tokens of each chunk at the start of the next; a final chunk consisting only of overlap content is never emitted.
+The `overlap` option (default: 0, clamped below `tokensPerChunk`) repeats about `overlap` tokens from the end of each chunk at the start of the next. The repeat consists of whole segments, so it runs longer when a segment crosses `overlap` and shorter when one more segment would bring it up to `tokensPerChunk`. A final chunk consisting only of overlap content is never emitted.
 
 ```ts
 splitByTokens(text, 100)

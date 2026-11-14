@@ -12,6 +12,10 @@ export interface LanguageConfig {
 }
 
 export interface SplitByTokensOptions extends TokenEstimationOptions {
-  /** Number of tokens to overlap between consecutive chunks (default: 0, clamped below the target chunk size). */
+  /**
+   * Approximate number of tokens repeated from the end of each chunk at the start of the next (default: 0, clamped
+   * below the target chunk size). The repeat consists of whole segments – more tokens when a segment crosses this
+   * count, fewer when one more segment would bring the repeat up to the target chunk size.
+   */
   overlap?: number
 }

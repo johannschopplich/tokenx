@@ -65,7 +65,7 @@ const splitArgs = {
   },
   'overlap': {
     type: 'string',
-    description: 'Tokens repeated from the end of the previous chunk',
+    description: 'About this many tokens repeated from the end of the previous chunk',
   },
 } as const
 
