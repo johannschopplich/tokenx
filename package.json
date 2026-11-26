@@ -40,9 +40,6 @@
     "bin",
     "dist"
   ],
-  "engines": {
-    "node": ">=24"
-  },
   "scripts": {
     "build": "tsdown",
     "dev": "node ./src/cli/entry.ts --help",
